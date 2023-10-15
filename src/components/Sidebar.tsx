@@ -20,11 +20,13 @@ import Badge from "@mui/material/Badge";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { Avatar, Menu, MenuItem } from "@mui/material";
-import SidebarData from "./SidebarData";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUser } from "../store/reducer/authReducer";
 
-// type Props = {
-//   sidebarList: { path: string; title: string; icon: JSX.Element }[];
-// };
+type Props = {
+  sidebarList: { path: string; title: string; icon: JSX.Element }[];
+};
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -96,7 +98,9 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function Sidebar() {
+export default function Sidebar(props: Props) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -117,11 +121,14 @@ export default function Sidebar() {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {};
+  const handleLogout = () => {
+    navigate("/");
+    dispatch(setUser({ token: null, user: null }));
+  };
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open} sx={{ backgroundColor: "#8AA899" }}>
+      <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -136,7 +143,7 @@ export default function Sidebar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            GURUKOOL
+            {/* GURUKOOL */}
           </Typography>
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <IconButton
@@ -165,7 +172,10 @@ export default function Sidebar() {
               onClick={handleMenu}
               color="inherit"
             >
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              <Avatar
+                alt="Remy Sharp"
+                src="https://wallpapercave.com/wp/wp4041985.jpg"
+              />
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -201,34 +211,33 @@ export default function Sidebar() {
         </DrawerHeader>
         <Divider />
         <List>
-          {SidebarData &&
-            SidebarData.employee.map((text, index) => (
-              //   <Link to={text.path} key={index}>
-              <ListItem disablePadding sx={{ display: "block" }} key={index}>
-                <ListItemButton
+          {props.sidebarList.map((text, index) => (
+            //   <Link to={text.path} key={index}>
+            <ListItem disablePadding sx={{ display: "block" }} key={index}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
                   sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
                   }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {text.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={text.title}
-                    sx={{ opacity: open ? 1 : 0 }}
-                  />
-                </ListItemButton>
-              </ListItem>
-              //   </Link>
-            ))}
+                  {text.icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={text.title}
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </ListItem>
+            //   </Link>
+          ))}
         </List>
       </Drawer>
       <Box

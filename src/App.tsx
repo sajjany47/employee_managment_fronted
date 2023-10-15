@@ -1,11 +1,14 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import Sidebar from "./components/Sidebar";
+import Layout from "./page/user/Layout";
 
 function App() {
   return (
-    <>
-      <Sidebar />
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}></Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
