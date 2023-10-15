@@ -25,7 +25,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../store/reducer/authReducer";
 
 type Props = {
-  sidebarList: { path: string; title: string; icon: JSX.Element }[];
+  sidebarList: { path: string; title: string; icon: JSX.Element }[] | null;
 };
 const drawerWidth = 240;
 
@@ -211,33 +211,34 @@ export default function Sidebar(props: Props) {
         </DrawerHeader>
         <Divider />
         <List>
-          {props.sidebarList.map((text, index) => (
-            //   <Link to={text.path} key={index}>
-            <ListItem disablePadding sx={{ display: "block" }} key={index}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
+          {props.sidebarList &&
+            props.sidebarList.map((text, index) => (
+              //   <Link to={text.path} key={index}>
+              <ListItem disablePadding sx={{ display: "block" }} key={index}>
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
                   }}
                 >
-                  {text.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={text.title}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-              </ListItemButton>
-            </ListItem>
-            //   </Link>
-          ))}
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {text.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={text.title}
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </ListItem>
+              //   </Link>
+            ))}
         </List>
       </Drawer>
       <Box

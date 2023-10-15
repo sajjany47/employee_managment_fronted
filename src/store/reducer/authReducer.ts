@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface initialType {
-  auth: { token: string | null; user: object | null };
+  auth: { token: string | null; user: { role: string } | null };
 }
 
 const initialValue: initialType = {

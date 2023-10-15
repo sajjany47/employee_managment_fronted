@@ -40,6 +40,7 @@ export default function Login() {
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
+
         <Box
           sx={{
             marginTop: 8,
@@ -64,10 +65,10 @@ export default function Login() {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id="userId"
+              label="Username"
+              name="userId"
+              autoComplete="userId"
               autoFocus
             />
             <TextField
