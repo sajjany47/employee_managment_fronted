@@ -1,7 +1,6 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./reducer/authReducer";
-import storage from "redux-persist/lib/storage";
-import storageSession from "redux-persist/lib/storage/session";
+import storage from "redux-persist/lib/storage/session";
 import {
   persistReducer,
   FLUSH,
@@ -12,22 +11,15 @@ import {
   REGISTER,
 } from "redux-persist";
 
-const rootPersistConfig = {
+const persistConfig = {
   key: "root",
   storage: storage,
 };
-const userPersistConfig = {
-  key: "auth",
-  storage: storageSession,
-};
-
-const rootReducer = combineReducers({
-  auth: persistReducer(userPersistConfig, authReducer),
-});
-
-const persistReducers = persistReducer(rootPersistConfig, rootReducer);
+const persistedReducer = persistReducer(persistConfig, authReducer);
 export const store = configureStore({
-  reducer: persistReducers,
+  reducer: {
+    auth: persistedReducer,
+  },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
