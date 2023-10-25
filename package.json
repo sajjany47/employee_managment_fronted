@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
     "start:dev": "env-cmd -f .env.development vite",
     "start:staging": "env-cmd -f .env.staging vite",
     "start:prod": "env-cmd -f .env.production vite",
