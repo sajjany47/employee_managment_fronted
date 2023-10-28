@@ -12,10 +12,11 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Copyright from "../../components/Copyright";
 import { UserService } from "./UserService";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../store/reducer/authReducer";
+import { useSnackbar } from "notistack";
+import Loader from "../../components/Loader";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -23,24 +24,31 @@ const defaultTheme = createTheme();
 export default function Login() {
   const userService = new UserService();
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+  const [loading, setLoading] = React.useState(false);
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const payload = {
       userId: data.get("userId"),
       password: data.get("password"),
     };
-    userService.login(payload).then((res) => {
-      sessionStorage.setItem("token", res.token);
-      dispatch(setUser({ token: res.token, user: res.user }));
-    });
+    userService
+      .login(payload)
+      .then((res) => {
+        sessionStorage.setItem("token", res.token);
+        dispatch(setUser({ token: res.token, user: res.user }));
+      })
+      .catch((error) => enqueueSnackbar(error.message, { variant: "error" }))
+      .finally(() => setLoading(false));
   };
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      {loading && <Loader />}
       <Container component="main" maxWidth="xs">
         <CssBaseline />
-
         <Box
           sx={{
             marginTop: 8,
@@ -107,7 +115,6 @@ export default function Login() {
             </Grid>
           </Box>
         </Box>
-        <Copyright />
       </Container>
     </ThemeProvider>
   );

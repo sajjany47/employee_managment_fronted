@@ -7,6 +7,7 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import MessageIcon from "@mui/icons-material/Message";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import KeyIcon from "@mui/icons-material/Key";
 
 const SidebarData = {
   employee: [
@@ -64,6 +65,11 @@ const SidebarData = {
       path: "/",
       title: "Dashboard",
       icon: <DashboardCustomizeIcon />,
+    },
+    {
+      path: "/admin/activation-key",
+      title: "Activation Key",
+      icon: <KeyIcon />,
     },
     {
       path: "/admin/employee",
