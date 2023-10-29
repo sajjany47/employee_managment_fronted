@@ -20,7 +20,7 @@ import Badge from "@mui/material/Badge";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { Avatar, Menu, MenuItem } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/reducer/authReducer";
 
@@ -213,31 +213,35 @@ export default function Sidebar(props: Props) {
         <List>
           {props.sidebarList &&
             props.sidebarList.map((text, index) => (
-              //   <Link to={text.path} key={index}>
-              <ListItem disablePadding sx={{ display: "block" }} key={index}>
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                >
-                  <ListItemIcon
+              <Link
+                to={text.path}
+                key={index}
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                <ListItem disablePadding sx={{ display: "block" }} key={index}>
+                  <ListItemButton
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
                     }}
                   >
-                    {text.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={text.title}
-                    sx={{ opacity: open ? 1 : 0 }}
-                  />
-                </ListItemButton>
-              </ListItem>
-              //   </Link>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {text.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={text.title}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              </Link>
             ))}
         </List>
       </Drawer>
@@ -256,6 +260,8 @@ export default function Sidebar(props: Props) {
         }}
       >
         <DrawerHeader />
+
+        <Outlet />
       </Box>
     </Box>
   );
