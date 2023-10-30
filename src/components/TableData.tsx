@@ -8,11 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 
-type Props = {
-  columns: [{ id: string; label: string; minWidth: number; align?: undefined }];
-  rows: [];
-};
-const TableData = (props: Props) => {
+const TableData = (props: any) => {
   console.log(props);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -48,7 +44,7 @@ const TableData = (props: Props) => {
           <TableHead>
             <TableRow>
               {props &&
-                props.columns.map((column) => (
+                props.columns.map((column: any) => (
                   <TableCell
                     key={column.id}
                     align={column.align}
@@ -63,7 +59,7 @@ const TableData = (props: Props) => {
             {props &&
               props.rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
                 .map((row: any) => {
                   return (
                     <TableRow
@@ -73,7 +69,7 @@ const TableData = (props: Props) => {
                       key={row.code}
                     >
                       {props &&
-                        props.columns.map((column) => {
+                        props.columns.map((column: any) => {
                           return (
                             <TableCell key={column.id} align={column.align}>
                               {row[column.id]}
