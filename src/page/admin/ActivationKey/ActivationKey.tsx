@@ -1,13 +1,14 @@
 import * as React from "react";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import TableData from "../../../components/TableData";
-import { Button, Grid, Typography, styled } from "@mui/material";
+import { Button, Grid, TextField, Typography } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import { Formik, Form } from "formik";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 // interface Column {
 //   id: "name" | "code" | "population" | "size" | "action";
@@ -17,17 +18,11 @@ import CloseIcon from "@mui/icons-material/Close";
 //   format?: (value: number) => string;
 // }
 
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  "& .MuiDialogContent-root": {
-    padding: theme.spacing(2),
-  },
-  "& .MuiDialogActions-root": {
-    padding: theme.spacing(1),
-  },
-}));
-
 export default function ActivationKey() {
   const [open, setOpen] = React.useState(false);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+
   const columns = [
     { id: "name", label: "Name", minWidth: 170 },
     { id: "code", label: "ISO\u00a0Code", minWidth: 100 },
@@ -71,8 +66,13 @@ export default function ActivationKey() {
   const handleClickOpen = () => {
     setOpen(true);
   };
+
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleGenerateKey = (value: object) => {
+    console.log(value);
   };
 
   return (
@@ -93,33 +93,116 @@ export default function ActivationKey() {
 
       {/* Dialog */}
 
-      <BootstrapDialog
-        onClose={handleClose}
-        aria-labelledby="customized-dialog-title"
+      <Dialog
+        fullScreen={fullScreen}
         open={open}
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
       >
-        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          Generate Activation Key
+        <DialogTitle id="alert-dialog-title">
+          {"Generate Activation Key"}
         </DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleClose}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent dividers></DialogContent>
+        <DialogContent>
+          <Formik
+            initialValues={{
+              name: "",
+              username: "",
+              email: "",
+              mobile: "",
+              dob: "",
+              role: "",
+            }}
+            onSubmit={handleGenerateKey}
+          >
+            {({ errors, touched, handleSubmit }) => (
+              <Form onSubmit={handleSubmit} className="mt-1">
+                <Grid
+                  container
+                  spacing={{ xs: 2, md: 2 }}
+                  columns={{ xs: 4, sm: 8, md: 12 }}
+                >
+                  <Grid item xs={2} sm={4} md={6}>
+                    <TextField
+                      name="name"
+                      label="Name"
+                      variant="outlined"
+                      className="w-full"
+                    />
+                    {errors.name && touched.name && errors.name}
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <TextField
+                      name="username"
+                      label="Username"
+                      variant="outlined"
+                      className="w-full"
+                    />
+                    {errors.username && touched.username && errors.username}
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <TextField
+                      name="email"
+                      label="Email"
+                      type="email"
+                      variant="outlined"
+                      className="w-full"
+                    />
+                    {errors.email && touched.email && errors.email}
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <TextField
+                      name="mobile"
+                      label="Mobile"
+                      variant="outlined"
+                      className="w-full"
+                    />
+                    {errors.mobile && touched.mobile && errors.mobile}
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <TextField
+                      name="dob"
+                      label="Date Of Birth"
+                      variant="outlined"
+                      className="w-full"
+                    />
+
+                    {errors.dob && touched.dob && errors.dob}
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <TextField
+                      name="role"
+                      label="Role"
+                      variant="outlined"
+                      className="w-full"
+                    />
+                    {errors.role && touched.role && errors.role}
+                  </Grid>
+                </Grid>
+              </Form>
+            )}
+          </Formik>
+        </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose}>
-            Save changes
+          <Button
+            onClick={handleClose}
+            variant="contained"
+            sx={{
+              backgroundColor: "red",
+              ":hover": { backgroundColor: "red" },
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleGenerateKey}
+            variant="contained"
+            autoFocus
+            type="submit"
+          >
+            Submit
           </Button>
         </DialogActions>
-      </BootstrapDialog>
+      </Dialog>
     </div>
   );
 }
