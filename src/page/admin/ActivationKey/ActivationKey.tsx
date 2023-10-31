@@ -9,6 +9,12 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { Formik, Form } from "formik";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import InputAdornment from "@mui/material/InputAdornment";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import { useSelector } from "react-redux";
 
 // interface Column {
 //   id: "name" | "code" | "population" | "size" | "action";
@@ -22,6 +28,7 @@ export default function ActivationKey() {
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const userType = useSelector((state: any) => state.auth.auth.user.role);
 
   const columns = [
     { id: "name", label: "Name", minWidth: 170 },
@@ -160,21 +167,39 @@ export default function ActivationKey() {
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
                     <TextField
+                      type="date"
                       name="dob"
                       label="Date Of Birth"
                       variant="outlined"
                       className="w-full"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start"></InputAdornment>
+                        ),
+                      }}
                     />
 
                     {errors.dob && touched.dob && errors.dob}
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
-                    <TextField
-                      name="role"
-                      label="Role"
-                      variant="outlined"
-                      className="w-full"
-                    />
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label">
+                        Role
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        name="role"
+                        label="Role"
+                        className="w-full"
+                      >
+                        <MenuItem value={"employee"}>Employee</MenuItem>
+                        <MenuItem value={"hr"}>HR</MenuItem>
+                        {userType && userType === "admin" && (
+                          <MenuItem value={"admin"}>Admin</MenuItem>
+                        )}
+                      </Select>
+                    </FormControl>
                     {errors.role && touched.role && errors.role}
                   </Grid>
                 </Grid>
