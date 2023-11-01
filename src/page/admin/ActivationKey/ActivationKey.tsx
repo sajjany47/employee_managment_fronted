@@ -15,6 +15,9 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useSelector } from "react-redux";
+import { ActivationService } from "./ActivationServices";
+import { useSnackbar } from "notistack";
+import Loader from "../../../components/Loader";
 
 // interface Column {
 //   id: "name" | "code" | "population" | "size" | "action";
@@ -25,10 +28,14 @@ import { useSelector } from "react-redux";
 // }
 
 export default function ActivationKey() {
+  const activationService = new ActivationService();
+  const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [activation, setActivation] = React.useState("");
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const userType = useSelector((state: any) => state.auth.auth.user.role);
+  const userType = useSelector((state: any) => state.auth.auth.user);
 
   const columns = [
     { id: "name", label: "Name", minWidth: 170 },
@@ -79,18 +86,30 @@ export default function ActivationKey() {
   };
 
   const handleGenerateKey = (value: object) => {
-    console.log(value);
+    setLoading(true);
+    const reqBody = { ...value, createdBy: userType.username };
+    activationService
+      .generateActivationKey(reqBody)
+      .then((res) => {
+        setActivation(res.activationKey);
+        enqueueSnackbar(res.message, { variant: "success" });
+      })
+      .catch((error: any) =>
+        enqueueSnackbar(error.message, { variant: "error" })
+      )
+      .finally(() => setLoading(false));
   };
 
   return (
     <div>
+      {loading && <Loader />}
       <Grid container rowSpacing={2} columnSpacing={2}>
         <Grid xs={12} className="mt-5 flex justify-end">
           <Button variant="outlined" onClick={handleClickOpen}>
             Generate Activation Key
           </Button>
         </Grid>
-        <Grid xs={12} className="mt-2">
+        <Grid xs={12} className="mt-1">
           <Typography variant="h6" className="text-sm">
             Activation Key List
           </Typography>
@@ -110,102 +129,106 @@ export default function ActivationKey() {
           {"Generate Activation Key"}
         </DialogTitle>
         <DialogContent>
-          <Formik
-            initialValues={{
-              name: "",
-              username: "",
-              email: "",
-              mobile: "",
-              dob: "",
-              role: "",
-            }}
-            onSubmit={handleGenerateKey}
-          >
-            {({ errors, touched, handleSubmit }) => (
-              <Form onSubmit={handleSubmit} className="mt-1">
-                <Grid
-                  container
-                  spacing={{ xs: 2, md: 2 }}
-                  columns={{ xs: 4, sm: 8, md: 12 }}
-                >
-                  <Grid item xs={2} sm={4} md={6}>
-                    <TextField
-                      name="name"
-                      label="Name"
-                      variant="outlined"
-                      className="w-full"
-                    />
-                    {errors.name && touched.name && errors.name}
-                  </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
-                    <TextField
-                      name="username"
-                      label="Username"
-                      variant="outlined"
-                      className="w-full"
-                    />
-                    {errors.username && touched.username && errors.username}
-                  </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
-                    <TextField
-                      name="email"
-                      label="Email"
-                      type="email"
-                      variant="outlined"
-                      className="w-full"
-                    />
-                    {errors.email && touched.email && errors.email}
-                  </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
-                    <TextField
-                      name="mobile"
-                      label="Mobile"
-                      variant="outlined"
-                      className="w-full"
-                    />
-                    {errors.mobile && touched.mobile && errors.mobile}
-                  </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
-                    <TextField
-                      type="date"
-                      name="dob"
-                      label="Date Of Birth"
-                      variant="outlined"
-                      className="w-full"
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start"></InputAdornment>
-                        ),
-                      }}
-                    />
-
-                    {errors.dob && touched.dob && errors.dob}
-                  </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
-                    <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">
-                        Role
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        name="role"
-                        label="Role"
+          {activation === "" ? (
+            <Formik
+              initialValues={{
+                name: "",
+                username: "",
+                email: "",
+                mobile: "",
+                dob: "",
+                role: "",
+              }}
+              onSubmit={handleGenerateKey}
+            >
+              {({ errors, touched, handleSubmit }) => (
+                <Form onSubmit={handleSubmit} className="mt-1">
+                  <Grid
+                    container
+                    spacing={{ xs: 2, md: 2 }}
+                    columns={{ xs: 4, sm: 8, md: 12 }}
+                  >
+                    <Grid item xs={2} sm={4} md={6}>
+                      <TextField
+                        name="name"
+                        label="Name"
+                        variant="outlined"
                         className="w-full"
-                      >
-                        <MenuItem value={"employee"}>Employee</MenuItem>
-                        <MenuItem value={"hr"}>HR</MenuItem>
-                        {userType && userType === "admin" && (
-                          <MenuItem value={"admin"}>Admin</MenuItem>
-                        )}
-                      </Select>
-                    </FormControl>
-                    {errors.role && touched.role && errors.role}
+                      />
+                      {errors.name && touched.name && errors.name}
+                    </Grid>
+                    <Grid item xs={2} sm={4} md={6}>
+                      <TextField
+                        name="username"
+                        label="Username"
+                        variant="outlined"
+                        className="w-full"
+                      />
+                      {errors.username && touched.username && errors.username}
+                    </Grid>
+                    <Grid item xs={2} sm={4} md={6}>
+                      <TextField
+                        name="email"
+                        label="Email"
+                        type="email"
+                        variant="outlined"
+                        className="w-full"
+                      />
+                      {errors.email && touched.email && errors.email}
+                    </Grid>
+                    <Grid item xs={2} sm={4} md={6}>
+                      <TextField
+                        name="mobile"
+                        label="Mobile"
+                        variant="outlined"
+                        className="w-full"
+                      />
+                      {errors.mobile && touched.mobile && errors.mobile}
+                    </Grid>
+                    <Grid item xs={2} sm={4} md={6}>
+                      <TextField
+                        type="date"
+                        name="dob"
+                        label="Date Of Birth"
+                        variant="outlined"
+                        className="w-full"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start"></InputAdornment>
+                          ),
+                        }}
+                      />
+
+                      {errors.dob && touched.dob && errors.dob}
+                    </Grid>
+                    <Grid item xs={2} sm={4} md={6}>
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                          Role
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          name="role"
+                          label="Role"
+                          className="w-full"
+                        >
+                          <MenuItem value={"employee"}>Employee</MenuItem>
+                          <MenuItem value={"hr"}>HR</MenuItem>
+                          {userType && userType.role === "admin" && (
+                            <MenuItem value={"admin"}>Admin</MenuItem>
+                          )}
+                        </Select>
+                      </FormControl>
+                      {errors.role && touched.role && errors.role}
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Form>
-            )}
-          </Formik>
+                </Form>
+              )}
+            </Formik>
+          ) : (
+            <Typography>{`Activation Key :  ${activation}`}</Typography>
+          )}
         </DialogContent>
         <DialogActions>
           <Button
