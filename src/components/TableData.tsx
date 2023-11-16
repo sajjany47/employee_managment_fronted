@@ -43,9 +43,9 @@ const TableData = (props: any) => {
           <TableHead>
             <TableRow>
               {props &&
-                props.columns.map((column: any) => (
+                props.columns.map((column: any, index: number) => (
                   <TableCell
-                    key={column.id}
+                    key={index}
                     align={column.align}
                     style={{ minWidth: column.minWidth }}
                   >
