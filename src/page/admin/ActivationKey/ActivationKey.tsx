@@ -3,7 +3,6 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import TableData from "../../../components/TableData";
 import { Button, Grid, TextField, Typography } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Formik, Form } from "formik";
@@ -32,7 +31,7 @@ export default function ActivationKey() {
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [activation, setActivation] = React.useState("");
+  const [activationKey, setActivationKey] = React.useState("");
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const userType = useSelector((state: any) => state.auth.auth.user);
@@ -85,18 +84,19 @@ export default function ActivationKey() {
     setOpen(false);
   };
 
-  const handleGenerateKey = (value: object) => {
+  const handleGenerateKey = (value: any) => {
     setLoading(true);
     const reqBody = { ...value, createdBy: userType.username };
     activationService
       .generateActivationKey(reqBody)
       .then((res) => {
-        setActivation(res.activationKey);
+        setActivationKey(res.activationKey);
         enqueueSnackbar(res.message, { variant: "success" });
       })
-      .catch((error: any) =>
-        enqueueSnackbar(error.message, { variant: "error" })
-      )
+      .catch((error: any) => {
+        console.log(error);
+        enqueueSnackbar(error.message, { variant: "error" });
+      })
       .finally(() => setLoading(false));
   };
 
@@ -129,7 +129,7 @@ export default function ActivationKey() {
           {"Generate Activation Key"}
         </DialogTitle>
         <DialogContent>
-          {activation === "" ? (
+          {activationKey === "" ? (
             <Formik
               initialValues={{
                 name: "",
@@ -215,41 +215,51 @@ export default function ActivationKey() {
                         >
                           <MenuItem value={"employee"}>Employee</MenuItem>
                           <MenuItem value={"hr"}>HR</MenuItem>
-                          {userType && userType.role === "admin" && (
+                          {userType && userType?.role === "admin" && (
                             <MenuItem value={"admin"}>Admin</MenuItem>
                           )}
                         </Select>
                       </FormControl>
                       {errors.role && touched.role && errors.role}
                     </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={12}
+                      md={12}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "end",
+                        gap: "5px",
+                      }}
+                    >
+                      <Button
+                        onClick={handleClose}
+                        variant="contained"
+                        sx={{
+                          backgroundColor: "red",
+                          ":hover": { backgroundColor: "red" },
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        // onClick={handleGenerateKey}
+                        variant="contained"
+                        autoFocus
+                        type="submit"
+                      >
+                        Submit
+                      </Button>
+                    </Grid>
                   </Grid>
                 </Form>
               )}
             </Formik>
           ) : (
-            <Typography>{`Activation Key :  ${activation}`}</Typography>
+            <Typography>{`Activation Key :  ${activationKey}`}</Typography>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleClose}
-            variant="contained"
-            sx={{
-              backgroundColor: "red",
-              ":hover": { backgroundColor: "red" },
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleGenerateKey}
-            variant="contained"
-            autoFocus
-            type="submit"
-          >
-            Submit
-          </Button>
-        </DialogActions>
       </Dialog>
     </div>
   );

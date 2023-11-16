@@ -9,7 +9,6 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 
 const TableData = (props: any) => {
-  console.log(props);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -60,18 +59,13 @@ const TableData = (props: any) => {
               props.rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
-                .map((row: any) => {
+                .map((row: any, index: number) => {
                   return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.code}
-                    >
+                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                       {props &&
-                        props.columns.map((column: any) => {
+                        props.columns.map((column: any, index: number) => {
                           return (
-                            <TableCell key={column.id} align={column.align}>
+                            <TableCell key={index} align={column.align}>
                               {row[column.id]}
                             </TableCell>
                           );
