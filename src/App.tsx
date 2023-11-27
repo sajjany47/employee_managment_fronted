@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Layout from "./page/user/Layout";
 import { SnackbarProvider } from "notistack";
-import Copyright from "./components/Copyright";
+// import Copyright from "./components/Copyright";
 import ActivationKey from "./page/admin/ActivationKey/ActivationKey";
 
 function App() {
@@ -14,7 +14,7 @@ function App() {
             <Route path="/admin/activation-key" element={<ActivationKey />} />
           </Route>
         </Routes>
-        <Copyright />
+        {/* <Copyright /> */}
       </BrowserRouter>
     </SnackbarProvider>
   );
