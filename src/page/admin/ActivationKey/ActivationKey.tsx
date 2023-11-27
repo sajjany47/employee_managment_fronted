@@ -1,7 +1,7 @@
 import * as React from "react";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import TableData from "../../../components/TableData";
-import { Button, Grid, TextField, Typography } from "@mui/material";
+import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import { ActivationService } from "./ActivationServices";
 import { useSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
+import AddIcon from "@mui/icons-material/Add";
 
 // interface Column {
 //   id: "name" | "code" | "population" | "size" | "action";
@@ -104,9 +105,13 @@ export default function ActivationKey() {
     <div>
       {loading && <Loader />}
       <Grid container rowSpacing={2} columnSpacing={2}>
-        <Grid xs={12} className="mt-5 flex justify-end">
-          <Button variant="outlined" onClick={handleClickOpen}>
-            Generate Activation Key
+        <Grid xs={12} className="mt-2 flex justify-end">
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleClickOpen}
+          >
+            Activation Key
           </Button>
         </Grid>
         <Grid xs={12} className="mt-1">
@@ -257,7 +262,11 @@ export default function ActivationKey() {
               )}
             </Formik>
           ) : (
-            <Typography>{`Activation Key :  ${activationKey}`}</Typography>
+            <Paper>
+              <Typography sx={{ color: "blueviolet", fontWeight: "500px" }}>
+                {activationKey}
+              </Typography>
+            </Paper>
           )}
         </DialogContent>
       </Dialog>
