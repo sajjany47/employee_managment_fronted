@@ -24,4 +24,16 @@ export class ActivationService {
       throw err;
     }
   };
+
+  activationKeyList = async (id: any) => {
+    try {
+      const response = await axios.get(`${apiPath}/activation-key-list/${id}`, {
+        headers: this.headers,
+      });
+      response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
 }

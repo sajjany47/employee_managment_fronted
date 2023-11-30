@@ -32,11 +32,22 @@ export default function ActivationKey() {
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [id, setId] = React.useState("all");
   const [activationKey, setActivationKey] = React.useState("");
+  const [activationKeyData, setActivationKeyData] = React.useState([]);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const userType = useSelector((state: any) => state.auth.auth.user);
 
+  React.useEffect(() => {
+    activationList(id);
+  }, []);
+
+  const activationList = (id: any) => {
+    activationService.activationKeyList(id).then((res: any) => {
+      console.log(res.data);
+    });
+  };
   const columns = [
     { id: "name", label: "Name", minWidth: 170 },
     { id: "code", label: "ISO\u00a0Code", minWidth: 100 },
@@ -73,7 +84,7 @@ export default function ActivationKey() {
     ...item,
     action: <EditNoteIcon onClick={() => handleCheck(item)} />,
   }));
-  const handleCheck = (item: object) => {
+  const handleCheck = (item: any) => {
     console.log(item);
   };
 
