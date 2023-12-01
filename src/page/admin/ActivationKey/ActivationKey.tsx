@@ -18,6 +18,7 @@ import { ActivationService } from "./ActivationServices";
 import { useSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
 import AddIcon from "@mui/icons-material/Add";
+import moment from "moment";
 
 // interface Column {
 //   id: "name" | "code" | "population" | "size" | "action";
@@ -41,47 +42,30 @@ export default function ActivationKey() {
 
   React.useEffect(() => {
     activationList(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const activationList = (id: any) => {
-    activationService.activationKeyList(id).then((res: any) => {
-      console.log(res.data);
-    });
+    activationService
+      .activationKeyList(id)
+      .then((res: any) => {
+        setActivationKeyData(res.data);
+      })
+      .catch((err) => enqueueSnackbar(err.message, { variant: "error" }));
   };
   const columns = [
-    { id: "name", label: "Name", minWidth: 170 },
-    { id: "code", label: "ISO\u00a0Code", minWidth: 100 },
-    {
-      id: "population",
-      label: "Population",
-      minWidth: 170,
-      align: "right",
-    },
-    {
-      id: "size",
-      label: "Size\u00a0(km\u00b2)",
-      minWidth: 170,
-      align: "right",
-    },
-    { id: "action", label: "Action", minWidth: 170, align: "right" },
+    { id: "name", label: "Name", align: "center" },
+    { id: "mobile", label: "Number", align: "center" },
+    { id: "role", label: "Role", align: "center" },
+    { id: "registrationStatus", label: "Status", align: "center" },
+    { id: "createdBy", label: "CreatedBy ", align: "center" },
+    { id: "createdAt", label: "CreatedAt", align: "center" },
+    { id: "action", label: "Action", align: "center" },
   ];
 
-  const rows = [
-    { name: "India", code: "IN", population: "1324171354", size: "3287263" },
-    { name: "Aus", code: "IN", population: "1324171354", size: "3287263" },
-    { name: "India", code: "IN", population: "1324171354", size: "3287263" },
-    { name: "India", code: "IN", population: "1324171354", size: "3287263" },
-    { name: "India", code: "IN", population: "1324171354", size: "3287263" },
-    { name: "India", code: "IN", population: "1324171354", size: "3287263" },
-    { name: "India", code: "IN", population: "1324171354", size: "3287263" },
-    { name: "India", code: "IN", population: "1324171354", size: "3287263" },
-    { name: "India", code: "IN", population: "1324171354", size: "3287263" },
-    { name: "India", code: "IN", population: "1324171354", size: "3287263" },
-    { name: "India", code: "IN", population: "1324171354", size: "3287263" },
-    { name: "India", code: "IN", population: "1324171354", size: "3287263" },
-  ];
-  const a = rows.map((item) => ({
+  const activationListData = activationKeyData.map((item: any) => ({
     ...item,
+    createdAt: moment(item.createdAt).format("Do MMM, YY HH:mm"),
     action: <EditNoteIcon onClick={() => handleCheck(item)} />,
   }));
   const handleCheck = (item: any) => {
@@ -129,7 +113,7 @@ export default function ActivationKey() {
           <Typography variant="h6" className="text-sm">
             Activation Key List
           </Typography>
-          <TableData columns={columns} rows={a} />
+          <TableData columns={columns} rows={activationListData} />
         </Grid>
       </Grid>
 

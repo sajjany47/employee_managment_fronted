@@ -66,7 +66,7 @@ const TableData = (props: any) => {
                         props.columns.map((column: any, index: number) => {
                           return (
                             <TableCell key={index} align={column.align}>
-                              {row[column.id]}
+                              {props?.cellStyle ? <></> : row[column.id]}
                             </TableCell>
                           );
                         })}

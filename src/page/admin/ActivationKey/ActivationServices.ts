@@ -30,7 +30,7 @@ export class ActivationService {
       const response = await axios.get(`${apiPath}/activation-key-list/${id}`, {
         headers: this.headers,
       });
-      response.data;
+      return response.data;
     } catch (error: any) {
       const err = error as AxiosError;
       throw err;
