@@ -36,6 +36,18 @@ const TableData = (props: any) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  // const getCellColor = (value: any) => {
+  //   const a = props.cellStyle.map((item: any) => {
+  //     if (value === item.label) {
+  //       return item.code;
+  //     } else {
+  //       return value;
+  //     }
+  //   });
+  //   // Customize this logic based on your requirements
+  //   return a;
+  // };
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
       <TableContainer sx={{ maxHeight: 440 }}>
@@ -66,7 +78,7 @@ const TableData = (props: any) => {
                         props.columns.map((column: any, index: number) => {
                           return (
                             <TableCell key={index} align={column.align}>
-                              {props?.cellStyle ? <></> : row[column.id]}
+                              {row[column.id]}
                             </TableCell>
                           );
                         })}

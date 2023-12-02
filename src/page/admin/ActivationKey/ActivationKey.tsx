@@ -1,7 +1,8 @@
+/* eslint-disable no-useless-escape */
 import * as React from "react";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import TableData from "../../../components/TableData";
-import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
+import { Box, Button, Grid, Paper, TextField, Typography } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -19,6 +20,7 @@ import { useSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
 import AddIcon from "@mui/icons-material/Add";
 import moment from "moment";
+import * as Yup from "yup";
 
 // interface Column {
 //   id: "name" | "code" | "population" | "size" | "action";
@@ -40,10 +42,27 @@ export default function ActivationKey() {
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const userType = useSelector((state: any) => state.auth.auth.user);
 
+  const activationKeyValidation = Yup.object().shape({
+    name: Yup.string().min(2, "Too short! name").required("Name is required"),
+    username: Yup.string()
+      .min(4, "Too short! username")
+      .required("Username is required"),
+    email: Yup.string()
+      .matches(
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        "Enter valid email"
+      )
+      .required("Email is required"),
+    mobile: Yup.string()
+      .required("Mobile number is required")
+      .matches(/^\d{10}$/, "Enter 10 digit mobile number"),
+    dob: Yup.string().required("Date of birth is required"),
+    role: Yup.string().required("Role is required"),
+  });
   React.useEffect(() => {
     activationList(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [activationKeyData]);
 
   const activationList = (id: any) => {
     activationService
@@ -80,6 +99,10 @@ export default function ActivationKey() {
     setOpen(false);
   };
 
+  const handleChange = (event: any) => {
+    setId(event.target.value);
+  };
+
   const handleGenerateKey = (value: any) => {
     setLoading(true);
     const reqBody = { ...value, createdBy: userType.username };
@@ -100,14 +123,24 @@ export default function ActivationKey() {
     <div>
       {loading && <Loader />}
       <Grid container rowSpacing={2} columnSpacing={2}>
-        <Grid xs={12} className="mt-2 flex justify-end">
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleClickOpen}
-          >
-            Activation Key
-          </Button>
+        <Grid xs={12}>
+          <Box className="mt-2 flex justify-end gap-2">
+            <TextField label="Search" id="outlined-size-small" size="small" />
+            <FormControl sx={{ minWidth: 120 }} size="small">
+              <Select value={id} onChange={handleChange}>
+                <MenuItem value={"all"}>All</MenuItem>
+                <MenuItem value={"pending"}>Pending</MenuItem>
+                <MenuItem value={"approved"}>Approved</MenuItem>
+              </Select>
+            </FormControl>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleClickOpen}
+            >
+              Activation Key
+            </Button>
+          </Box>
         </Grid>
         <Grid xs={12} className="mt-1">
           <Typography variant="h6" className="text-sm">
@@ -139,6 +172,7 @@ export default function ActivationKey() {
                 dob: "",
                 role: "",
               }}
+              validationSchema={activationKeyValidation}
               onSubmit={handleGenerateKey}
             >
               {({ errors, touched, handleSubmit }) => (
@@ -155,7 +189,10 @@ export default function ActivationKey() {
                         variant="outlined"
                         className="w-full"
                       />
-                      {errors.name && touched.name && errors.name}
+
+                      {errors.name && touched.name && errors.name ? (
+                        <small style={{ color: "red" }}>{errors.name}</small>
+                      ) : null}
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
                       <TextField
@@ -164,7 +201,11 @@ export default function ActivationKey() {
                         variant="outlined"
                         className="w-full"
                       />
-                      {errors.username && touched.username && errors.username}
+                      {errors.username && touched.username && (
+                        <small style={{ color: "red" }}>
+                          {errors.username}
+                        </small>
+                      )}
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
                       <TextField
@@ -174,7 +215,9 @@ export default function ActivationKey() {
                         variant="outlined"
                         className="w-full"
                       />
-                      {errors.email && touched.email && errors.email}
+                      {errors.email && touched.email && (
+                        <small style={{ color: "red" }}>{errors.email}</small>
+                      )}
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
                       <TextField
@@ -183,7 +226,9 @@ export default function ActivationKey() {
                         variant="outlined"
                         className="w-full"
                       />
-                      {errors.mobile && touched.mobile && errors.mobile}
+                      {errors.mobile && touched.mobile && (
+                        <small style={{ color: "red" }}>{errors.mobile}</small>
+                      )}
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
                       <TextField
@@ -199,7 +244,9 @@ export default function ActivationKey() {
                         }}
                       />
 
-                      {errors.dob && touched.dob && errors.dob}
+                      {errors.dob && touched.dob && (
+                        <small style={{ color: "red" }}>{errors.dob}</small>
+                      )}
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
                       <FormControl fullWidth>
@@ -220,7 +267,9 @@ export default function ActivationKey() {
                           )}
                         </Select>
                       </FormControl>
-                      {errors.role && touched.role && errors.role}
+                      {errors.role && touched.role && (
+                        <small style={{ color: "red" }}>{errors.role}</small>
+                      )}
                     </Grid>
                     <Grid
                       item
