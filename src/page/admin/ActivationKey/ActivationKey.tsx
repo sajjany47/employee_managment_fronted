@@ -20,7 +20,8 @@ import Loader from "../../../components/Loader";
 import AddIcon from "@mui/icons-material/Add";
 import moment from "moment";
 import * as Yup from "yup";
-import { inputField } from "../../../components/FieldType";
+import { inputField, selectField } from "../../../components/FieldType";
+import { data } from "../../../shared/Config";
 
 // interface Column {
 //   id: "name" | "code" | "population" | "size" | "action";
@@ -219,45 +220,18 @@ export default function ActivationKey() {
                           ),
                         }}
                       />
-                      {/* <TextField
-                        type="date"
-                        name="dob"
-                        label="Date Of Birth"
-                        variant="outlined"
-                        className="w-full"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start"></InputAdornment>
-                          ),
-                        }}
-                      />
-
-                      {errors.dob && touched.dob && (
-                        <small style={{ color: "red" }}>{errors.dob}</small>
-                      )} */}
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      {/* <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                          Role
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          name="role"
-                          label="Role"
-                          className="w-full"
-                        >
-                          <MenuItem value={"employee"}>Employee</MenuItem>
-                          <MenuItem value={"hr"}>HR</MenuItem>
-                          {userType && userType?.role === "admin" && (
-                            <MenuItem value={"admin"}>Admin</MenuItem>
-                          )}
-                        </Select>
-                      </FormControl>
-                      {errors.role && touched.role && (
-                        <small style={{ color: "red" }}>{errors.role}</small>
-                      )} */}
+                      <Field
+                        name="role"
+                        label="Role"
+                        component={selectField}
+                        options={
+                          userType?.role === "admin"
+                            ? data.adminType
+                            : data.HRtype
+                        }
+                      />
                     </Grid>
                     <Grid
                       item
