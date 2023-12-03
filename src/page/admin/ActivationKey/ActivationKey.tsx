@@ -6,11 +6,10 @@ import { Box, Button, Grid, Paper, TextField, Typography } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field } from "formik";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import InputAdornment from "@mui/material/InputAdornment";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
@@ -21,6 +20,7 @@ import Loader from "../../../components/Loader";
 import AddIcon from "@mui/icons-material/Add";
 import moment from "moment";
 import * as Yup from "yup";
+import { inputField } from "../../../components/FieldType";
 
 // interface Column {
 //   id: "name" | "code" | "population" | "size" | "action";
@@ -175,7 +175,7 @@ export default function ActivationKey() {
               validationSchema={activationKeyValidation}
               onSubmit={handleGenerateKey}
             >
-              {({ errors, touched, handleSubmit }) => (
+              {({ handleSubmit }) => (
                 <Form onSubmit={handleSubmit} className="mt-1">
                   <Grid
                     container
@@ -183,55 +183,43 @@ export default function ActivationKey() {
                     columns={{ xs: 4, sm: 8, md: 12 }}
                   >
                     <Grid item xs={2} sm={4} md={6}>
-                      <TextField
-                        name="name"
-                        label="Name"
-                        variant="outlined"
-                        className="w-full"
-                      />
-
-                      {errors.name && touched.name && errors.name ? (
-                        <small style={{ color: "red" }}>{errors.name}</small>
-                      ) : null}
+                      <Field name="name" label="Name" component={inputField} />
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      <TextField
+                      <Field
                         name="username"
                         label="Username"
-                        variant="outlined"
-                        className="w-full"
+                        component={inputField}
                       />
-                      {errors.username && touched.username && (
-                        <small style={{ color: "red" }}>
-                          {errors.username}
-                        </small>
-                      )}
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      <TextField
+                      <Field
                         name="email"
                         label="Email"
                         type="email"
-                        variant="outlined"
-                        className="w-full"
+                        component={inputField}
                       />
-                      {errors.email && touched.email && (
-                        <small style={{ color: "red" }}>{errors.email}</small>
-                      )}
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      <TextField
+                      <Field
                         name="mobile"
                         label="Mobile"
-                        variant="outlined"
-                        className="w-full"
+                        component={inputField}
                       />
-                      {errors.mobile && touched.mobile && (
-                        <small style={{ color: "red" }}>{errors.mobile}</small>
-                      )}
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      <TextField
+                      <Field
+                        type="date"
+                        name="dob"
+                        label="Date Of Birth"
+                        component={inputField}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start"></InputAdornment>
+                          ),
+                        }}
+                      />
+                      {/* <TextField
                         type="date"
                         name="dob"
                         label="Date Of Birth"
@@ -246,10 +234,10 @@ export default function ActivationKey() {
 
                       {errors.dob && touched.dob && (
                         <small style={{ color: "red" }}>{errors.dob}</small>
-                      )}
+                      )} */}
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      <FormControl fullWidth>
+                      {/* <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">
                           Role
                         </InputLabel>
@@ -269,7 +257,7 @@ export default function ActivationKey() {
                       </FormControl>
                       {errors.role && touched.role && (
                         <small style={{ color: "red" }}>{errors.role}</small>
-                      )}
+                      )} */}
                     </Grid>
                     <Grid
                       item
