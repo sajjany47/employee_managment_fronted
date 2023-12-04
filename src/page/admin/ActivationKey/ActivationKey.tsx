@@ -63,7 +63,7 @@ export default function ActivationKey() {
   React.useEffect(() => {
     activationList(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activationKeyData]);
+  }, [id]);
 
   const activationList = (id: any) => {
     activationService
@@ -98,6 +98,7 @@ export default function ActivationKey() {
 
   const handleClose = () => {
     setOpen(false);
+    setActivationKey("");
   };
 
   const handleChange = (event: any) => {
@@ -117,7 +118,9 @@ export default function ActivationKey() {
         console.log(error);
         enqueueSnackbar(error.message, { variant: "error" });
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
