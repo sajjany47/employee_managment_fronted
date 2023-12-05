@@ -22,6 +22,7 @@ import moment from "moment";
 import * as Yup from "yup";
 import { inputField, selectField } from "../../../components/FieldType";
 import { data } from "../../../shared/Config";
+import { useNavigate } from "react-router-dom";
 
 // interface Column {
 //   id: "name" | "code" | "population" | "size" | "action";
@@ -32,6 +33,7 @@ import { data } from "../../../shared/Config";
 // }
 
 export default function ActivationKey() {
+  const navigate = useNavigate();
   const activationService = new ActivationService();
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = React.useState(false);
@@ -76,6 +78,7 @@ export default function ActivationKey() {
   const columns = [
     { id: "name", label: "Name", align: "center" },
     { id: "mobile", label: "Number", align: "center" },
+    { id: "activationCode", label: "Activation Code", align: "center" },
     { id: "role", label: "Role", align: "center" },
     { id: "registrationStatus", label: "Status", align: "center" },
     { id: "createdBy", label: "CreatedBy ", align: "center" },
@@ -86,11 +89,17 @@ export default function ActivationKey() {
   const activationListData = activationKeyData.map((item: any) => ({
     ...item,
     createdAt: moment(item.createdAt).format("Do MMM, YY HH:mm"),
-    action: <EditNoteIcon onClick={() => handleCheck(item)} />,
+    action: (
+      <EditNoteIcon
+        onClick={() => {
+          navigate("/admin/user-update", { state: { data: item } });
+        }}
+      />
+    ),
   }));
-  const handleCheck = (item: any) => {
-    console.log(item);
-  };
+  // const handleCheck = (item: any) => {
+  //   console.log(item);
+  // };
 
   const handleClickOpen = () => {
     setOpen(true);
