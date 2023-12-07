@@ -5,7 +5,10 @@ import { inputField, selectField } from "../../../components/FieldType";
 import InputAdornment from "@mui/material/InputAdornment";
 import { useSelector } from "react-redux";
 import { data } from "../../../shared/Config";
-import { Fragment } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
 
 const UserUpdate = () => {
   const { state } = useLocation();
@@ -118,9 +121,16 @@ const UserUpdate = () => {
                   spacing={{ xs: 2, md: 2 }}
                   columns={{ xs: 4, sm: 8, md: 12 }}
                 >
-                  {values.education && values.education.length > 0
-                    ? values.education.map((item, index) => (
-                        <Fragment key={index}>
+                  {values.education &&
+                    values.education.length > 0 &&
+                    values.education.map((item, index) => (
+                      <Grid
+                        sm={12}
+                        xs={12}
+                        key={index}
+                        className="flex gap-2 items-center"
+                      >
+                        <Grid className="w-full">
                           <Grid item xs={12} sm={4} md={3}>
                             <Field
                               name={`education.${index}.boardName`}
@@ -142,9 +152,27 @@ const UserUpdate = () => {
                               component={inputField}
                             />
                           </Grid>
-                        </Fragment>
-                      ))
-                    : null}
+                        </Grid>
+                        <IconButton aria-label="delete">
+                          <DeleteIcon />
+                        </IconButton>
+                      </Grid>
+                    ))}
+                  <Grid xs={12} sm={12}>
+                    <Button
+                      variant="outlined"
+                      startIcon={<AddIcon />}
+                      onClick={() =>
+                        arrayHelpers.push({
+                          boardName: "",
+                          passingYear: "",
+                          marksPercentage: "",
+                        })
+                      }
+                    >
+                      Add
+                    </Button>
+                  </Grid>
                 </Grid>
               )}
             />
