@@ -1,6 +1,6 @@
 import { Field, FieldArray, Form, Formik } from "formik";
 import { useLocation } from "react-router-dom";
-import { Divider, Grid } from "@mui/material";
+import { Box, Divider, Grid } from "@mui/material";
 import { inputField, selectField } from "../../../components/FieldType";
 import InputAdornment from "@mui/material/InputAdornment";
 import { useSelector } from "react-redux";
@@ -111,16 +111,12 @@ const UserUpdate = () => {
                 <Field name="pincode" label="Pincode" component={inputField} />
               </Grid>
             </Grid>
-            <Divider>Education Details</Divider>
+            <Divider sx={{ margin: "20px" }}>Education Details</Divider>
 
             <FieldArray
               name="education"
               render={(arrayHelpers) => (
-                <Grid
-                  container
-                  spacing={{ xs: 2, md: 2 }}
-                  columns={{ xs: 4, sm: 8, md: 12 }}
-                >
+                <Box sx={{ marginTop: "10px" }}>
                   {values.education &&
                     values.education.length > 0 &&
                     values.education.map((item, index) => (
@@ -128,33 +124,49 @@ const UserUpdate = () => {
                         sm={12}
                         xs={12}
                         key={index}
-                        className="flex gap-2 items-center"
+                        container
+                        spacing={{ xs: 2, md: 2 }}
+                        columns={{ xs: 4, sm: 8, md: 12 }}
+                        sx={{ marginBottom: "15px" }}
                       >
-                        <Grid className="w-full">
-                          <Grid item xs={12} sm={4} md={3}>
-                            <Field
-                              name={`education.${index}.boardName`}
-                              label="Board Name"
-                              component={inputField}
-                            />
-                          </Grid>
-                          <Grid item xs={12} sm={4} md={3}>
-                            <Field
-                              name={`education.${index}.passingYear`}
-                              label="Passing Year"
-                              component={inputField}
-                            />
-                          </Grid>
-                          <Grid item xs={12} sm={4} md={3}>
-                            <Field
-                              name={`education.${index}.marksPercentage`}
-                              label="Marks (%)"
-                              component={inputField}
-                            />
-                          </Grid>
+                        <Grid item xs={12} sm={4} md={3}>
+                          <Field
+                            name={`education.${index}.boardName`}
+                            label="Board Name"
+                            component={inputField}
+                          />
                         </Grid>
-                        <IconButton aria-label="delete">
-                          <DeleteIcon />
+                        <Grid item xs={12} sm={4} md={3}>
+                          <Field
+                            name={`education.${index}.passingYear`}
+                            label="Passing Year"
+                            component={inputField}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={4} md={3}>
+                          <Field
+                            name={`education.${index}.marksPercentage`}
+                            label="Marks (%)"
+                            component={inputField}
+                          />
+                        </Grid>
+
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() => arrayHelpers.remove(index)}
+                          sx={{
+                            ":hover": {
+                              backgroundColor: "whitesmoke",
+                            },
+                          }}
+                        >
+                          <DeleteIcon
+                            sx={{
+                              fontSize: "30px",
+                              margin: "auto",
+                              color: "red",
+                            }}
+                          />
                         </IconButton>
                       </Grid>
                     ))}
@@ -170,10 +182,10 @@ const UserUpdate = () => {
                         })
                       }
                     >
-                      Add
+                      Add More
                     </Button>
                   </Grid>
-                </Grid>
+                </Box>
               )}
             />
           </Form>
