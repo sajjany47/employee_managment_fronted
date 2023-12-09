@@ -34,6 +34,9 @@ const UserUpdate = () => {
       <Formik initialValues={intialValue} onSubmit={userUpdate}>
         {({ handleSubmit, values }) => (
           <Form onSubmit={handleSubmit}>
+            <Divider sx={{ margin: "20px" }}>
+              <strong>Personal Details</strong>
+            </Divider>
             <Grid
               container
               spacing={{ xs: 2, md: 2 }}
@@ -119,7 +122,9 @@ const UserUpdate = () => {
                 <Field name="pincode" label="Pincode" component={inputField} />
               </Grid>
             </Grid>
-            <Divider sx={{ margin: "20px" }}>Education Details</Divider>
+            <Divider sx={{ margin: "20px" }}>
+              <strong>Education Details</strong>
+            </Divider>
 
             <FieldArray
               name="education"
@@ -128,55 +133,61 @@ const UserUpdate = () => {
                   {values.education &&
                     values.education.length > 0 &&
                     values.education.map((item, index) => (
-                      <Grid
-                        sm={12}
-                        xs={12}
-                        key={index}
-                        container
-                        spacing={{ xs: 2, md: 2 }}
-                        columns={{ xs: 4, sm: 8, md: 12 }}
-                        sx={{ marginBottom: "15px" }}
-                      >
-                        <Grid item xs={12} sm={4} md={3}>
-                          <Field
-                            name={`education.${index}.boardName`}
-                            label="Board Name"
-                            component={inputField}
-                          />
+                      <Box sx={{ flexGrow: 1 }}>
+                        <Grid container spacing={2}>
+                          <Grid item xs={10}>
+                            <Grid
+                              sm={12}
+                              xs={12}
+                              container
+                              spacing={{ xs: 2, md: 2 }}
+                              columns={{ xs: 4, sm: 8, md: 12 }}
+                              sx={{ marginBottom: "15px" }}
+                            >
+                              <Grid item xs={12} sm={4} md={4}>
+                                <Field
+                                  name={`education.${index}.boardName`}
+                                  label="Board Name"
+                                  component={inputField}
+                                />
+                              </Grid>
+                              <Grid item xs={12} sm={4} md={4}>
+                                <Field
+                                  name={`education.${index}.passingYear`}
+                                  label="Passing Year"
+                                  component={inputField}
+                                />
+                              </Grid>
+                              <Grid item xs={12} sm={4} md={4}>
+                                <Field
+                                  name={`education.${index}.marksPercentage`}
+                                  label="Marks (%)"
+                                  component={inputField}
+                                />
+                              </Grid>
+                            </Grid>
+                          </Grid>
+                          <Grid item xs={2}>
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => arrayHelpers.remove(index)}
+                              sx={{
+                                ":hover": {
+                                  backgroundColor: "whitesmoke",
+                                },
+                              }}
+                            >
+                              <DeleteIcon
+                                sx={{
+                                  fontSize: "30px",
+                                  margin: "auto",
+                                  color: "red",
+                                }}
+                              />
+                            </IconButton>
+                          </Grid>
                         </Grid>
-                        <Grid item xs={12} sm={4} md={3}>
-                          <Field
-                            name={`education.${index}.passingYear`}
-                            label="Passing Year"
-                            component={inputField}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={4} md={3}>
-                          <Field
-                            name={`education.${index}.marksPercentage`}
-                            label="Marks (%)"
-                            component={inputField}
-                          />
-                        </Grid>
-
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => arrayHelpers.remove(index)}
-                          sx={{
-                            ":hover": {
-                              backgroundColor: "whitesmoke",
-                            },
-                          }}
-                        >
-                          <DeleteIcon
-                            sx={{
-                              fontSize: "30px",
-                              margin: "auto",
-                              color: "red",
-                            }}
-                          />
-                        </IconButton>
-                      </Grid>
+                      </Box>
                     ))}
                   <Grid xs={12} sm={12}>
                     <Button
@@ -197,7 +208,9 @@ const UserUpdate = () => {
               )}
             />
 
-            <Divider sx={{ margin: "20px" }}>Working Details</Divider>
+            <Divider sx={{ margin: "20px" }}>
+              <strong>Working Details</strong>
+            </Divider>
 
             <FieldArray
               name="workDetail"
@@ -206,62 +219,68 @@ const UserUpdate = () => {
                   {values.workDetail &&
                     values.workDetail.length > 0 &&
                     values.workDetail.map((item, index) => (
-                      <Grid
-                        sm={12}
-                        xs={12}
-                        key={index}
-                        container
-                        spacing={{ xs: 2, md: 2 }}
-                        columns={{ xs: 4, sm: 8, md: 12 }}
-                        sx={{ marginBottom: "15px" }}
-                      >
-                        <Grid item xs={12} sm={4} md={3}>
-                          <Field
-                            name={`workDetail.${index}.companyName`}
-                            label="Company Name"
-                            component={inputField}
-                          />
+                      <Box sx={{ flexGrow: 1 }}>
+                        <Grid container spacing={2}>
+                          <Grid item xs={10}>
+                            <Grid
+                              sm={12}
+                              xs={12}
+                              container
+                              spacing={{ xs: 2, md: 2 }}
+                              columns={{ xs: 4, sm: 8, md: 12 }}
+                              sx={{ marginBottom: "15px" }}
+                            >
+                              <Grid item xs={12} sm={4} md={3}>
+                                <Field
+                                  name={`workDetail.${index}.companyName`}
+                                  label="Company Name"
+                                  component={inputField}
+                                />
+                              </Grid>
+                              <Grid item xs={12} sm={4} md={3}>
+                                <Field
+                                  name={`workDetail.${index}.position`}
+                                  label="Position"
+                                  component={inputField}
+                                />
+                              </Grid>
+                              <Grid item xs={12} sm={4} md={3}>
+                                <Field
+                                  name={`workDetail.${index}.startingYear`}
+                                  label="Starting Year"
+                                  component={inputField}
+                                />
+                              </Grid>
+                              <Grid item xs={12} sm={4} md={3}>
+                                <Field
+                                  name={`workDetail.${index}.endingYear`}
+                                  label="Ending Year"
+                                  component={inputField}
+                                />
+                              </Grid>
+                            </Grid>
+                          </Grid>
+                          <Grid item xs={2}>
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => arrayHelpers.remove(index)}
+                              sx={{
+                                ":hover": {
+                                  backgroundColor: "whitesmoke",
+                                },
+                              }}
+                            >
+                              <DeleteIcon
+                                sx={{
+                                  fontSize: "30px",
+                                  margin: "auto",
+                                  color: "red",
+                                }}
+                              />
+                            </IconButton>
+                          </Grid>
                         </Grid>
-                        <Grid item xs={12} sm={4} md={3}>
-                          <Field
-                            name={`workDetail.${index}.position`}
-                            label="Position"
-                            component={inputField}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={4} md={3}>
-                          <Field
-                            name={`workDetail.${index}.startingYear`}
-                            label="Starting Year"
-                            component={inputField}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={4} md={3}>
-                          <Field
-                            name={`workDetail.${index}.endingYear`}
-                            label="Ending Year"
-                            component={inputField}
-                          />
-                        </Grid>
-
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => arrayHelpers.remove(index)}
-                          sx={{
-                            ":hover": {
-                              backgroundColor: "whitesmoke",
-                            },
-                          }}
-                        >
-                          <DeleteIcon
-                            sx={{
-                              fontSize: "30px",
-                              margin: "auto",
-                              color: "red",
-                            }}
-                          />
-                        </IconButton>
-                      </Grid>
+                      </Box>
                     ))}
                   <Grid xs={12} sm={12}>
                     <Button
@@ -282,6 +301,106 @@ const UserUpdate = () => {
                 </Box>
               )}
             />
+
+            <Divider sx={{ margin: "20px" }}>
+              <strong>Document</strong>
+            </Divider>
+
+            <Grid
+              container
+              spacing={{ xs: 2, md: 2 }}
+              columns={{ xs: 4, sm: 8, md: 12 }}
+            >
+              <Grid item xs={12} sm={4} md={3}>
+                <Field
+                  name="aadharNumber"
+                  label="Aadhar Number"
+                  component={inputField}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4} md={3}>
+                <Field
+                  name="panNumber"
+                  label="Pan Number"
+                  component={inputField}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4} md={3}>
+                <Field
+                  name="voterNumber"
+                  label="Voter Number"
+                  component={inputField}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4} md={3}>
+                <Field
+                  name="passportNumber"
+                  label="Passport Number"
+                  component={inputField}
+                />
+              </Grid>
+            </Grid>
+
+            <Divider sx={{ margin: "20px" }}>
+              <strong>Bank Details</strong>
+            </Divider>
+
+            <Grid
+              container
+              spacing={{ xs: 2, md: 2 }}
+              columns={{ xs: 4, sm: 8, md: 12 }}
+            >
+              <Grid item xs={12} sm={4} md={3}>
+                <Field
+                  name="bankName"
+                  label="Bank Name"
+                  component={inputField}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4} md={3}>
+                <Field
+                  name="accountNumber"
+                  label="Account Number"
+                  component={inputField}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4} md={3}>
+                <Field name="ifsc" label="IFSC Code" component={inputField} />
+              </Grid>
+              <Grid item xs={12} sm={4} md={3}>
+                <Field
+                  name="branchName"
+                  label="Branch Name"
+                  component={inputField}
+                />
+              </Grid>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={12}
+              sx={{
+                display: "flex",
+                justifyContent: "end",
+                gap: "5px",
+                marginTop: "30px",
+              }}
+            >
+              <Button
+                // onClick={handleClose}
+                variant="contained"
+                sx={{
+                  backgroundColor: "red",
+                  ":hover": { backgroundColor: "red" },
+                }}
+              >
+                Cancel
+              </Button>
+              <Button variant="contained" autoFocus type="submit">
+                Submit
+              </Button>
+            </Grid>
           </Form>
         )}
       </Formik>
