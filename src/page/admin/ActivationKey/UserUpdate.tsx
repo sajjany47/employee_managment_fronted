@@ -1,34 +1,50 @@
 import { Field, FieldArray, Form, Formik } from "formik";
 import { useLocation } from "react-router-dom";
-import { Box, Divider, Grid } from "@mui/material";
+import { Box, Divider, Grid, TextField } from "@mui/material";
 import { inputField, selectField } from "../../../components/FieldType";
-import InputAdornment from "@mui/material/InputAdornment";
 import { useSelector } from "react-redux";
 import { data } from "../../../shared/Config";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
+import moment from "moment";
+import { convertNullToString } from "../../../shared/UtlityFunction";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { MobileDatePicker } from "@mui/x-date-pickers";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 const UserUpdate = () => {
   const { state } = useLocation();
-  console.log(state.data);
+
+  const convertData = convertNullToString(state.data);
+  // console.log(state.data);
   const userType = useSelector((state: any) => state.auth.auth.user);
 
   const intialValue = {
-    education: [{ boardName: "", passingYear: "", marksPercentage: "" }],
-    workDetail: [
-      {
-        companyName: "",
-        position: "",
-        startingYear: "",
-        endingYear: "",
-      },
-    ],
+    ...convertData,
+    education: convertData.education.map((item: any) =>
+      convertNullToString(item)
+    ),
+    workDetail: convertData.workDetail.map((item: any) =>
+      convertNullToString(item)
+    ),
+    aadharNumber: convertData.document.aadharNumber,
+    voterNumber: convertData.document.voterNumber,
+    panNumber: convertData.document.panNumber,
+    passportNumber: convertData.document.passportNumber,
+    bankName: convertData.bankDetails.bankName,
+    accountNumber: convertData.bankDetails.accountNumber,
+    ifsc: convertData.bankDetails.ifsc,
+    branchName: convertData.bankDetails.branchName,
+    dob: moment(convertData.dob).format("yyyy-mm-dd"),
   };
+  console.log(intialValue);
   const userUpdate = (value: any) => {
     console.log(value);
   };
+  console.log(intialValue);
   return (
     <div>
       <Formik initialValues={intialValue} onSubmit={userUpdate}>
@@ -72,7 +88,7 @@ const UserUpdate = () => {
                 <Field name="mobile" label="Mobile" component={inputField} />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field
+                {/* <Field
                   type="date"
                   name="dob"
                   label="Date Of Birth"
@@ -82,7 +98,26 @@ const UserUpdate = () => {
                       <InputAdornment position="start"></InputAdornment>
                     ),
                   }}
-                />
+                /> */}
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                  <MobileDatePicker
+                    label="Select Date"
+                    name="dob"
+                    renderInput={(params: any) => (
+                      <TextField
+                        {...params}
+                        fullWidth
+                        InputProps={{
+                          endAdornment: (
+                            <IconButton>
+                              <CalendarMonthIcon />
+                            </IconButton>
+                          ),
+                        }}
+                      />
+                    )}
+                  />
+                </LocalizationProvider>
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
                 <Field
@@ -132,11 +167,12 @@ const UserUpdate = () => {
                 <Box sx={{ marginTop: "10px" }}>
                   {values.education &&
                     values.education.length > 0 &&
-                    values.education.map((item, index) => (
-                      <Box sx={{ flexGrow: 1 }}>
+                    values.education.map((item: any, index: any) => (
+                      <Box sx={{ flexGrow: 1 }} key={index}>
                         <Grid container spacing={2}>
                           <Grid item xs={10}>
                             <Grid
+                              item
                               sm={12}
                               xs={12}
                               container
@@ -189,7 +225,7 @@ const UserUpdate = () => {
                         </Grid>
                       </Box>
                     ))}
-                  <Grid xs={12} sm={12}>
+                  <Grid xs={12} sm={12} item>
                     <Button
                       variant="outlined"
                       startIcon={<AddIcon />}
@@ -218,11 +254,12 @@ const UserUpdate = () => {
                 <Box sx={{ marginTop: "10px" }}>
                   {values.workDetail &&
                     values.workDetail.length > 0 &&
-                    values.workDetail.map((item, index) => (
-                      <Box sx={{ flexGrow: 1 }}>
+                    values.workDetail.map((item: any, index: any) => (
+                      <Box sx={{ flexGrow: 1 }} key={index}>
                         <Grid container spacing={2}>
                           <Grid item xs={10}>
                             <Grid
+                              item
                               sm={12}
                               xs={12}
                               container
@@ -282,7 +319,7 @@ const UserUpdate = () => {
                         </Grid>
                       </Box>
                     ))}
-                  <Grid xs={12} sm={12}>
+                  <Grid xs={12} sm={12} item>
                     <Button
                       variant="outlined"
                       startIcon={<AddIcon />}
