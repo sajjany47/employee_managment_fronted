@@ -1,6 +1,6 @@
 import { Field, FieldArray, Form, Formik } from "formik";
 import { useLocation } from "react-router-dom";
-import { Box, Divider, Grid, TextField } from "@mui/material";
+import { Box, Divider, Grid, InputAdornment } from "@mui/material";
 import { inputField, selectField } from "../../../components/FieldType";
 import { useSelector } from "react-redux";
 import { data } from "../../../shared/Config";
@@ -9,27 +9,17 @@ import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import moment from "moment";
-import { convertNullToString } from "../../../shared/UtlityFunction";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { MobileDatePicker } from "@mui/x-date-pickers";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import * as Yup from "yup";
 
 const UserUpdate = () => {
   const { state } = useLocation();
 
-  const convertData = convertNullToString(state.data);
+  const convertData = state.data;
   // console.log(state.data);
   const userType = useSelector((state: any) => state.auth.auth.user);
-
+  const userUpdateValidation = Yup.object().shape({});
   const intialValue = {
     ...convertData,
-    education: convertData.education.map((item: any) =>
-      convertNullToString(item)
-    ),
-    workDetail: convertData.workDetail.map((item: any) =>
-      convertNullToString(item)
-    ),
     aadharNumber: convertData.document.aadharNumber,
     voterNumber: convertData.document.voterNumber,
     panNumber: convertData.document.panNumber,
@@ -38,16 +28,20 @@ const UserUpdate = () => {
     accountNumber: convertData.bankDetails.accountNumber,
     ifsc: convertData.bankDetails.ifsc,
     branchName: convertData.bankDetails.branchName,
-    dob: moment(convertData.dob).format("yyyy-mm-dd"),
+    dob: moment(convertData.dob).format("YYYY-MM-DD"),
   };
   console.log(intialValue);
   const userUpdate = (value: any) => {
     console.log(value);
   };
-  console.log(intialValue);
+
   return (
     <div>
-      <Formik initialValues={intialValue} onSubmit={userUpdate}>
+      <Formik
+        initialValues={intialValue}
+        onSubmit={userUpdate}
+        validationSchema={userUpdateValidation}
+      >
         {({ handleSubmit, values }) => (
           <Form onSubmit={handleSubmit}>
             <Divider sx={{ margin: "20px" }}>
@@ -88,7 +82,7 @@ const UserUpdate = () => {
                 <Field name="mobile" label="Mobile" component={inputField} />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                {/* <Field
+                <Field
                   type="date"
                   name="dob"
                   label="Date Of Birth"
@@ -98,8 +92,9 @@ const UserUpdate = () => {
                       <InputAdornment position="start"></InputAdornment>
                     ),
                   }}
-                /> */}
-                <LocalizationProvider dateAdapter={AdapterMoment}>
+                />
+
+                {/* <LocalizationProvider dateAdapter={AdapterMoment}>
                   <MobileDatePicker
                     label="Select Date"
                     name="dob"
@@ -117,8 +112,9 @@ const UserUpdate = () => {
                       />
                     )}
                   />
-                </LocalizationProvider>
+                </LocalizationProvider> */}
               </Grid>
+
               <Grid item xs={12} sm={4} md={3}>
                 <Field
                   name="role"
