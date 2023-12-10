@@ -17,7 +17,9 @@ const UserUpdate = () => {
   const convertData = state.data;
   // console.log(state.data);
   const userType = useSelector((state: any) => state.auth.auth.user);
-  const userUpdateValidation = Yup.object().shape({});
+  const userUpdateValidation = Yup.object().shape({
+    name: Yup.string().min(2, "Too short! name").required("Name is required"),
+  });
   const intialValue = {
     ...convertData,
     aadharNumber: convertData.document.aadharNumber,
