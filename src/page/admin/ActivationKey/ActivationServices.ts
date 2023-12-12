@@ -36,4 +36,15 @@ export class ActivationService {
       throw err;
     }
   };
+  userUpdate = async (payload: any) => {
+    try {
+      const response = await axios.post(`${apiPath}/user-update`, payload, {
+        headers: this.headers,
+      });
+      return response.data;
+    } catch (error) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
 }

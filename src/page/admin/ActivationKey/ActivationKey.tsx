@@ -116,7 +116,11 @@ export default function ActivationKey() {
 
   const handleGenerateKey = (value: any) => {
     setLoading(true);
-    const reqBody = { ...value, createdBy: userType.username };
+    const reqBody = {
+      ...value,
+      createdBy: userType.username,
+      dob: moment(value.dob).format("YYYY-MM-DD"),
+    };
     activationService
       .generateActivationKey(reqBody)
       .then((res) => {
@@ -184,6 +188,7 @@ export default function ActivationKey() {
                 mobile: "",
                 dob: "",
                 role: "",
+                password: "",
               }}
               validationSchema={activationKeyValidation}
               onSubmit={handleGenerateKey}
@@ -243,6 +248,14 @@ export default function ActivationKey() {
                             ? data.adminType
                             : data.HRtype
                         }
+                      />
+                    </Grid>
+                    <Grid item xs={2} sm={4} md={6}>
+                      <Field
+                        name="password"
+                        label="Password"
+                        component={inputField}
+                        type="password"
                       />
                     </Grid>
                     <Grid

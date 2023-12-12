@@ -10,13 +10,19 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import moment from "moment";
 import * as Yup from "yup";
+import { ActivationService } from "./ActivationServices";
+import { useState } from "react";
+import { useSnackbar } from "notistack";
+import Loader from "../../../components/Loader";
 
 const UserUpdate = () => {
+  const activationService = new ActivationService();
   const { state } = useLocation();
-
+  const { enqueueSnackbar } = useSnackbar();
   const convertData = state.data;
   // console.log(state.data);
   const userType = useSelector((state: any) => state.auth.auth.user);
+  const [loading, setLoading] = useState(false);
   const userUpdateValidation = Yup.object().shape({
     name: Yup.string().min(2, "Too short! name").required("Name is required"),
   });
@@ -32,13 +38,44 @@ const UserUpdate = () => {
     branchName: convertData.bankDetails.branchName,
     dob: moment(convertData.dob).format("YYYY-MM-DD"),
   };
-  console.log(intialValue);
+
   const userUpdate = (value: any) => {
-    console.log(value);
+    setLoading(true);
+    const reqBody = {
+      ...value,
+      activationCode: value.activationCode,
+      document: {
+        aadharNumber: value.aadharNumber,
+        voterNumber: value.voterNumber,
+        panNumber: value.panNumber,
+        passportNumber: value.passportNumber,
+      },
+      bankDetails: {
+        bankName: value.bankName,
+        accountNumber: value.accountNumber,
+        ifsc: value.ifsc,
+        branchName: value.branchName,
+      },
+      updatedBy: userType.username,
+    };
+
+    activationService
+      .userUpdate(reqBody)
+      .then((res) => {
+        enqueueSnackbar(res.message, { variant: "success" });
+      })
+      .catch((error: any) => {
+        console.log(error);
+        enqueueSnackbar(error.message, { variant: "error" });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
     <div>
+      {loading && <Loader />}
       <Formik
         initialValues={intialValue}
         onSubmit={userUpdate}
@@ -95,26 +132,6 @@ const UserUpdate = () => {
                     ),
                   }}
                 />
-
-                {/* <LocalizationProvider dateAdapter={AdapterMoment}>
-                  <MobileDatePicker
-                    label="Select Date"
-                    name="dob"
-                    renderInput={(params: any) => (
-                      <TextField
-                        {...params}
-                        fullWidth
-                        InputProps={{
-                          endAdornment: (
-                            <IconButton>
-                              <CalendarMonthIcon />
-                            </IconButton>
-                          ),
-                        }}
-                      />
-                    )}
-                  />
-                </LocalizationProvider> */}
               </Grid>
 
               <Grid item xs={12} sm={4} md={3}>
@@ -127,14 +144,7 @@ const UserUpdate = () => {
                   }
                 />
               </Grid>
-              <Grid item xs={12} sm={4} md={3}>
-                <Field
-                  name="password"
-                  label="Password"
-                  component={inputField}
-                  type="password"
-                />
-              </Grid>
+
               <Grid item xs={12} sm={4} md={3}>
                 <Field name="address" label="Address" component={inputField} />
               </Grid>
@@ -170,9 +180,9 @@ const UserUpdate = () => {
                         <Grid container spacing={2}>
                           <Grid item xs={10}>
                             <Grid
-                              item
-                              sm={12}
-                              xs={12}
+                              // item
+                              // sm={12}
+                              // xs={12}
                               container
                               spacing={{ xs: 2, md: 2 }}
                               columns={{ xs: 4, sm: 8, md: 12 }}
@@ -257,9 +267,9 @@ const UserUpdate = () => {
                         <Grid container spacing={2}>
                           <Grid item xs={10}>
                             <Grid
-                              item
-                              sm={12}
-                              xs={12}
+                              // item
+                              // sm={12}
+                              // xs={12}
                               container
                               spacing={{ xs: 2, md: 2 }}
                               columns={{ xs: 4, sm: 8, md: 12 }}
@@ -432,7 +442,7 @@ const UserUpdate = () => {
               >
                 Cancel
               </Button>
-              <Button variant="contained" autoFocus type="submit">
+              <Button variant="contained" type="submit">
                 Submit
               </Button>
             </Grid>
