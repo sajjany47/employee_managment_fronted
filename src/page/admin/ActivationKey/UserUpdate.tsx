@@ -28,22 +28,28 @@ const UserUpdate = () => {
   });
   const intialValue = {
     ...convertData,
-    aadharNumber: convertData.document.aadharNumber,
-    voterNumber: convertData.document.voterNumber,
-    panNumber: convertData.document.panNumber,
-    passportNumber: convertData.document.passportNumber,
-    bankName: convertData.bankDetails.bankName,
-    accountNumber: convertData.bankDetails.accountNumber,
-    ifsc: convertData.bankDetails.ifsc,
-    branchName: convertData.bankDetails.branchName,
+    aadharNumber: convertData.document?.aadharNumber,
+    voterNumber: convertData.document?.voterNumber,
+    panNumber: convertData.document?.panNumber,
+    passportNumber: convertData.document?.passportNumber,
+    bankName: convertData.bankDetails?.bankName,
+    accountNumber: convertData.bankDetails?.accountNumber,
+    ifsc: convertData.bankDetails?.ifsc,
+    branchName: convertData.bankDetails?.branchName,
     dob: moment(convertData.dob).format("YYYY-MM-DD"),
   };
 
   const userUpdate = (value: any) => {
     setLoading(true);
     const reqBody = {
-      ...value,
       activationCode: value.activationCode,
+      address: value.address,
+      state: value.state,
+      district: value.district,
+      city: value.city,
+      pincode: value.pincode,
+      education: value.education,
+      workDetail: value.workDetail,
       document: {
         aadharNumber: value.aadharNumber,
         voterNumber: value.voterNumber,
