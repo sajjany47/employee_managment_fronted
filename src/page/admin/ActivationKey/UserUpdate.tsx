@@ -28,7 +28,8 @@ const UserUpdate = () => {
     name: Yup.string().min(2, "Too short! name").required("Name is required"),
     username: Yup.string().required("Username is required"),
     email: Yup.string()
-      .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/, "Invalid email")
+      .email()
+      // .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/, "Invalid email")
       .required("Email is required"),
     mobile: Yup.string()
       .required("Mobile number is required")
@@ -44,7 +45,7 @@ const UserUpdate = () => {
       .matches(/^[0-9]\d{5}$/, "Invalid pincode"),
     aadharNumber: Yup.string()
       .required("Aadhar Number is required")
-      .matches(/^ [1-9]d {11}$/, "Invalid Aadhar Nuumber"),
+      .matches(/^\d{12}$/, "Invalid Aadhar Nuumber"),
     panNumber: Yup.string()
       .required("Pan Number is required")
       .matches(/^([A-Z]){5}([0-9]){4}([A-Z]){1}$/, "Invalid Pan Number"),
@@ -63,17 +64,20 @@ const UserUpdate = () => {
       .required("IFSC code is required")
       .matches(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC code"),
     branchName: Yup.string().required("Branch name is required"),
-    education: Yup.array().of(
-      Yup.object().shape({
-        boardName: Yup.string().required("Board Name is required"),
-        passingYear: Yup.string()
-          .required("Passing Year is required")
-          .matches(/^(1[0-9]{3}|[2-9][0-9]{3})$/, "Invalid Passing Year"),
-        marksPercentage: Yup.string()
-          .matches(/^[0-9]\d*(\.\d+)?$/, "Invalid marks in percentage")
-          .required("Percentage should be less than 100 "),
-      })
-    ),
+    education: Yup.array()
+      .of(
+        Yup.object().shape({
+          boardName: Yup.string().required("Board Name is required"),
+          passingYear: Yup.string()
+            .required("Passing Year is required")
+            .matches(/^\d{4}$/, "Invalid Passing Year"),
+          marksPercentage: Yup.string()
+            .matches(/^[0-9]\d*(\.\d+)?$/, "Invalid marks in percentage")
+            .required("Percentage should be less than 100 "),
+        })
+      )
+      .required("Education details is rrequired")
+      .min(2),
   });
 
   const intialValue = {
