@@ -24,8 +24,58 @@ const UserUpdate = () => {
   const userType = useSelector((state: any) => state.auth.auth.user);
   const [loading, setLoading] = useState(false);
   const userUpdateValidation = Yup.object().shape({
+    activationCode: Yup.string().required("Activation code is required"),
     name: Yup.string().min(2, "Too short! name").required("Name is required"),
+    username: Yup.string().required("Username is required"),
+    email: Yup.string()
+      .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/, "Invalid email")
+      .required("Email is required"),
+    mobile: Yup.string()
+      .required("Mobile number is required")
+      .matches(/^[56789]\d{9}$/, "Invalid mobile number"),
+    dob: Yup.string().required("Date of Birth is required"),
+    role: Yup.string().required("Role is required"),
+    address: Yup.string().required("Address is required"),
+    state: Yup.string().required("State is required"),
+    district: Yup.string().required("District is required"),
+    city: Yup.string().required("City is required"),
+    pincode: Yup.string()
+      .required("Pincode is required")
+      .matches(/^[0-9]\d{5}$/, "Invalid pincode"),
+    aadharNumber: Yup.string()
+      .required("Aadhar Number is required")
+      .matches(/^ [1-9]d {11}$/, "Invalid Aadhar Nuumber"),
+    panNumber: Yup.string()
+      .required("Pan Number is required")
+      .matches(/^([A-Z]){5}([0-9]){4}([A-Z]){1}$/, "Invalid Pan Number"),
+    voterNumber: Yup.string()
+      // .required("Voter Number is required")
+      .matches(/^[A-Z]{3}\d{7}$/, "Invalid Voter Number"),
+    passportNumber: Yup.string()
+      // .required("Passport Number is required")
+      .matches(
+        /^ [A-PR-WY-Z] [1-9]\d\s?\d{4} [1-9]$/,
+        "Invalid Passport Number"
+      ),
+    bankName: Yup.string().required("Bank name is required"),
+    accountNumber: Yup.string().required("Account number is required"),
+    ifsc: Yup.string()
+      .required("IFSC code is required")
+      .matches(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC code"),
+    branchName: Yup.string().required("Branch name is required"),
+    education: Yup.array().of(
+      Yup.object().shape({
+        boardName: Yup.string().required("Board Name is required"),
+        passingYear: Yup.string()
+          .required("Passing Year is required")
+          .matches(/^(1[0-9]{3}|[2-9][0-9]{3})$/, "Invalid Passing Year"),
+        marksPercentage: Yup.string()
+          .matches(/^[0-9]\d*(\.\d+)?$/, "Invalid marks in percentage")
+          .required("Percentage should be less than 100 "),
+      })
+    ),
   });
+
   const intialValue = {
     ...convertData,
     aadharNumber: convertData.document?.aadharNumber,
