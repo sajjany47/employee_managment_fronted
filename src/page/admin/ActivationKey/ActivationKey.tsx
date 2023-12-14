@@ -140,7 +140,7 @@ export default function ActivationKey() {
     <div>
       {loading && <Loader />}
       <Grid container rowSpacing={2} columnSpacing={2}>
-        <Grid xs={12}>
+        <Grid item xs={12}>
           <Box className="mt-2 flex justify-end gap-2">
             <TextField label="Search" id="outlined-size-small" size="small" />
             <FormControl sx={{ minWidth: 120 }} size="small">
@@ -159,7 +159,7 @@ export default function ActivationKey() {
             </Button>
           </Box>
         </Grid>
-        <Grid xs={12} className="mt-1">
+        <Grid item xs={12} className="mt-1">
           <Typography variant="h6" className="text-sm">
             Activation Key List
           </Typography>
@@ -176,7 +176,7 @@ export default function ActivationKey() {
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Generate Activation Key"}
+          {/* {"Generate Activation Key"} */}
         </DialogTitle>
         <DialogContent>
           {activationKey === "" ? (
@@ -293,11 +293,13 @@ export default function ActivationKey() {
               )}
             </Formik>
           ) : (
-            <Paper>
-              <Typography sx={{ color: "blueviolet", fontWeight: "500px" }}>
-                {activationKey}
-              </Typography>
-            </Paper>
+            <Grid item xs={12} sm={12}>
+              <Paper elevation={24}>
+                <Typography sx={{ color: "blueviolet", fontWeight: "500px" }}>
+                  {activationKey}
+                </Typography>
+              </Paper>
+            </Grid>
           )}
         </DialogContent>
       </Dialog>

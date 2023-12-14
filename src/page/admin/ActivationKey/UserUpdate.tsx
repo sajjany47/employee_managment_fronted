@@ -41,18 +41,23 @@ const UserUpdate = () => {
     district: Yup.string().required("District is required"),
     city: Yup.string().required("City is required"),
     pincode: Yup.string()
+      .nullable()
       .required("Pincode is required")
       .matches(/^[0-9]\d{5}$/, "Invalid pincode"),
     aadharNumber: Yup.string()
+      .nullable()
       .required("Aadhar Number is required")
       .matches(/^\d{12}$/, "Invalid Aadhar Nuumber"),
     panNumber: Yup.string()
+      .nullable()
       .required("Pan Number is required")
       .matches(/^([A-Z]){5}([0-9]){4}([A-Z]){1}$/, "Invalid Pan Number"),
     voterNumber: Yup.string()
+      .nullable()
       // .required("Voter Number is required")
       .matches(/^[A-Z]{3}\d{7}$/, "Invalid Voter Number"),
     passportNumber: Yup.string()
+      .nullable()
       // .required("Passport Number is required")
       .matches(
         /^ [A-PR-WY-Z] [1-9]\d\s?\d{4} [1-9]$/,
@@ -64,20 +69,33 @@ const UserUpdate = () => {
       .required("IFSC code is required")
       .matches(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC code"),
     branchName: Yup.string().required("Branch name is required"),
-    education: Yup.array()
-      .of(
-        Yup.object().shape({
-          boardName: Yup.string().required("Board Name is required"),
-          passingYear: Yup.string()
-            .required("Passing Year is required")
-            .matches(/^\d{4}$/, "Invalid Passing Year"),
-          marksPercentage: Yup.string()
-            .matches(/^[0-9]\d*(\.\d+)?$/, "Invalid marks in percentage")
-            .required("Percentage should be less than 100 "),
-        })
-      )
-      .required("Education details is rrequired")
-      .min(2),
+    workDetail: Yup.array().of(
+      Yup.object().shape({
+        companyName: Yup.string().required("Company name is required"),
+        position: Yup.string().required("Position is required"),
+        startingYear: Yup.string()
+          .nullable()
+          .matches(/^\d{4}$/, "Invalid Starting Year")
+          .required("Starting Year is required"),
+        endingYear: Yup.string()
+          .nullable()
+          .matches(/^\d{4}$/, "Invalid Ending Year")
+          .required("Ending Year is required"),
+      })
+    ),
+    education: Yup.array().of(
+      Yup.object().shape({
+        boardName: Yup.string().required("Board Name is required").nullable(),
+        passingYear: Yup.string()
+          .nullable()
+          .matches(/^\d{4}$/, "Invalid Passing Year")
+          .required("Passing Year is required"),
+        marksPercentage: Yup.string()
+          .nullable()
+          .matches(/^[0-9]\d*(\.\d+)?$/, "Invalid marks in percentage")
+          .required("Percentage should be less than 100 "),
+      })
+    ),
   });
 
   const intialValue = {
