@@ -8,6 +8,7 @@ import {
   Chip,
   Grid,
   Paper,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -49,6 +50,7 @@ export default function ActivationKey() {
   const [id, setId] = React.useState("all");
   const [activationKey, setActivationKey] = React.useState("");
   const [activationKeyData, setActivationKeyData] = React.useState([]);
+  const [selectedRow, setSelectedRow] = React.useState(null);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const userType = useSelector((state: any) => state.auth.auth.user);
@@ -126,11 +128,41 @@ export default function ActivationKey() {
       align: "center",
       format: (value: any) => customRegistrationStatus(value),
     },
-    { id: "activeStatus", label: "IsActive", align: "center" },
+    {
+      id: "activeStatus",
+      label: "IsActive",
+      align: "center",
+      format: (value: any) => (
+        <Switch checked={value} onChange={() => handleToggle(value)} />
+      ),
+    },
     { id: "createdBy", label: "CreatedBy ", align: "center" },
     { id: "createdAt", label: "CreatedAt", align: "center" },
     { id: "action", label: "Action", align: "center" },
   ];
+
+  const rowSelectedValue = (e: any) => {
+    setSelectedRow(e);
+  };
+
+  const handleToggle = (e: any) => {
+    const initialStatus = e;
+    console.log(initialStatus);
+    console.log(selectedRow);
+    // const payload = {
+    //   activeStatus: !initialStatus,
+    //   username: selectedRow?.username,
+    //   updatedBy: userType.username,
+    // };
+    // console.log(payload);
+    // activationService
+    //   .statusChange(payload)
+    //   .then((res) => {
+    //     enqueueSnackbar(res.message, { variant: "success" });
+    //   })
+    //   .catch((err: any) => enqueueSnackbar(err.message, { variant: "error" }))
+    //   .finally(() => activationList(id));
+  };
 
   const activationListData = activationKeyData.map((item: any) => ({
     ...item,
@@ -208,7 +240,11 @@ export default function ActivationKey() {
           <Typography variant="h6" className="text-sm">
             Activation Key List
           </Typography>
-          <TableData columns={columns} rows={activationListData} />
+          <TableData
+            columns={columns}
+            rows={activationListData}
+            rowSelectedValue={rowSelectedValue}
+          />
         </Grid>
       </Grid>
 

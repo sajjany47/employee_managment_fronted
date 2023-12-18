@@ -48,6 +48,10 @@ const TableData = (props: any) => {
   //   // Customize this logic based on your requirements
   //   return a;
   // };
+  const handleRow = (e: any) => {
+    props.rowSelectedValue(e);
+  };
+
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
       <TableContainer sx={{ maxHeight: 440 }}>
@@ -73,7 +77,13 @@ const TableData = (props: any) => {
 
                 .map((row: any, index: number) => {
                   return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={index}
+                      onClick={() => handleRow(row)}
+                    >
                       {props &&
                         props.columns.map((column: any, index: number) => {
                           return (
