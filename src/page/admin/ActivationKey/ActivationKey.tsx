@@ -1,7 +1,6 @@
 /* eslint-disable no-useless-escape */
 import * as React from "react";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import TableData from "../../../components/TableData";
 import {
   Box,
   Button,
@@ -32,14 +31,7 @@ import * as Yup from "yup";
 import { inputField, selectField } from "../../../components/FieldType";
 import { data } from "../../../shared/Config";
 import { useNavigate } from "react-router-dom";
-
-// interface Column {
-//   id: "name" | "code" | "population" | "size" | "action";
-//   label: string;
-//   minWidth?: number;
-//   align?: "right";
-//   format?: (value: number) => string;
-// }
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 export default function ActivationKey() {
   const navigate = useNavigate();
@@ -50,7 +42,6 @@ export default function ActivationKey() {
   const [id, setId] = React.useState("all");
   const [activationKey, setActivationKey] = React.useState("");
   const [activationKeyData, setActivationKeyData] = React.useState([]);
-  const [selectedRow, setSelectedRow] = React.useState(null);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const userType = useSelector((state: any) => state.auth.auth.user);
@@ -81,7 +72,9 @@ export default function ActivationKey() {
     activationService
       .activationKeyList(id)
       .then((res: any) => {
-        setActivationKeyData(res.data);
+        setActivationKeyData(
+          res.data.map((item: any, index: any) => ({ ...item, id: index }))
+        );
       })
       .catch((err) => enqueueSnackbar(err.message, { variant: "error" }));
   };
@@ -117,67 +110,72 @@ export default function ActivationKey() {
         break;
     }
   };
-  const columns = [
-    { id: "name", label: "Name", align: "center" },
-    { id: "mobile", label: "Number", align: "center" },
-    { id: "activationCode", label: "Activation Code", align: "center" },
-    { id: "role", label: "Role", align: "center" },
+  const columns: GridColDef[] = [
+    { field: "name", headerName: "Name", width: 150 },
+    { field: "mobile", headerName: "Number", width: 130 },
+    { field: "activationCode", headerName: "Activation Code", width: 190 },
+    { field: "role", headerName: "Role", width: 100 },
     {
-      id: "registrationStatus",
-      label: "Status",
+      field: "registrationStatus",
+      headerName: "Status",
+      width: 110,
+      renderCell: (value: any) => customRegistrationStatus(value.value),
       align: "center",
-      format: (value: any) => customRegistrationStatus(value),
+      // valueGetter: (value) => customRegistrationStatus(value.value),
     },
     {
-      id: "activeStatus",
-      label: "IsActive",
-      align: "center",
-      format: (value: any) => (
-        <Switch checked={value} onChange={() => handleToggle(value)} />
+      field: "activeStatus",
+      headerName: "IsActive",
+      width: 80,
+      renderCell: (value: any) => (
+        <Switch
+          checked={value.value}
+          onChange={() => handleToggle(value.value, value.row.username)}
+        />
       ),
     },
-    { id: "createdBy", label: "CreatedBy ", align: "center" },
-    { id: "createdAt", label: "CreatedAt", align: "center" },
-    { id: "action", label: "Action", align: "center" },
+    { field: "createdBy", headerName: "CreatedBy ", width: 110 },
+    { field: "updatedBy", headerName: "UpdatedBy ", width: 110 },
+    {
+      field: "createdAt",
+      headerName: "CreatedAt",
+      width: 150,
+      renderCell: (value: any) =>
+        moment(value.value).format("Do MMM, YY HH:mm"),
+    },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 90,
+      renderCell: (value: any) => (
+        <EditNoteIcon
+          onClick={() => {
+            navigate("/admin/user-update", { state: { data: value.row } });
+          }}
+        />
+      ),
+    },
   ];
 
-  const rowSelectedValue = (e: any) => {
-    setSelectedRow(e);
-  };
+  const handleToggle = (e: any, username: any) => {
+    setLoading(true);
+    const payload = {
+      activeStatus: !e,
+      username: username,
+      updatedBy: userType.username,
+    };
 
-  const handleToggle = (e: any) => {
-    const initialStatus = e;
-    console.log(initialStatus);
-    console.log(selectedRow);
-    // const payload = {
-    //   activeStatus: !initialStatus,
-    //   username: selectedRow?.username,
-    //   updatedBy: userType.username,
-    // };
-    // console.log(payload);
-    // activationService
-    //   .statusChange(payload)
-    //   .then((res) => {
-    //     enqueueSnackbar(res.message, { variant: "success" });
-    //   })
-    //   .catch((err: any) => enqueueSnackbar(err.message, { variant: "error" }))
-    //   .finally(() => activationList(id));
+    activationService
+      .statusChange(payload)
+      .then((res) => {
+        enqueueSnackbar(res.message, { variant: "success" });
+      })
+      .catch((err: any) => enqueueSnackbar(err.message, { variant: "error" }))
+      .finally(() => {
+        activationList(id);
+        setLoading(false);
+      });
   };
-
-  const activationListData = activationKeyData.map((item: any) => ({
-    ...item,
-    createdAt: moment(item.createdAt).format("Do MMM, YY HH:mm"),
-    action: (
-      <EditNoteIcon
-        onClick={() => {
-          navigate("/admin/user-update", { state: { data: item } });
-        }}
-      />
-    ),
-  }));
-  // const handleCheck = (item: any) => {
-  //   console.log(item);
-  // };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -240,11 +238,23 @@ export default function ActivationKey() {
           <Typography variant="h6" className="text-sm">
             Activation Key List
           </Typography>
-          <TableData
-            columns={columns}
-            rows={activationListData}
-            rowSelectedValue={rowSelectedValue}
-          />
+
+          <Box sx={{ height: 400, width: "100%" }}>
+            <DataGrid
+              rows={activationKeyData}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 5,
+                  },
+                },
+              }}
+              pageSizeOptions={[5]}
+              // checkboxSelection
+              // disableRowSelectionOnClick
+            />
+          </Box>
         </Grid>
       </Grid>
 
