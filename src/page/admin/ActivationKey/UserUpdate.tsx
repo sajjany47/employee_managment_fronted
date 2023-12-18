@@ -185,6 +185,7 @@ const UserUpdate = () => {
                   name="username"
                   label="Username"
                   component={inputField}
+                  disabled
                 />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
@@ -193,10 +194,16 @@ const UserUpdate = () => {
                   label="Email"
                   type="email"
                   component={inputField}
+                  disabled
                 />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field name="mobile" label="Mobile" component={inputField} />
+                <Field
+                  name="mobile"
+                  label="Mobile"
+                  component={inputField}
+                  disabled
+                />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
                 <Field
