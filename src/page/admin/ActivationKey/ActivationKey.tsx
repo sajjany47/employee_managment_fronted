@@ -2,7 +2,15 @@
 import * as React from "react";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import TableData from "../../../components/TableData";
-import { Box, Button, Grid, Paper, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  Grid,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -75,12 +83,50 @@ export default function ActivationKey() {
       })
       .catch((err) => enqueueSnackbar(err.message, { variant: "error" }));
   };
+  const customRegistrationStatus = (value: any) => {
+    switch (value) {
+      case "pending":
+        return (
+          <Chip
+            color="warning"
+            label={value}
+            sx={{ textTransform: "capitalize" }}
+          />
+        );
+        break;
+      case "verification":
+        return (
+          <Chip
+            color="secondary"
+            label={value}
+            sx={{ textTransform: "capitalize" }}
+          />
+        );
+        break;
+      case "approved":
+        return (
+          <Chip
+            label={value}
+            color="success"
+            sx={{ textTransform: "capitalize" }}
+          />
+        );
+      default:
+        break;
+    }
+  };
   const columns = [
     { id: "name", label: "Name", align: "center" },
     { id: "mobile", label: "Number", align: "center" },
     { id: "activationCode", label: "Activation Code", align: "center" },
     { id: "role", label: "Role", align: "center" },
-    { id: "registrationStatus", label: "Status", align: "center" },
+    {
+      id: "registrationStatus",
+      label: "Status",
+      align: "center",
+      format: (value: any) => customRegistrationStatus(value),
+    },
+    { id: "activeStatus", label: "IsActive", align: "center" },
     { id: "createdBy", label: "CreatedBy ", align: "center" },
     { id: "createdAt", label: "CreatedAt", align: "center" },
     { id: "action", label: "Action", align: "center" },
@@ -128,7 +174,6 @@ export default function ActivationKey() {
         enqueueSnackbar(res.message, { variant: "success" });
       })
       .catch((error: any) => {
-        console.log(error);
         enqueueSnackbar(error.message, { variant: "error" });
       })
       .finally(() => {
