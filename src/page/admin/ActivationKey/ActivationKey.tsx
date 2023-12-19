@@ -114,7 +114,14 @@ export default function ActivationKey() {
     { field: "name", headerName: "Name", width: 150 },
     { field: "mobile", headerName: "Number", width: 130 },
     { field: "activationCode", headerName: "Activation Code", width: 190 },
-    { field: "role", headerName: "Role", width: 100 },
+    {
+      field: "role",
+      headerName: "Role",
+      width: 100,
+      renderCell: (value: any) => (
+        <span style={{ textTransform: "uppercase" }}>{value.value}</span>
+      ),
+    },
     {
       field: "registrationStatus",
       headerName: "Status",
@@ -239,7 +246,7 @@ export default function ActivationKey() {
             Activation Key List
           </Typography>
 
-          <Box sx={{ height: 400, width: "100%" }}>
+          <Box>
             <DataGrid
               rows={activationKeyData}
               columns={columns}
