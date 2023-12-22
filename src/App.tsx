@@ -5,6 +5,7 @@ import { SnackbarProvider } from "notistack";
 // import Copyright from "./components/Copyright";
 import ActivationKey from "./page/admin/ActivationKey/ActivationKey";
 import UserUpdate from "./page/admin/ActivationKey/UserUpdate";
+import UserVerified from "./page/admin/ActivationKey/UserVerified";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route path="/admin/activation-key" element={<ActivationKey />} />
             <Route path="/admin/user-update" element={<UserUpdate />} />
+            <Route path="/admin/user-verified" element={<UserVerified />} />
           </Route>
         </Routes>
         {/* <Copyright /> */}

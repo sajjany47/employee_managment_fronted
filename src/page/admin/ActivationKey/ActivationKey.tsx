@@ -32,6 +32,7 @@ import { inputField, selectField } from "../../../components/FieldType";
 import { data } from "../../../shared/Config";
 import { useNavigate } from "react-router-dom";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 export default function ActivationKey() {
   const navigate = useNavigate();
@@ -155,11 +156,20 @@ export default function ActivationKey() {
       headerName: "Action",
       width: 90,
       renderCell: (value: any) => (
-        <EditNoteIcon
-          onClick={() => {
-            navigate("/admin/user-update", { state: { data: value.row } });
-          }}
-        />
+        <>
+          <EditNoteIcon
+            color="primary"
+            onClick={() => {
+              navigate("/admin/user-update", { state: { data: value.row } });
+            }}
+          />
+          <VisibilityIcon
+            color="secondary"
+            onClick={() => {
+              navigate("/admin/user-verified", { state: { data: value.row } });
+            }}
+          />
+        </>
       ),
     },
   ];
