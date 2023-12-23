@@ -297,6 +297,7 @@ export default function ActivationKey() {
                 dob: "",
                 role: "",
                 password: "",
+                position: "",
               }}
               validationSchema={activationKeyValidation}
               onSubmit={handleGenerateKey}
@@ -356,6 +357,13 @@ export default function ActivationKey() {
                             ? data.adminType
                             : data.HRtype
                         }
+                      />
+                    </Grid>
+                    <Grid item xs={2} sm={4} md={6}>
+                      <Field
+                        name="position"
+                        label="Position"
+                        component={inputField}
                       />
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
