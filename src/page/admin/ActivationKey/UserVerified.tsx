@@ -1,6 +1,6 @@
-import AttachFileIcon from "@mui/icons-material/AttachFile";
-import { Divider } from "@mui/material";
 import moment from "moment";
+import VerifiedIcon from "@mui/icons-material/Verified";
+
 import { useLocation } from "react-router-dom";
 const UserVerified = () => {
   const { state } = useLocation();
@@ -17,22 +17,28 @@ const UserVerified = () => {
                   src="https://randomuser.me/api/portraits/men/94.jpg"
                   className="w-32 h-32 bg-gray-300 rounded-full mb-4 shrink-0"
                 ></img>
-                <h1 className="text-xl font-bold">{data.name}</h1>
+                <h1 className="text-md font-bold">{data.name}</h1>
                 <p className="text-gray-700">Software Developer</p>
-                <div className="mt-6 flex flex-wrap gap-4 justify-center">
-                  <a
-                    href="#"
-                    className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
-                  >
-                    Contact
-                  </a>
-                  <a
-                    href="#"
-                    className="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded"
-                  >
-                    Resume
-                  </a>
-                </div>
+                {data.registrationStatus !== "approved" ? (
+                  <div className="mt-6 flex flex-wrap gap-4 justify-center">
+                    <a
+                      href="#"
+                      className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+                    >
+                      Approved
+                    </a>
+                    <a
+                      href="#"
+                      className="bg-red-600 hover:bg-red-300 text-white py-2 px-4 rounded"
+                    >
+                      Rejected
+                    </a>
+                  </div>
+                ) : (
+                  <div className="mt-6 flex flex-wrap gap-4 justify-center">
+                    <VerifiedIcon color="success" />
+                  </div>
+                )}
               </div>
               <hr className="my-6 border-t border-gray-300" />
               <div className="flex flex-col">
@@ -180,39 +186,39 @@ const UserVerified = () => {
                 </div>
               </div>
 
-              <h2 className="text-xl font-bold mb-4">D</h2>
+              <h2 className="text-xl font-bold mb-4">Bank Details</h2>
               <div className="text-gray-700">
                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt className="text-sm font-medium text-gray-500">
-                    Aadhar Number
+                    Bank Name
                   </dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {data.document.aadharNumber}
+                    {data.bankDetails.bankName}
                   </dd>
                 </div>
                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt className="text-sm font-medium text-gray-500">
-                    Voter Number
+                    Account Number
                   </dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 uppercase">
-                    {data.document.voterNumber}
+                    {data.bankDetails.accountNumber}
                   </dd>
                 </div>
 
                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt className="text-sm font-medium text-gray-500">
-                    Pan Number
+                    IFSC Code
                   </dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {data.document.panNumber}
+                    {data.bankDetails.ifsc}
                   </dd>
                 </div>
                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt className="text-sm font-medium text-gray-500">
-                    Passport Number
+                    Branch Name
                   </dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 uppercase">
-                    {data.document.passportNumber}
+                    {data.bankDetails.branchName}
                   </dd>
                 </div>
               </div>
