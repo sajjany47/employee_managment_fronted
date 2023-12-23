@@ -18,7 +18,7 @@ const UserVerified = () => {
                   className="w-32 h-32 bg-gray-300 rounded-full mb-4 shrink-0"
                 ></img>
                 <h1 className="text-md font-bold">{data.name}</h1>
-                <p className="text-gray-700">Software Developer</p>
+                <p className="text-gray-700">{data?.position}</p>
                 {data.registrationStatus !== "approved" ? (
                   <div className="mt-6 flex flex-wrap gap-4 justify-center">
                     <a
@@ -46,11 +46,13 @@ const UserVerified = () => {
                   Skills
                 </span>
                 <ul>
-                  <li className="mb-2">JavaScript</li>
-                  <li className="mb-2">React</li>
-                  <li className="mb-2">Node.js</li>
-                  <li className="mb-2">HTML/CSS</li>
-                  <li className="mb-2">Tailwind Css</li>
+                  {data?.skill.map((item: any) => {
+                    return (
+                      <>
+                        <li className="mb-2">{item}</li>
+                      </>
+                    );
+                  })}
                 </ul>
               </div>
             </div>

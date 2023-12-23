@@ -81,7 +81,7 @@ export default function ActivationKey() {
   };
   const customRegistrationStatus = (value: any) => {
     switch (value) {
-      case "pending":
+      case "waiting":
         return (
           <Chip
             color="warning"
@@ -90,7 +90,7 @@ export default function ActivationKey() {
           />
         );
         break;
-      case "verification":
+      case "pending":
         return (
           <Chip
             color="secondary"
@@ -104,6 +104,15 @@ export default function ActivationKey() {
           <Chip
             label={value}
             color="success"
+            sx={{ textTransform: "capitalize" }}
+          />
+        );
+        break;
+      case "rejected":
+        return (
+          <Chip
+            label={value}
+            color="error"
             sx={{ textTransform: "capitalize" }}
           />
         );
@@ -221,7 +230,7 @@ export default function ActivationKey() {
         enqueueSnackbar(res.message, { variant: "success" });
       })
       .catch((error: any) => {
-        enqueueSnackbar(error.message, { variant: "error" });
+        enqueueSnackbar(error.response.data.message, { variant: "error" });
       })
       .finally(() => {
         setLoading(false);

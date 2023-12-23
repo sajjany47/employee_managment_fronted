@@ -83,19 +83,22 @@ const UserUpdate = () => {
           .required("Ending Year is required"),
       })
     ),
-    education: Yup.array().of(
-      Yup.object().shape({
-        boardName: Yup.string().required("Board Name is required").nullable(),
-        passingYear: Yup.string()
-          .nullable()
-          .matches(/^\d{4}$/, "Invalid Passing Year")
-          .required("Passing Year is required"),
-        marksPercentage: Yup.string()
-          .nullable()
-          .matches(/^[0-9]\d*(\.\d+)?$/, "Invalid marks in percentage")
-          .required("Percentage should be less than 100 "),
-      })
-    ),
+    education: Yup.array()
+      .of(
+        Yup.object().shape({
+          boardName: Yup.string().required("Board Name is required").nullable(),
+          passingYear: Yup.string()
+            .nullable()
+            .matches(/^\d{4}$/, "Invalid Passing Year")
+            .required("Passing Year is required"),
+          marksPercentage: Yup.string()
+            .nullable()
+            .matches(/^[0-9]\d*(\.\d+)?$/, "Invalid marks in percentage")
+            .required("Percentage should be less than 100 "),
+        })
+      )
+      .required("Education Details Required")
+      .min(1, "Minimum of education details required"),
   });
 
   const intialValue = {
@@ -115,6 +118,8 @@ const UserUpdate = () => {
     setLoading(true);
     let reqBody: any = {
       activationCode: value.activationCode,
+      skill: value.skill,
+      position: value.position,
       address: value.address,
       state: value.state,
       district: value.district,
@@ -155,8 +160,7 @@ const UserUpdate = () => {
         enqueueSnackbar(res.message, { variant: "success" });
       })
       .catch((error: any) => {
-        console.log(error);
-        enqueueSnackbar(error.message, { variant: "error" });
+        enqueueSnackbar(error.response.data.message, { variant: "error" });
       })
       .finally(() => {
         setLoading(false);
@@ -234,10 +238,17 @@ const UserUpdate = () => {
                   }
                 />
               </Grid>
-
+              <Grid item xs={12} sm={4} md={3}>
+                <Field
+                  name="position"
+                  label="Position"
+                  component={inputField}
+                />
+              </Grid>
               <Grid item xs={12} sm={4} md={3}>
                 <Field name="address" label="Address" component={inputField} />
               </Grid>
+
               <Grid item xs={12} sm={4} md={3}>
                 <Field name="state" label="State" component={inputField} />
               </Grid>
@@ -429,6 +440,70 @@ const UserUpdate = () => {
                           endingYear: "",
                         })
                       }
+                    >
+                      Add More
+                    </Button>
+                  </Grid>
+                </Box>
+              )}
+            />
+
+            <Divider sx={{ margin: "20px" }}>
+              <strong>Skill</strong>
+            </Divider>
+
+            <FieldArray
+              name="skill"
+              render={(arrayHelpers) => (
+                <Box sx={{ marginTop: "10px" }}>
+                  {values.skill &&
+                    values.skill.length > 0 &&
+                    values.skill.map((item: any, index: any) => (
+                      <Box sx={{ flexGrow: 1 }} key={index}>
+                        <Grid container spacing={2}>
+                          <Grid item xs={10}>
+                            <Grid
+                              container
+                              spacing={{ xs: 2, md: 2 }}
+                              columns={{ xs: 4, sm: 8, md: 12 }}
+                              sx={{ marginBottom: "15px" }}
+                            >
+                              <Grid item xs={12} sm={4} md={3}>
+                                <Field
+                                  name={`skill.${index}`}
+                                  label="Skill"
+                                  component={inputField}
+                                />
+                              </Grid>
+                            </Grid>
+                          </Grid>
+                          <Grid item xs={2}>
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => arrayHelpers.remove(index)}
+                              sx={{
+                                ":hover": {
+                                  backgroundColor: "whitesmoke",
+                                },
+                              }}
+                            >
+                              <DeleteIcon
+                                sx={{
+                                  fontSize: "30px",
+                                  margin: "auto",
+                                  color: "red",
+                                }}
+                              />
+                            </IconButton>
+                          </Grid>
+                        </Grid>
+                      </Box>
+                    ))}
+                  <Grid xs={12} sm={12} item>
+                    <Button
+                      variant="outlined"
+                      startIcon={<AddIcon />}
+                      onClick={() => arrayHelpers.push("")}
                     >
                       Add More
                     </Button>
