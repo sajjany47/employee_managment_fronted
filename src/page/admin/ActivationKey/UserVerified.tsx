@@ -1,147 +1,224 @@
 import AttachFileIcon from "@mui/icons-material/AttachFile";
+import { Divider } from "@mui/material";
 import moment from "moment";
 import { useLocation } from "react-router-dom";
 const UserVerified = () => {
   const { state } = useLocation();
   const data: any = state.data;
+  console.log(data);
   return (
-    <div>
-      <div className="px-4 sm:px-0">
-        <h3 className="text-base font-semibold leading-7 text-gray-900">
-          Applicant Information
-        </h3>
-        <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
-          Personal details and application.
-        </p>
-      </div>
-      <div className="mt-6 border-t border-gray-100">
-        <dl className="divide-y divide-gray-100">
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="text-sm font-medium leading-6 text-gray-900">
-              Full name
-            </dt>
-            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 uppercase">
-              {data.name}
-            </dd>
+    <div className="bg-gray-100">
+      <div className="container mx-auto py-8">
+        <div className="grid grid-cols-4 sm:grid-cols-12 gap-6 px-4">
+          <div className="col-span-4 sm:col-span-3">
+            <div className="bg-white shadow rounded-lg p-6">
+              <div className="flex flex-col items-center">
+                <img
+                  src="https://randomuser.me/api/portraits/men/94.jpg"
+                  className="w-32 h-32 bg-gray-300 rounded-full mb-4 shrink-0"
+                ></img>
+                <h1 className="text-xl font-bold">{data.name}</h1>
+                <p className="text-gray-700">Software Developer</p>
+                <div className="mt-6 flex flex-wrap gap-4 justify-center">
+                  <a
+                    href="#"
+                    className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+                  >
+                    Contact
+                  </a>
+                  <a
+                    href="#"
+                    className="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded"
+                  >
+                    Resume
+                  </a>
+                </div>
+              </div>
+              <hr className="my-6 border-t border-gray-300" />
+              <div className="flex flex-col">
+                <span className="text-gray-700 uppercase font-bold tracking-wider mb-2">
+                  Skills
+                </span>
+                <ul>
+                  <li className="mb-2">JavaScript</li>
+                  <li className="mb-2">React</li>
+                  <li className="mb-2">Node.js</li>
+                  <li className="mb-2">HTML/CSS</li>
+                  <li className="mb-2">Tailwind Css</li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="text-sm font-medium leading-6 text-gray-900">
-              Username
-            </dt>
-            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              {data.username}
-            </dd>
-          </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="text-sm font-medium leading-6 text-gray-900">
-              Application for
-            </dt>
-            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              {data?.position}
-            </dd>
-          </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="text-sm font-medium leading-6 text-gray-900">
-              Email address
-            </dt>
-            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              {data.email}
-            </dd>
-          </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="text-sm font-medium leading-6 text-gray-900">
-              Mobile Number
-            </dt>
-            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              {data.mobile}
-            </dd>
-          </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="text-sm font-medium leading-6 text-gray-900">
-              Date of Birth
-            </dt>
-            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              {moment(data.dob).format("DD MMM ,YYYY")}
-            </dd>
-          </div>
+          <div className="col-span-4 sm:col-span-9">
+            <div className="bg-white shadow rounded-lg p-6">
+              <h2 className="text-xl font-bold mb-4">Personal Details</h2>
+              <div className="text-gray-700">
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    UserName
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {data.username}
+                  </dd>
+                </div>
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">Role</dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 uppercase">
+                    {data.role}
+                  </dd>
+                </div>
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Mobile Number
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 ">
+                    {data.mobile}
+                  </dd>
+                </div>
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">Email</dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 ">
+                    {data.email}
+                  </dd>
+                </div>
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Date Of Birth
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 ">
+                    {moment(data.dob).format("DD MMM, YYYY")}
+                  </dd>
+                </div>
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">Address</dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {`${data.address} ,${data.city} ,${data.district} ,${data.state} ,${data.pincode}`}
+                  </dd>
+                </div>
+              </div>
 
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="text-sm font-medium leading-6 text-gray-900">
-              Salary expectation
-            </dt>
-            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              $120,000
-            </dd>
-          </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="text-sm font-medium leading-6 text-gray-900">
-              About
-            </dt>
-            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              Fugiat ipsum ipsum deserunt culpa aute sint do nostrud anim
-              incididunt cillum culpa consequat. Excepteur qui ipsum aliquip
-              consequat sint. Sit id mollit nulla mollit nostrud in ea officia
-              proident. Irure nostrud pariatur mollit ad adipisicing
-              reprehenderit deserunt qui eu.
-            </dd>
-          </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="text-sm font-medium leading-6 text-gray-900">
-              Attachments
-            </dt>
-            <dd className="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              <ul
-                role="list"
-                className="divide-y divide-gray-100 rounded-md border border-gray-200"
-              >
-                <li className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
-                  <div className="flex w-0 flex-1 items-center">
-                    <AttachFileIcon
-                      className="h-5 w-5 flex-shrink-0 text-gray-400"
-                      aria-hidden="true"
-                    />
-                    <div className="ml-4 flex min-w-0 flex-1 gap-2">
-                      <span className="truncate font-medium">
-                        resume_back_end_developer.pdf
-                      </span>
-                      <span className="flex-shrink-0 text-gray-400">2.4mb</span>
-                    </div>
-                  </div>
-                  <div className="ml-4 flex-shrink-0">
-                    <a
-                      href="#"
-                      className="font-medium text-indigo-600 hover:text-indigo-500"
+              <h2 className="text-xl font-bold mt-6 mb-4">Eductaion Details</h2>
+              <div className="mb-6">
+                {data.education.map((item: any, index: any) => {
+                  return (
+                    <div
+                      className="flex justify-between flex-wrap gap-2 w-full"
+                      key={index}
                     >
-                      Download
-                    </a>
-                  </div>
-                </li>
-                <li className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
-                  <div className="flex w-0 flex-1 items-center">
-                    <AttachFileIcon
-                      className="h-5 w-5 flex-shrink-0 text-gray-400"
-                      aria-hidden="true"
-                    />
-                    <div className="ml-4 flex min-w-0 flex-1 gap-2">
-                      <span className="truncate font-medium">
-                        coverletter_back_end_developer.pdf
+                      <span className="text-gray-700 font-bold">
+                        {`${item.marksPercentage}%`}
                       </span>
-                      <span className="flex-shrink-0 text-gray-400">4.5mb</span>
+                      <p>
+                        <span className="text-gray-700 mr-2">
+                          {item.boardName}
+                        </span>
+                        <span className="text-gray-700">
+                          {item.passingYear}
+                        </span>
+                      </p>
                     </div>
-                  </div>
-                  <div className="ml-4 flex-shrink-0">
-                    <a
-                      href="#"
-                      className="font-medium text-indigo-600 hover:text-indigo-500"
+                  );
+                })}
+              </div>
+
+              <h2 className="text-xl font-bold mt-6 mb-4">Experience</h2>
+              <div className="mb-6">
+                {data.workDetail.map((item: any, index: any) => {
+                  return (
+                    <div
+                      className="flex justify-between flex-wrap gap-2 w-full"
+                      key={index}
                     >
-                      Download
-                    </a>
-                  </div>
-                </li>
-              </ul>
-            </dd>
+                      <span className="text-gray-700 font-bold">
+                        {item.position}
+                      </span>
+                      <p>
+                        <span className="text-gray-700 mr-2">
+                          {item.companyName}
+                        </span>
+                        <span className="text-gray-700">{`${item.startingYear} - ${item.endingYear}`}</span>
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <h2 className="text-xl font-bold mb-4">Document</h2>
+              <div className="text-gray-700">
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Aadhar Number
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {data.document.aadharNumber}
+                  </dd>
+                </div>
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Voter Number
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 uppercase">
+                    {data.document.voterNumber}
+                  </dd>
+                </div>
+
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Pan Number
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {data.document.panNumber}
+                  </dd>
+                </div>
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Passport Number
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 uppercase">
+                    {data.document.passportNumber}
+                  </dd>
+                </div>
+              </div>
+
+              <h2 className="text-xl font-bold mb-4">D</h2>
+              <div className="text-gray-700">
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Aadhar Number
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {data.document.aadharNumber}
+                  </dd>
+                </div>
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Voter Number
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 uppercase">
+                    {data.document.voterNumber}
+                  </dd>
+                </div>
+
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Pan Number
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {data.document.panNumber}
+                  </dd>
+                </div>
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Passport Number
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 uppercase">
+                    {data.document.passportNumber}
+                  </dd>
+                </div>
+              </div>
+            </div>
           </div>
-        </dl>
+        </div>
       </div>
     </div>
   );
