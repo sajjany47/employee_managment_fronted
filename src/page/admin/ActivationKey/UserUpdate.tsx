@@ -118,6 +118,7 @@ const UserUpdate = () => {
     setLoading(true);
     let reqBody: any = {
       activationCode: value.activationCode,
+      name: value.name,
       skill: value.skill,
       position: value.position,
       address: value.address,

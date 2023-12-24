@@ -40,7 +40,9 @@ export default function Login() {
         sessionStorage.setItem("token", res.token);
         dispatch(setUser({ token: res.token, user: res.user }));
       })
-      .catch((error) => enqueueSnackbar(error.message, { variant: "error" }))
+      .catch((error) =>
+        enqueueSnackbar(error.response.data.message, { variant: "error" })
+      )
       .finally(() => setLoading(false));
   };
 

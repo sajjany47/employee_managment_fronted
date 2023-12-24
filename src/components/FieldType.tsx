@@ -7,6 +7,7 @@ import Select from "@mui/material/Select";
 interface MyFormValues {
   field: any;
   form: { touched: any; errors: any };
+  props: any;
 }
 
 interface SelectProps {

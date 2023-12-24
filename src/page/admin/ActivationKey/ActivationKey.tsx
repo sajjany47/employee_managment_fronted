@@ -129,7 +129,7 @@ export default function ActivationKey() {
       headerName: "Role",
       width: 100,
       renderCell: (value: any) => (
-        <span style={{ textTransform: "uppercase" }}>{value.value}</span>
+        <span style={{ textTransform: "capitalize" }}>{value.value}</span>
       ),
     },
     {
@@ -169,13 +169,15 @@ export default function ActivationKey() {
           <EditNoteIcon
             color="primary"
             onClick={() => {
-              navigate("/admin/user-update", { state: { data: value.row } });
+              navigate(`/admin/user-update/${value.row._id}`, {
+                state: { data: value.row },
+              });
             }}
           />
           <VisibilityIcon
             color="secondary"
             onClick={() => {
-              navigate("/admin/user-verified", { state: { data: value.row } });
+              navigate("/admin/user-verified/", { state: { data: value.row } });
             }}
           />
         </>
@@ -196,7 +198,9 @@ export default function ActivationKey() {
       .then((res) => {
         enqueueSnackbar(res.message, { variant: "success" });
       })
-      .catch((err: any) => enqueueSnackbar(err.message, { variant: "error" }))
+      .catch((err: any) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      )
       .finally(() => {
         activationList(id);
         setLoading(false);
