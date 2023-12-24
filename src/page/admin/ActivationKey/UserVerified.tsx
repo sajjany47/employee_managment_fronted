@@ -86,13 +86,14 @@ const UserVerified = () => {
                   Skills
                 </span>
                 <ul>
-                  {data?.skill.map((item: any, index: any) => {
-                    return (
-                      <li className="mb-2 capitalize" key={index}>
-                        {item}
-                      </li>
-                    );
-                  })}
+                  {data?.skill &&
+                    data?.skill.map((item: any, index: any) => {
+                      return (
+                        <li className="mb-2 capitalize" key={index}>
+                          {item}
+                        </li>
+                      );
+                    })}
                 </ul>
               </div>
             </div>
@@ -140,55 +141,65 @@ const UserVerified = () => {
                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt className="text-sm font-medium text-gray-500">Address</dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 capitalize">
-                    {`${data.address} ,${data.city} ,${data.district} ,${data.state} ,${data.pincode}`}
+                    {data.address
+                      ? `${data.address} ,${data.city} ,${data.district} ,${data.state} ,${data.pincode}`
+                      : ""}
                   </dd>
                 </div>
               </div>
 
               <h2 className="text-xl font-bold mt-6 mb-4">Eductaion Details</h2>
               <div className="mb-6">
-                {data.education.map((item: any, index: any) => {
-                  return (
-                    <div
-                      className="flex justify-between flex-wrap gap-2 w-full"
-                      key={index}
-                    >
-                      <span className="text-gray-700 font-bold">
-                        {`${item.marksPercentage}%`}
-                      </span>
-                      <p>
-                        <span className="text-gray-700 mr-2">
-                          {item.boardName}
+                {data.education &&
+                  data.education.map((item: any, index: any) => {
+                    return (
+                      <div
+                        className="flex justify-between flex-wrap gap-2 w-full"
+                        key={index}
+                      >
+                        <span className="text-gray-700 font-bold">
+                          {item.marksPercentage
+                            ? `${item.marksPercentage}%`
+                            : ""}
                         </span>
-                        <span className="text-gray-700">
-                          {item.passingYear}
-                        </span>
-                      </p>
-                    </div>
-                  );
-                })}
+                        <p>
+                          <span className="text-gray-700 mr-2">
+                            {item.boardName ? item.boardName : ""}
+                          </span>
+                          <span className="text-gray-700">
+                            {item.passingYear ? item.passingYear : ""}
+                          </span>
+                        </p>
+                      </div>
+                    );
+                  })}
               </div>
 
               <h2 className="text-xl font-bold mt-6 mb-4">Experience</h2>
               <div className="mb-6">
-                {data.workDetail.map((item: any, index: any) => {
-                  return (
-                    <div
-                      className="flex justify-between flex-wrap gap-2 w-full"
-                      key={index}
-                    >
-                      <span className="text-gray-700 font-bold">
-                        {item.position}
-                      </span>
-                      <p>
-                        <span className="text-gray-700 mr-2">
-                          {item.companyName}
+                {data.workDetail &&
+                  data.workDetail.map((item: any, index: any) => {
+                    return (
+                      <div
+                        className="flex justify-between flex-wrap gap-2 w-full"
+                        key={index}
+                      >
+                        <span className="text-gray-700 font-bold">
+                          {item.position ? item.position : ""}
                         </span>
-                        <span className="text-gray-700">{`${item.startingYear} - ${item.endingYear}`}</span>
-                      </p>
-                    </div>
-                  );
-                })}
+                        <p>
+                          <span className="text-gray-700 mr-2">
+                            {item.companyName ? item.companyName : ""}
+                          </span>
+                          <span className="text-gray-700">
+                            {item.startingYear
+                              ? `${item.startingYear} - ${item.endingYear}`
+                              : ""}
+                          </span>
+                        </p>
+                      </div>
+                    );
+                  })}
               </div>
 
               <h2 className="text-xl font-bold mb-4">Document</h2>

@@ -1,14 +1,23 @@
 import { Grid, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { EmployeeService } from "./EmployeeService";
+import { enqueueSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
 
 const Employee = () => {
   const employeeService = new EmployeeService();
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   useEffect(() => {
-    employeeService.employeeList().then((res) => {
-      setData(res.data);
-    });
+    employeeService
+      .employeeList()
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((err) => {
+        enqueueSnackbar(err.response.data.message, { variant: "error" });
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div>
@@ -37,7 +46,7 @@ const Employee = () => {
         {data &&
           data.map((item: any, index: any) => {
             return (
-              <Grid item xs={12} sm={4} md={3} key={index}>
+              <Grid item xs={12} sm={4} md={4} key={index}>
                 <div className="max-w-2xl mx-4 sm:max-w-sm md:max-w-sm lg:max-w-sm xl:max-w-sm sm:mx-auto md:mx-auto lg:mx-auto xl:mx-auto mt-16 bg-white shadow-xl rounded-lg text-gray-900">
                   <div className="mx-auto w-32 h-32 relative -mt-16 border-4 border-white rounded-full overflow-hidden">
                     <img
@@ -57,9 +66,19 @@ const Employee = () => {
                       <div>{item?.upline}</div>
                     </li>
                   </ul>
-                  <div className="p-4 border-t mx-8 mt-2">
+                  <div className="p-4 border-t mx-8 mt-2 flex">
                     <button className=" block mx-auto rounded-full bg-gray-900 hover:shadow-lg font-semibold text-white px-6 py-2">
                       Message
+                    </button>
+                    <button
+                      className=" block mx-auto rounded-full bg-blue-900 hover:shadow-lg font-semibold text-white px-6 py-2"
+                      onClick={() => {
+                        navigate(`/admin/user-verified`, {
+                          state: { data: item },
+                        });
+                      }}
+                    >
+                      View
                     </button>
                   </div>
                 </div>

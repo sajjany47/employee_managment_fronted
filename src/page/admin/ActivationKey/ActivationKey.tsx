@@ -178,7 +178,7 @@ export default function ActivationKey() {
           <EditNoteIcon
             color="primary"
             onClick={() => {
-              navigate(`/admin/user-update/${value.row._id}`, {
+              navigate(`/admin/user-update`, {
                 state: { data: value.row },
               });
             }}
