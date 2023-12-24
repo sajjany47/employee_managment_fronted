@@ -1,6 +1,6 @@
 import moment from "moment";
 import VerifiedIcon from "@mui/icons-material/Verified";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ActivationService } from "./ActivationServices";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
@@ -9,6 +9,7 @@ import { Button } from "@mui/material";
 import { useSelector } from "react-redux";
 
 const UserVerified = () => {
+  const navigate = useNavigate();
   const activationService = new ActivationService();
   const [loading, setLoading] = useState(false);
   const { state } = useLocation();
@@ -47,26 +48,28 @@ const UserVerified = () => {
                     <Button
                       color="primary"
                       variant="contained"
-                      onClick={() =>
+                      onClick={() => {
                         approvedUser({
                           activationCode: data.activationCode,
                           approvedBy: user.username,
                           registrationStatus: "approved",
-                        })
-                      }
+                        });
+                        navigate("/admin/activation-key");
+                      }}
                     >
                       Approved
                     </Button>
                     <Button
                       color="error"
                       variant="contained"
-                      onClick={() =>
+                      onClick={() => {
                         approvedUser({
                           activationCode: data.activationCode,
                           approvedBy: user.username,
                           registrationStatus: "rejected",
-                        })
-                      }
+                        });
+                        navigate("/admin/activation-key");
+                      }}
                     >
                       Rejected
                     </Button>

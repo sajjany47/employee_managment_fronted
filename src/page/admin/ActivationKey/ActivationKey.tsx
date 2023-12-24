@@ -6,7 +6,6 @@ import {
   Button,
   Chip,
   Grid,
-  Paper,
   Switch,
   TextField,
   Typography,
@@ -63,6 +62,8 @@ export default function ActivationKey() {
       .matches(/^\d{10}$/, "Enter 10 digit mobile number"),
     dob: Yup.string().required("Date of birth is required"),
     role: Yup.string().required("Role is required"),
+    position: Yup.string().required("Position is required"),
+    password: Yup.string().required("Password is required"),
   });
   React.useEffect(() => {
     activationList(id);
@@ -121,7 +122,14 @@ export default function ActivationKey() {
     }
   };
   const columns: GridColDef[] = [
-    { field: "name", headerName: "Name", width: 150 },
+    {
+      field: "name",
+      headerName: "Name",
+      width: 150,
+      renderCell: (value: any) => (
+        <span style={{ textTransform: "capitalize" }}>{value.value}</span>
+      ),
+    },
     { field: "mobile", headerName: "Number", width: 130 },
     { field: "activationCode", headerName: "Activation Code", width: 190 },
     {
@@ -153,6 +161,7 @@ export default function ActivationKey() {
     },
     { field: "createdBy", headerName: "CreatedBy ", width: 110 },
     { field: "updatedBy", headerName: "UpdatedBy ", width: 110 },
+    { field: "approvedBy", headerName: "ApprovedBy ", width: 110 },
     {
       field: "createdAt",
       headerName: "CreatedAt",
@@ -214,6 +223,7 @@ export default function ActivationKey() {
   const handleClose = () => {
     setOpen(false);
     setActivationKey("");
+    activationList(id);
   };
 
   const handleChange = (event: any) => {
@@ -423,11 +433,11 @@ export default function ActivationKey() {
             </Formik>
           ) : (
             <Grid item xs={12} sm={12}>
-              <Paper elevation={24}>
-                <Typography sx={{ color: "blueviolet", fontWeight: "500px" }}>
+              <div className="flex max-w-sm rounded-xl bg-gradient-to-tr from-pink-300 to-blue-300 p-0.5 shadow-lg">
+                <button className="flex-1 font-bold text-xl bg-white px-6 py-3 rounded-xl">
                   {activationKey}
-                </Typography>
-              </Paper>
+                </button>
+              </div>
             </Grid>
           )}
         </DialogContent>
