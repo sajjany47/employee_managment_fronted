@@ -7,6 +7,7 @@ import ActivationKey from "./page/admin/ActivationKey/ActivationKey";
 import UserUpdate from "./page/admin/ActivationKey/UserUpdate";
 import UserVerified from "./page/admin/ActivationKey/UserVerified";
 import Employee from "./page/admin/Emloyee/Employee";
+import Attendance from "./page/admin/Attendance/Attendance";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="/admin/user-update" element={<UserUpdate />} />
             <Route path="/admin/user-verified" element={<UserVerified />} />
             <Route path="/admin/employee" element={<Employee />} />
+            <Route path="/admin/attendance" element={<Attendance />} />
           </Route>
         </Routes>
         {/* <Copyright /> */}
