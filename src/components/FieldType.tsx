@@ -3,6 +3,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import { getIn } from "formik";
 
 interface MyFormValues {
   field: any;
@@ -26,8 +27,11 @@ export const inputField = ({
   return (
     <>
       <TextField {...field} {...props} variant="outlined" className="w-full" />
-      {errors[field.name] && touched[field.name] && (
+      {/* {errors[field.name] && touched[field.name] && (
         <small style={{ color: "red" }}>{errors[field.name]}</small>
+      )} */}
+      {Boolean(getIn(errors, field.name)) && getIn(touched, field.name) && (
+        <small className="text-red-600">{getIn(errors, field.name)}</small>
       )}
     </>
   );
@@ -57,8 +61,8 @@ export const selectField = ({
           })}
         </Select>
       </FormControl>
-      {errors[field.name] && touched[field.name] && (
-        <small style={{ color: "red" }}>{errors[field.name]}</small>
+      {Boolean(getIn(errors, field.name)) && getIn(touched, field.name) && (
+        <small className="text-red-600">{getIn(errors, field.name)}</small>
       )}
     </>
   );
