@@ -8,6 +8,7 @@ import UserUpdate from "./page/admin/ActivationKey/UserUpdate";
 import UserVerified from "./page/admin/ActivationKey/UserVerified";
 import Employee from "./page/admin/Emloyee/Employee";
 import Attendance from "./page/admin/Attendance/Attendance";
+import AttendanceDetail from "./page/admin/Attendance/AttendanceDetail";
 
 function App() {
   return (
@@ -20,6 +21,10 @@ function App() {
             <Route path="/admin/user-verified" element={<UserVerified />} />
             <Route path="/admin/employee" element={<Employee />} />
             <Route path="/admin/attendance" element={<Attendance />} />
+            <Route
+              path="/admin/attendance/details"
+              element={<AttendanceDetail />}
+            />
           </Route>
         </Routes>
         {/* <Copyright /> */}

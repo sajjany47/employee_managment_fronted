@@ -1,32 +1,39 @@
-import { Box, Button, Grid, TextField } from "@mui/material";
+import { Button, Grid, TextField } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const Attendance = () => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/admin/attendance/details");
+  };
   return (
     <>
       <Grid container rowSpacing={2} columnSpacing={2}>
         <Grid item xs={12}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={8} md={8}>
+            <Grid item xs={12} sm={6} md={7}>
               <h6>
                 <strong>Attendance Details</strong>
               </h6>
             </Grid>
-            <Grid item xs={12} sm={8} md={4}>
+            <Grid item xs={12} sm={6} md={5}>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6} md={6}>
+                <Grid item xs={12} sm={6} md={7}>
                   <TextField
                     label="Search"
                     id="outlined-size-small"
                     size="small"
+                    // className="w-full"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} md={6}>
+                <Grid item xs={12} sm={6} md={5}>
                   <Button
                     variant="contained"
                     // startIcon={<AddIcon />}
-                    // onClick={handleClickOpen}
+                    onClick={handleClick}
                   >
-                    Attendance
+                    My Attendance
                   </Button>
                 </Grid>
               </Grid>
