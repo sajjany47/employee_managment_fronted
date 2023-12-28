@@ -26,7 +26,17 @@ export const inputField = ({
 }: MyFormValues) => {
   return (
     <>
-      <TextField {...field} {...props} variant="outlined" className="w-full" />
+      <TextField
+        {...field}
+        {...props}
+        variant="outlined"
+        className="w-full"
+        error={
+          Boolean(getIn(errors, field.name)) && getIn(touched, field.name)
+            ? true
+            : false
+        }
+      />
       {/* {errors[field.name] && touched[field.name] && (
         <small style={{ color: "red" }}>{errors[field.name]}</small>
       )} */}
@@ -51,6 +61,11 @@ export const selectField = ({
           {...field}
           {...props}
           className="w-full"
+          error={
+            Boolean(getIn(errors, field.name)) && getIn(touched, field.name)
+              ? true
+              : false
+          }
         >
           {props.options.map((item: any, index: any) => {
             return (
