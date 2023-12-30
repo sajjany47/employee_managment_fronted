@@ -421,7 +421,6 @@ export default function ActivationKey() {
                       <Button
                         // onClick={handleGenerateKey}
                         variant="contained"
-                        autoFocus
                         type="submit"
                       >
                         Submit
