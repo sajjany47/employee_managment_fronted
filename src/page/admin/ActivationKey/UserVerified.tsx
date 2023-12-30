@@ -5,7 +5,7 @@ import { ActivationService } from "./ActivationServices";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
 import { useState } from "react";
-import { Button } from "@mui/material";
+import { Chip } from "@mui/material";
 import { useSelector } from "react-redux";
 
 const UserVerified = () => {
@@ -43,25 +43,24 @@ const UserVerified = () => {
                 ></img>
                 <h1 className="text-md font-bold capitalize">{data.name}</h1>
                 <p className="text-gray-700 capitalize">{data?.position}</p>
-                {data.registrationStatus !== "approved" ? (
+                {data.registrationStatus !== "verified" ? (
                   <div className="mt-6 flex flex-wrap gap-4 justify-center">
-                    <Button
+                    <Chip
                       color="primary"
-                      variant="contained"
+                      label={"Approved"}
                       onClick={() => {
                         approvedUser({
                           activationCode: data.activationCode,
                           approvedBy: user.username,
-                          registrationStatus: "approved",
+                          registrationStatus: "verified",
                         });
                         navigate("/admin/activation-key");
                       }}
-                    >
-                      Approved
-                    </Button>
-                    <Button
+                    />
+
+                    <Chip
                       color="error"
-                      variant="contained"
+                      label={"Rejected"}
                       onClick={() => {
                         approvedUser({
                           activationCode: data.activationCode,
@@ -70,9 +69,7 @@ const UserVerified = () => {
                         });
                         navigate("/admin/activation-key");
                       }}
-                    >
-                      Rejected
-                    </Button>
+                    />
                   </div>
                 ) : (
                   <div className="mt-6 flex flex-wrap gap-4 justify-center">

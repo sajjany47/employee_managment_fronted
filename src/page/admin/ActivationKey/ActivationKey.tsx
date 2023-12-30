@@ -100,7 +100,7 @@ export default function ActivationKey() {
           />
         );
         break;
-      case "approved":
+      case "verified":
         return (
           <Chip
             label={value}

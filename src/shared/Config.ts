@@ -5,7 +5,7 @@ export const data = {
     { value: "hr", label: "HR" },
   ],
   HRtype: [
-    { value: "admin", label: "Admin" },
+    // { value: "admin", label: "Admin" },
     { value: "employee", label: "Employee" },
     { value: "hr", label: "HR" },
   ],
