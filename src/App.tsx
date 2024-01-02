@@ -9,6 +9,7 @@ import UserVerified from "./page/admin/ActivationKey/UserVerified";
 import Employee from "./page/admin/Emloyee/Employee";
 import Attendance from "./page/admin/Attendance/Attendance";
 import AttendanceDetail from "./page/admin/Attendance/AttendanceDetail";
+import LeaveList from "./page/admin/leave/LeaveList";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
               path="/admin/attendance/details"
               element={<AttendanceDetail />}
             />
+            <Route path="/admin/leave" element={<LeaveList />} />
           </Route>
         </Routes>
         {/* <Copyright /> */}
