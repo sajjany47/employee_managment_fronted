@@ -28,7 +28,7 @@ import AddIcon from "@mui/icons-material/Add";
 import moment from "moment";
 import * as Yup from "yup";
 import { inputField, selectField } from "../../../components/FieldType";
-import { data } from "../../../shared/Config";
+import { ConfigData } from "../../../shared/ConfigData";
 import { useNavigate } from "react-router-dom";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -279,18 +279,24 @@ export default function ActivationKey() {
             Activation Key List
           </Typography>
 
-          <Box>
+          <Box
+            sx={{
+              height: activationKeyData.length > 0 ? "100%" : 200,
+              width: "100%",
+            }}
+          >
             <DataGrid
               rows={activationKeyData}
               columns={columns}
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: 5,
+                    pageSize: ConfigData.pageSize,
                   },
                 },
               }}
-              pageSizeOptions={[5]}
+              pageSizeOptions={ConfigData.pageRow}
+              localeText={{ noRowsLabel: "No Data Available!!!" }}
               // checkboxSelection
               // disableRowSelectionOnClick
             />
@@ -377,8 +383,8 @@ export default function ActivationKey() {
                         component={selectField}
                         options={
                           userType?.role === "admin"
-                            ? data.adminType
-                            : data.HRtype
+                            ? ConfigData.adminType
+                            : ConfigData.HRtype
                         }
                       />
                     </Grid>

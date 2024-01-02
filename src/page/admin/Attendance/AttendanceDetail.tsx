@@ -1,18 +1,108 @@
-import { Button, Grid } from "@mui/material";
+import { Button, Chip, Grid } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Field, Form, Formik } from "formik";
 import { inputField } from "../../../components/FieldType";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import moment from "moment";
+import { ConfigData } from "../../../shared/ConfigData";
 
 const AttendanceDetail = () => {
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const [leaveListData, setLeaveListData] = useState([]);
 
+  useEffect(() => {
+    setLeaveListData([]);
+  }, []);
+  const customRegistrationStatus = (value: any) => {
+    switch (value) {
+      case "pending":
+        return (
+          <Chip
+            color="warning"
+            label={value}
+            sx={{ textTransform: "capitalize" }}
+          />
+        );
+        break;
+
+      case "approved":
+        return (
+          <Chip
+            label={value}
+            color="success"
+            sx={{ textTransform: "capitalize" }}
+          />
+        );
+        break;
+      case "rejected":
+        return (
+          <Chip
+            label={value}
+            color="error"
+            sx={{ textTransform: "capitalize" }}
+          />
+        );
+      default:
+        break;
+    }
+  };
+  const columns: GridColDef[] = [
+    {
+      field: "username",
+      headerName: "Username",
+      width: 150,
+      renderCell: (value: any) => (
+        <span style={{ textTransform: "capitalize" }}>{value.value}</span>
+      ),
+    },
+    {
+      field: "startDate",
+      headerName: "Leave Start Date",
+      width: 200,
+      renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
+    },
+    {
+      field: "endDate",
+      headerName: "Leave Start Date",
+      width: 200,
+      renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
+    },
+    {
+      field: "reason",
+      headerName: "Reason",
+      width: 200,
+      renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
+    },
+    {
+      field: "totalDay",
+      headerName: "Total Days",
+      width: 150,
+      // renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
+    },
+    {
+      field: "leaveStatus",
+      headerName: "Leave Status",
+      width: 120,
+      renderCell: (value: any) => customRegistrationStatus(value.value),
+    },
+    { field: "approvedBy", headerName: "ApprovedBy ", width: 130 },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 120,
+      renderCell: (value: any) => (
+        <>{value.value === "pending" && <EditNoteIcon color="primary" />}</>
+      ),
+    },
+  ];
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -36,6 +126,30 @@ const AttendanceDetail = () => {
         <Button variant="contained" onClick={handleClickOpen}>
           Apply Leave
         </Button>
+      </div>
+
+      <div
+        className="mt-10"
+        style={{
+          height: leaveListData.length > 0 ? "100%" : 200,
+          width: "100%",
+        }}
+      >
+        <DataGrid
+          rows={leaveListData}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: ConfigData.pageSize,
+              },
+            },
+          }}
+          pageSizeOptions={ConfigData.pageRow}
+          localeText={{ noRowsLabel: "No Data Available!!!" }}
+          // checkboxSelection
+          // disableRowSelectionOnClick
+        />
       </div>
 
       <Dialog

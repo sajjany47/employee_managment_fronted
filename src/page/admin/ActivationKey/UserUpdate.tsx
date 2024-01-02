@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Box, Divider, Grid, InputAdornment } from "@mui/material";
 import { inputField, selectField } from "../../../components/FieldType";
 import { useSelector } from "react-redux";
-import { data } from "../../../shared/Config";
+import { ConfigData } from "../../../shared/ConfigData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
@@ -235,7 +235,9 @@ const UserUpdate = () => {
                   label="Role"
                   component={selectField}
                   options={
-                    userType?.role === "admin" ? data.adminType : data.HRtype
+                    userType?.role === "admin"
+                      ? ConfigData.adminType
+                      : ConfigData.HRtype
                   }
                 />
               </Grid>
