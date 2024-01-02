@@ -1,4 +1,12 @@
-import { Button, Chip, Grid, TextField } from "@mui/material";
+import {
+  Button,
+  Chip,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  TextField,
+} from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -6,10 +14,13 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import moment from "moment";
 import { ConfigData } from "../../../shared/ConfigData";
+import { Field, Form, Formik } from "formik";
+import { selectField } from "../../../components/FieldType";
 
 const Attendance = () => {
   const navigate = useNavigate();
   const [allUserLeaveList, setAllUserLeaveList] = useState([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     setAllUserLeaveList([]);
@@ -111,6 +122,13 @@ const Attendance = () => {
   const handleClick = () => {
     navigate("/admin/attendance/details");
   };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const initialValue = {};
+  const handelStatusChanges = (values: any) => {
+    console.log(values);
+  };
   return (
     <>
       <Grid container rowSpacing={2} columnSpacing={2}>
@@ -171,6 +189,68 @@ const Attendance = () => {
           </Grid>
         </Grid>
       </Grid>
+
+      <Dialog
+        // fullScreen={fullScreen}
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title">
+          <strong>Leave Status Change</strong>
+        </DialogTitle>
+        <DialogContent>
+          <Formik initialValues={initialValue} onSubmit={handelStatusChanges}>
+            {({ handleSubmit }) => (
+              <Form onSubmit={handleSubmit} className="mt-5">
+                <Grid
+                  container
+                  spacing={{ xs: 2, md: 2 }}
+                  columns={{ xs: 4, sm: 8, md: 12 }}
+                >
+                  <Grid item xs={2} sm={4} md={12}>
+                    <Field
+                      name="statusChange"
+                      label="Status"
+                      component={selectField}
+                      options={ConfigData.leaveStatus}
+                    />
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={12}
+                    md={12}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "end",
+                      gap: "5px",
+                    }}
+                  >
+                    <Button
+                      onClick={handleClose}
+                      variant="contained"
+                      sx={{
+                        backgroundColor: "red",
+                        ":hover": { backgroundColor: "red" },
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      // onClick={handleGenerateKey}
+                      variant="contained"
+                      type="submit"
+                    >
+                      Submit
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Form>
+            )}
+          </Formik>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

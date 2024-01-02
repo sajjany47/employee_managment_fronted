@@ -11,4 +11,10 @@ export const ConfigData = {
     { value: "employee", label: "Employee" },
     { value: "hr", label: "HR" },
   ],
+
+  leaveStatus: [
+    { value: "pending", label: "Pending" },
+    { value: "approved", label: "Approved" },
+    { value: "rejected", label: "Rejected" },
+  ],
 };
