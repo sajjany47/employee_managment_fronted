@@ -10,6 +10,7 @@ import Employee from "./page/admin/Emloyee/Employee";
 import Attendance from "./page/admin/Attendance/Attendance";
 import AttendanceDetail from "./page/admin/Attendance/AttendanceDetail";
 import LeaveList from "./page/admin/leave/LeaveList";
+import HolidayList from "./page/admin/Attendance/HolidayList";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
               element={<AttendanceDetail />}
             />
             <Route path="/admin/leave" element={<LeaveList />} />
+            <Route path="/admin/holiday-list" element={<HolidayList />} />
           </Route>
         </Routes>
         {/* <Copyright /> */}

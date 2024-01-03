@@ -16,6 +16,7 @@ import moment from "moment";
 import { ConfigData } from "../../../shared/ConfigData";
 import { Field, Form, Formik } from "formik";
 import { selectField } from "../../../components/FieldType";
+import AddIcon from "@mui/icons-material/Add";
 
 const Attendance = () => {
   const navigate = useNavigate();
@@ -141,7 +142,7 @@ const Attendance = () => {
             </Grid>
             <Grid item xs={12} sm={6} md={5}>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6} md={7}>
+                <Grid item xs={12} sm={4} md={4}>
                   <TextField
                     label="Search"
                     id="outlined-size-small"
@@ -149,7 +150,16 @@ const Attendance = () => {
                     // className="w-full"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} md={5}>
+                <Grid item xs={12} sm={4} md={4}>
+                  <Button
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                    onClick={() => navigate("/admin/holiday-list")}
+                  >
+                    Holiday List
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm={4} md={4}>
                   <Button
                     variant="contained"
                     // startIcon={<AddIcon />}
