@@ -27,7 +27,11 @@ import Loader from "../../../components/Loader";
 import AddIcon from "@mui/icons-material/Add";
 import moment from "moment";
 import * as Yup from "yup";
-import { inputField, selectField } from "../../../components/FieldType";
+import {
+  // dateField,
+  inputField,
+  selectField,
+} from "../../../components/FieldType";
 import { ConfigData } from "../../../shared/ConfigData";
 import { useNavigate } from "react-router-dom";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -236,7 +240,9 @@ export default function ActivationKey() {
       ...value,
       createdBy: userType.username,
       dob: moment(value.dob).format("YYYY-MM-DD"),
+      // dob: moment.utc(value.dob),
     };
+
     activationService
       .generateActivationKey(reqBody)
       .then((res) => {
@@ -375,6 +381,12 @@ export default function ActivationKey() {
                           ),
                         }}
                       />
+                      {/* <Field
+                        name="dob"
+                        label="DOB"
+                        component={dateField}
+                        views={["year", "month", "day"]}
+                      /> */}
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
                       <Field

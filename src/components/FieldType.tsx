@@ -4,11 +4,17 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { getIn } from "formik";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import moment from "moment";
 
 interface MyFormValues {
   field: any;
-  form: { touched: any; errors: any };
-  props: any;
+  form: { touched: any; errors: any; setFieldValue: any };
+  label: string;
+  views: [];
 }
 
 interface SelectProps {
@@ -76,6 +82,31 @@ export const selectField = ({
           })}
         </Select>
       </FormControl>
+      {Boolean(getIn(errors, field.name)) && getIn(touched, field.name) && (
+        <small className="text-red-600">{getIn(errors, field.name)}</small>
+      )}
+    </>
+  );
+};
+
+export const dateField = ({
+  field,
+  form: { touched, errors, setFieldValue },
+  ...props
+}: MyFormValues) => {
+  return (
+    <>
+      <LocalizationProvider dateAdapter={AdapterMoment}>
+        <DemoContainer components={["DatePicker"]}>
+          <DatePicker
+            label={props.label}
+            // views={["year", "month", "day"]}
+            value={field.value ? moment.utc(field.value) : null}
+            views={props.views}
+            onChange={(e: any) => setFieldValue(field.name, moment(e))}
+          />
+        </DemoContainer>
+      </LocalizationProvider>
       {Boolean(getIn(errors, field.name)) && getIn(touched, field.name) && (
         <small className="text-red-600">{getIn(errors, field.name)}</small>
       )}
