@@ -10,6 +10,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from "moment";
 
+interface InputProps {
+  field: any;
+  form: { touched: any; errors: any; setFieldValue: any };
+}
 interface MyFormValues {
   field: any;
   form: { touched: any; errors: any; setFieldValue: any };
@@ -29,10 +33,12 @@ export const inputField = ({
   field,
   form: { touched, errors },
   ...props
-}: MyFormValues) => {
+}: InputProps) => {
   return (
     <>
       <TextField
+        id={field.name}
+        autoComplete={field.name}
         {...field}
         {...props}
         variant="outlined"
@@ -43,6 +49,7 @@ export const inputField = ({
             : false
         }
       />
+
       {/* {errors[field.name] && touched[field.name] && (
         <small style={{ color: "red" }}>{errors[field.name]}</small>
       )} */}
