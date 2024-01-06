@@ -13,10 +13,14 @@ import {
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Formik, Form, Field } from "formik";
+import {
+  Formik,
+  Form,
+  // Field
+} from "formik";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import InputAdornment from "@mui/material/InputAdornment";
+// import InputAdornment from "@mui/material/InputAdornment";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
@@ -27,15 +31,20 @@ import Loader from "../../../components/Loader";
 import AddIcon from "@mui/icons-material/Add";
 import moment from "moment";
 import * as Yup from "yup";
-import {
-  // dateField,
-  inputField,
-  selectField,
-} from "../../../components/FieldType";
+// import {
+//   // dateField,
+//   inputField,
+//   selectField,
+// } from "../../../components/FieldType";
 import { ConfigData } from "../../../shared/ConfigData";
 import { useNavigate } from "react-router-dom";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import {
+  DateField,
+  InputField,
+  SelectField,
+} from "../../../components/DynamicField";
 
 export default function ActivationKey() {
   const navigate = useNavigate();
@@ -239,8 +248,8 @@ export default function ActivationKey() {
     const reqBody = {
       ...value,
       createdBy: userType.username,
-      dob: moment(value.dob).format("YYYY-MM-DD"),
-      // dob: moment.utc(value.dob),
+      // dob: moment(value.dob).format("YYYY-MM-DD"),
+      dob: moment.utc(value.dob),
     };
 
     activationService
@@ -337,40 +346,44 @@ export default function ActivationKey() {
               validationSchema={activationKeyValidation}
               onSubmit={handleGenerateKey}
             >
-              {({ handleSubmit }) => (
-                <Form onSubmit={handleSubmit} className="mt-1">
+              {() => (
+                <Form className="mt-1">
                   <Grid
                     container
                     spacing={{ xs: 2, md: 2 }}
                     columns={{ xs: 4, sm: 8, md: 12 }}
                   >
                     <Grid item xs={2} sm={4} md={6}>
-                      <Field name="name" label="Name" component={inputField} />
+                      {/* <Field name="name" label="Name" component={inputField} /> */}
+                      <InputField name="name" label="Name" />
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      <Field
+                      {/* <Field
                         name="username"
                         label="Username"
                         component={inputField}
-                      />
+                      /> */}
+                      <InputField name="username" label="Username" />
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      <Field
+                      {/* <Field
                         name="email"
                         label="Email"
                         type="email"
                         component={inputField}
-                      />
+                      /> */}
+                      <InputField name="email" label="Email" type="email" />
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      <Field
+                      {/* <Field
                         name="mobile"
                         label="Mobile"
                         component={inputField}
-                      />
+                      /> */}
+                      <InputField name="mobile" label="Mobile" />
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      <Field
+                      {/* <Field
                         type="date"
                         name="dob"
                         label="Date Of Birth"
@@ -380,6 +393,11 @@ export default function ActivationKey() {
                             <InputAdornment position="start"></InputAdornment>
                           ),
                         }}
+                      /> */}
+                      <DateField
+                        name="dob"
+                        label="Date Of Birth"
+                        views={["year", "month", "day"]}
                       />
                       {/* <Field
                         name="dob"
@@ -389,7 +407,7 @@ export default function ActivationKey() {
                       /> */}
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      <Field
+                      {/* <Field
                         name="role"
                         label="Role"
                         component={selectField}
@@ -398,20 +416,35 @@ export default function ActivationKey() {
                             ? ConfigData.adminType
                             : ConfigData.HRtype
                         }
+                      /> */}
+                      <SelectField
+                        name="role"
+                        label="Role"
+                        options={
+                          userType?.role === "admin"
+                            ? ConfigData.adminType
+                            : ConfigData.HRtype
+                        }
                       />
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      <Field
+                      {/* <Field
                         name="position"
                         label="Position"
                         component={inputField}
-                      />
+                      /> */}
+                      <InputField name="position" label="Position" />
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      <Field
+                      {/* <Field
                         name="password"
                         label="Password"
                         component={inputField}
+                        type="password"
+                      /> */}
+                      <InputField
+                        name="password"
+                        label="Password"
                         type="password"
                       />
                     </Grid>
