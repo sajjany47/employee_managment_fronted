@@ -22,6 +22,7 @@ export const InputField = (props: any) => {
         size="medium"
         {...field}
         {...props}
+        value={field.value !== null ? field.value : ""}
         variant="outlined"
         className="w-full"
         // helperText={meta.touched ? meta.error : ""}
@@ -48,6 +49,7 @@ export const SelectField = (props: any) => {
           labelId="demo-simple-select-label"
           {...field}
           {...props}
+          value={field.value !== null ? field.value : ""}
           className="w-full"
           // helperText={meta.touched ? meta.error : ""}
           error={meta.touched && Boolean(meta.error)}
@@ -78,7 +80,7 @@ export const DateField = (props: any) => {
           <DatePicker
             label={props.label}
             // views={["year", "month", "day"]}
-            value={field.value ? moment.utc(field.value) : null}
+            value={field.value !== null ? moment.utc(field.value) : ""}
             views={props.views}
             onChange={(e: any) => setFieldValue(field.name, moment(e))}
             slotProps={{

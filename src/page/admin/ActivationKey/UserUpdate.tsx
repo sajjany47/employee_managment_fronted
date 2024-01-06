@@ -1,7 +1,17 @@
-import { Field, FieldArray, Form, Formik } from "formik";
+import {
+  FieldArray,
+  // Field,
+  Form,
+  Formik,
+} from "formik";
 import { useLocation } from "react-router-dom";
-import { Box, Divider, Grid, InputAdornment } from "@mui/material";
-import { inputField, selectField } from "../../../components/FieldType";
+import {
+  Box,
+  Divider,
+  Grid,
+  // InputAdornment
+} from "@mui/material";
+// import {inputField,selectField} from "../../../components/FieldType";
 import { useSelector } from "react-redux";
 import { ConfigData } from "../../../shared/ConfigData";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -14,6 +24,11 @@ import { ActivationService } from "./ActivationServices";
 import { useState } from "react";
 import { useSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
+import {
+  DateField,
+  InputField,
+  SelectField,
+} from "../../../components/DynamicField";
 
 const UserUpdate = () => {
   const activationService = new ActivationService();
@@ -111,7 +126,7 @@ const UserUpdate = () => {
     accountNumber: convertData.bankDetails?.accountNumber,
     ifsc: convertData.bankDetails?.ifsc,
     branchName: convertData.bankDetails?.branchName,
-    dob: moment(convertData.dob).format("YYYY-MM-DD"),
+    dob: moment.utc(convertData.dob),
   };
 
   const userUpdate = (value: any) => {
@@ -187,36 +202,45 @@ const UserUpdate = () => {
               columns={{ xs: 4, sm: 8, md: 12 }}
             >
               <Grid item xs={12} sm={4} md={3}>
-                <Field
+                {/* <Field
                   name="activationCode"
                   label="Activation Code"
                   component={inputField}
                   disabled
+                /> */}
+                <InputField
+                  name="activationCode"
+                  label="Activation Code"
+                  disabled
                 />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field name="name" label="Name" component={inputField} />
+                {/* <Field name="name" label="Name" component={inputField} /> */}
+                <InputField name="name" label="Name" />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field
+                {/* <Field
                   name="username"
                   label="Username"
                   component={inputField}
-                />
+                /> */}
+                <InputField name="username" label="Username" />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field
+                {/* <Field
                   name="email"
                   label="Email"
                   type="email"
                   component={inputField}
-                />
+                /> */}
+                <InputField name="email" label="Email" type="email" />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field name="mobile" label="Mobile" component={inputField} />
+                {/* <Field name="mobile" label="Mobile" component={inputField} /> */}
+                <InputField name="mobile" label="Mobile" />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field
+                {/* <Field
                   type="date"
                   name="dob"
                   label="Date Of Birth"
@@ -226,11 +250,16 @@ const UserUpdate = () => {
                       <InputAdornment position="start"></InputAdornment>
                     ),
                   }}
+                /> */}
+                <DateField
+                  name="dob"
+                  label="Date Of Birth"
+                  views={["year", "month", "day"]}
                 />
               </Grid>
 
               <Grid item xs={12} sm={4} md={3}>
-                <Field
+                {/* <Field
                   name="role"
                   label="Role"
                   component={selectField}
@@ -239,34 +268,49 @@ const UserUpdate = () => {
                       ? ConfigData.adminType
                       : ConfigData.HRtype
                   }
+                /> */}
+                <SelectField
+                  name="role"
+                  label="Role"
+                  options={
+                    userType?.role === "admin"
+                      ? ConfigData.adminType
+                      : ConfigData.HRtype
+                  }
                 />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field
+                {/* <Field
                   name="position"
                   label="Position"
                   component={inputField}
-                />
+                /> */}
+                <InputField name="position" label="Position" />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field name="address" label="Address" component={inputField} />
+                <InputField name="address" label="Address" />
+                {/* <Field name="address" label="Address" component={inputField} /> */}
               </Grid>
 
               <Grid item xs={12} sm={4} md={3}>
-                <Field name="state" label="State" component={inputField} />
+                <InputField name="state" label="State" />
+                {/* <Field name="state" label="State" component={inputField} /> */}
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field
+                {/* <Field
                   name="district"
                   label="District"
                   component={inputField}
-                />
+                /> */}
+                <InputField name="district" label="District" />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field name="city" label="City" component={inputField} />
+                {/* <Field name="city" label="City" component={inputField} /> */}
+                <InputField name="city" label="City" />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field name="pincode" label="Pincode" component={inputField} />
+                {/* <Field name="pincode" label="Pincode" component={inputField} /> */}
+                <InputField name="pincode" label="Pincode" />
               </Grid>
             </Grid>
             <Divider sx={{ margin: "20px" }}>
@@ -293,24 +337,36 @@ const UserUpdate = () => {
                               sx={{ marginBottom: "15px" }}
                             >
                               <Grid item xs={12} sm={4} md={4}>
-                                <Field
+                                {/* <Field
                                   name={`education.${index}.boardName`}
                                   label="Board Name"
                                   component={inputField}
+                                /> */}
+                                <InputField
+                                  name={`education.${index}.boardName`}
+                                  label="Board Name"
                                 />
                               </Grid>
                               <Grid item xs={12} sm={4} md={4}>
-                                <Field
+                                {/* <Field
                                   name={`education.${index}.passingYear`}
                                   label="Passing Year"
                                   component={inputField}
+                                /> */}
+                                <InputField
+                                  name={`education.${index}.passingYear`}
+                                  label="Passing Year"
                                 />
                               </Grid>
                               <Grid item xs={12} sm={4} md={4}>
-                                <Field
+                                {/* <Field
                                   name={`education.${index}.marksPercentage`}
                                   label="Marks (%)"
                                   component={inputField}
+                                /> */}
+                                <InputField
+                                  name={`education.${index}.marksPercentage`}
+                                  label="Marks (%)"
                                 />
                               </Grid>
                             </Grid>
@@ -380,31 +436,47 @@ const UserUpdate = () => {
                               sx={{ marginBottom: "15px" }}
                             >
                               <Grid item xs={12} sm={4} md={3}>
-                                <Field
+                                {/* <Field
                                   name={`workDetail.${index}.companyName`}
                                   label="Company Name"
                                   component={inputField}
+                                /> */}
+                                <InputField
+                                  name={`workDetail.${index}.companyName`}
+                                  label="Company Name"
                                 />
                               </Grid>
                               <Grid item xs={12} sm={4} md={3}>
-                                <Field
+                                {/* <Field
                                   name={`workDetail.${index}.position`}
                                   label="Position"
                                   component={inputField}
+                                /> */}
+                                <InputField
+                                  name={`workDetail.${index}.position`}
+                                  label="Position"
                                 />
                               </Grid>
                               <Grid item xs={12} sm={4} md={3}>
-                                <Field
+                                {/* <Field
                                   name={`workDetail.${index}.startingYear`}
                                   label="Starting Year"
                                   component={inputField}
+                                /> */}
+                                <InputField
+                                  name={`workDetail.${index}.startingYear`}
+                                  label="Starting Year"
                                 />
                               </Grid>
                               <Grid item xs={12} sm={4} md={3}>
-                                <Field
+                                {/* <Field
                                   name={`workDetail.${index}.endingYear`}
                                   label="Ending Year"
                                   component={inputField}
+                                /> */}
+                                <InputField
+                                  name={`workDetail.${index}.endingYear`}
+                                  label="Ending Year"
                                 />
                               </Grid>
                             </Grid>
@@ -472,10 +544,14 @@ const UserUpdate = () => {
                               sx={{ marginBottom: "15px" }}
                             >
                               <Grid item xs={12} sm={4} md={3}>
-                                <Field
+                                {/* <Field
                                   name={`skill.${index}`}
                                   label="Skill"
                                   component={inputField}
+                                /> */}
+                                <InputField
+                                  name={`skill.${index}`}
+                                  label="Skill"
                                 />
                               </Grid>
                             </Grid>
@@ -525,32 +601,36 @@ const UserUpdate = () => {
               columns={{ xs: 4, sm: 8, md: 12 }}
             >
               <Grid item xs={12} sm={4} md={3}>
-                <Field
+                {/* <Field
                   name="aadharNumber"
                   label="Aadhar Number"
                   component={inputField}
-                />
+                /> */}
+                <InputField name="aadharNumber" label="Aadhar Number" />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field
+                {/* <Field
                   name="panNumber"
                   label="Pan Number"
                   component={inputField}
-                />
+                /> */}
+                <InputField name="panNumber" label="Pan Number" />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field
+                {/* <Field
                   name="voterNumber"
                   label="Voter Number"
                   component={inputField}
-                />
+                /> */}
+                <InputField name="voterNumber" label="Voter Number" />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field
+                {/* <Field
                   name="passportNumber"
                   label="Passport Number"
                   component={inputField}
-                />
+                /> */}
+                <InputField name="passportNumber" label="Passport Number" />
               </Grid>
             </Grid>
 
@@ -564,28 +644,32 @@ const UserUpdate = () => {
               columns={{ xs: 4, sm: 8, md: 12 }}
             >
               <Grid item xs={12} sm={4} md={3}>
-                <Field
+                {/* <Field
                   name="bankName"
                   label="Bank Name"
                   component={inputField}
-                />
+                /> */}
+                <InputField name="bankName" label="Bank Name" />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field
+                {/* <Field
                   name="accountNumber"
                   label="Account Number"
                   component={inputField}
-                />
+                /> */}
+                <InputField name="accountNumber" label="Account Number" />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field name="ifsc" label="IFSC Code" component={inputField} />
+                {/* <Field name="ifsc" label="IFSC Code" component={inputField} /> */}
+                <InputField name="ifsc" label="IFSC Code" />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                <Field
+                {/* <Field
                   name="branchName"
                   label="Branch Name"
                   component={inputField}
-                />
+                /> */}
+                <InputField name="branchName" label="Branch Name" />
               </Grid>
             </Grid>
             <Grid
