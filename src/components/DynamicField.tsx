@@ -18,6 +18,7 @@ export const InputField = (props: any) => {
   return (
     <>
       <TextField
+        sx={{ marginTop: 1 }}
         id={field.name}
         size="medium"
         {...field}
@@ -42,9 +43,12 @@ export const SelectField = (props: any) => {
   return (
     <>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">{props.label}</InputLabel>
+        <InputLabel id="demo-simple-select-label" sx={{ marginTop: 1 }}>
+          {props.label}
+        </InputLabel>
         <Select
           // id={field.name}
+          sx={{ marginTop: 1 }}
           size="medium"
           labelId="demo-simple-select-label"
           {...field}
@@ -76,7 +80,7 @@ export const DateField = (props: any) => {
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterMoment}>
-        <DemoContainer components={["DatePicker"]} sx={{ padding: 0 }}>
+        <DemoContainer components={["DatePicker"]} sx={{ paddingTop: 1 }}>
           <DatePicker
             label={props.label}
             // views={["year", "month", "day"]}
