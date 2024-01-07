@@ -276,8 +276,9 @@ export default function ActivationKey() {
             <FormControl sx={{ minWidth: 120 }} size="small">
               <Select value={id} onChange={handleChange}>
                 <MenuItem value={"all"}>All</MenuItem>
+                <MenuItem value={"waiting"}>Waiting</MenuItem>
                 <MenuItem value={"pending"}>Pending</MenuItem>
-                <MenuItem value={"approved"}>Approved</MenuItem>
+                <MenuItem value={"verified"}>Verified</MenuItem>
               </Select>
             </FormControl>
             <Button

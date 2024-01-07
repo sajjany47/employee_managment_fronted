@@ -171,6 +171,7 @@ export default function Sidebar(props: Props) {
               aria-haspopup="true"
               onClick={handleMenu}
               color="inherit"
+              className="rounded-full focus:shadow-outline-purple focus:outline-none"
             >
               <Avatar
                 alt="Remy Sharp"
@@ -192,9 +193,11 @@ export default function Sidebar(props: Props) {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem>Profile</MenuItem>
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
-              <MenuItem>Change Password</MenuItem>
+              <MenuItem className="w-full h-full m-2">Profile</MenuItem>
+              <MenuItem className="w-full h-full m-2" onClick={handleLogout}>
+                Logout
+              </MenuItem>
+              {/* <MenuItem className="w-full h-full m-6">Change Password</MenuItem> */}
             </Menu>
           </Box>
         </Toolbar>

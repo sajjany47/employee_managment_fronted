@@ -132,74 +132,64 @@ const Attendance = () => {
   };
   return (
     <>
-      <Grid container rowSpacing={2} columnSpacing={2}>
-        <Grid item xs={12}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6} md={7}>
-              <h6>
-                <strong>Attendance Details</strong>
-              </h6>
-            </Grid>
-            <Grid item xs={12} sm={6} md={5}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={4} md={4}>
-                  <TextField
-                    label="Search"
-                    id="outlined-size-small"
-                    size="small"
-                    // className="w-full"
-                  />
-                </Grid>
-                <Grid item xs={12} sm={4} md={4}>
-                  <Button
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    onClick={() => navigate("/admin/holiday-list")}
-                  >
-                    Holiday List
-                  </Button>
-                </Grid>
-                <Grid item xs={12} sm={4} md={4}>
-                  <Button
-                    variant="contained"
-                    // startIcon={<AddIcon />}
-                    onClick={handleClick}
-                  >
-                    My Attendance
-                  </Button>
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              md={12}
-              sx={{
-                height: allUserLeaveList.length > 0 ? "100%" : 200,
-                width: "100%",
-              }}
-            >
-              <DataGrid
-                rows={allUserLeaveList}
-                columns={columns}
-                initialState={{
-                  pagination: {
-                    paginationModel: {
-                      pageSize: ConfigData.pageSize,
-                    },
-                  },
-                }}
-                pageSizeOptions={ConfigData.pageRow}
-                localeText={{ noRowsLabel: "No Data Available!!!" }}
-                // checkboxSelection
-                // disableRowSelectionOnClick
-              />
-            </Grid>
-          </Grid>
+      <div className="flex justify-between">
+        <div>
+          <h6>
+            <strong>Attendance Details</strong>
+          </h6>
+        </div>
+        <div className="flex gap-2">
+          <TextField
+            label="Search"
+            id="outlined-size-small"
+            size="small"
+            // className="w-full"
+          />
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => navigate("/admin/holiday-list")}
+          >
+            Holiday List
+          </Button>
+          <Button
+            variant="contained"
+            // startIcon={<AddIcon />}
+            onClick={handleClick}
+          >
+            My Attendance
+          </Button>
+        </div>
+      </div>
+
+      <Grid container rowSpacing={2} columnSpacing={2} marginTop={5}>
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          md={12}
+          sx={{
+            height: allUserLeaveList.length > 0 ? "100%" : 200,
+            width: "100%",
+          }}
+        >
+          <DataGrid
+            rows={allUserLeaveList}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: ConfigData.pageSize,
+                },
+              },
+            }}
+            pageSizeOptions={ConfigData.pageRow}
+            localeText={{ noRowsLabel: "No Data Available!!!" }}
+            // checkboxSelection
+            // disableRowSelectionOnClick
+          />
         </Grid>
       </Grid>
-
       <Dialog
         // fullScreen={fullScreen}
         open={open}
