@@ -10,12 +10,21 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useState } from "react";
-import { Field, Form, Formik } from "formik";
-import { inputField } from "../../../components/FieldType";
+import { Form, Formik } from "formik";
+import { DateField, InputField } from "../../../components/DynamicField";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
+import { AttendanceService } from "./AttendanceService";
+import { enqueueSnackbar } from "notistack";
+import Loader from "../../../components/Loader";
 
 const HolidayList = () => {
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const attendanceService = new AttendanceService();
   const [id, setId] = useState("2024");
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (event: any) => {
     setId(event.target.value);
@@ -29,13 +38,26 @@ const HolidayList = () => {
     setOpen(false);
   };
 
-  const initialValue = {};
+  const initialValue = { holidayDate: "", reason: "" };
 
   const submitLeave = (values: any) => {
-    console.log(values);
+    setLoading(true);
+    attendanceService
+      .createHolidayList(values)
+      .then((res) => {
+        enqueueSnackbar(res.message, { variant: "success" });
+        setLoading(false);
+        handleClose();
+      })
+      .catch((error) => {
+        enqueueSnackbar(error.response.data.message, { variant: "error" });
+        setLoading(false);
+      });
   };
+
   return (
     <>
+      {loading && <Loader />}
       <div className="flex justify-between">
         <h6>
           <strong>Holiday List</strong>
@@ -93,7 +115,7 @@ const HolidayList = () => {
       {/* </div> */}
 
       <Dialog
-        // fullScreen={fullScreen}
+        fullScreen={fullScreen}
         open={open}
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
@@ -111,28 +133,11 @@ const HolidayList = () => {
                   columns={{ xs: 4, sm: 8, md: 12 }}
                 >
                   <Grid item xs={2} sm={4} md={6}>
-                    <Field
-                      name="yearOfHoliday"
-                      label="Year"
-                      component={inputField}
-                    />
-                  </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
-                    <Field
-                      name="dateOfHoliday"
-                      label="Holiday Date"
-                      component={inputField}
-                    />
+                    <DateField name="holidayDate" label="Date" />
                   </Grid>
 
-                  <Grid item xs={2} sm={4} md={12}>
-                    <Field
-                      name="reason"
-                      label="Reason"
-                      component={inputField}
-                      multiline
-                      rows={1}
-                    />
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField name="reason" label="Reason" />
                   </Grid>
                   <Grid
                     item
@@ -155,11 +160,7 @@ const HolidayList = () => {
                     >
                       Cancel
                     </Button>
-                    <Button
-                      // onClick={handleGenerateKey}
-                      variant="contained"
-                      type="submit"
-                    >
+                    <Button variant="contained" type="submit">
                       Submit
                     </Button>
                   </Grid>
