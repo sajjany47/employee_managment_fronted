@@ -5,6 +5,7 @@ import {
   DialogTitle,
   // FormControl,
   Grid,
+  IconButton,
   // MenuItem,
   // Select,
 } from "@mui/material";
@@ -23,6 +24,8 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from "moment";
+import * as Yup from "yup";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const HolidayList = () => {
   const theme = useTheme();
@@ -71,6 +74,11 @@ const HolidayList = () => {
 
   const initialValue = { holidayDate: "", reason: "" };
 
+  const validationSchema = Yup.object().shape({
+    holidayDate: Yup.string().required("Date of Holiday is required"),
+    reason: Yup.string().required("Reason is required"),
+  });
+
   const submitLeave = (values: any) => {
     setLoading(true);
     attendanceService
@@ -79,6 +87,7 @@ const HolidayList = () => {
         enqueueSnackbar(res.message, { variant: "success" });
         setLoading(false);
         handleClose();
+        holidayList(id);
       })
       .catch((error) => {
         enqueueSnackbar(error.response.data.message, { variant: "error" });
@@ -86,7 +95,21 @@ const HolidayList = () => {
       });
   };
 
-  console.log(holidayListData);
+  const handelDeleteHoliday = (item: any) => {
+    console.log(item);
+    const requestData = { _id: item._id, holidayYear: item.holidayYear };
+    attendanceService
+      .deleteHolidayList(requestData)
+      .then((res) => {
+        enqueueSnackbar(res.message, { variant: "success" });
+        holidayList(id);
+      })
+      .catch((error) => {
+        enqueueSnackbar(error.response.data.message, { variant: "error" });
+        setLoading(false);
+      });
+  };
+
   return (
     <>
       {loading && <Loader />}
@@ -98,8 +121,10 @@ const HolidayList = () => {
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <DemoContainer components={["DatePicker"]}>
               <DatePicker
+                sx={{ width: "50% " }}
                 label="Select Year"
                 value={id}
+                slotProps={{ textField: { size: "small", fullWidth: false } }}
                 views={["year"]}
                 // onChange={(newValue) => setId(moment.utc(newValue))}
                 onChange={handleChange}
@@ -110,7 +135,7 @@ const HolidayList = () => {
           <Button
             variant="contained"
             startIcon={<AddIcon />}
-            sx={{ minWidth: 150, height: "55px", marginTop: "6px" }}
+            sx={{ minWidth: 140 }}
             onClick={handleClickOpen}
           >
             Add
@@ -119,43 +144,21 @@ const HolidayList = () => {
       </div>
 
       {/* <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-5"> */}
-      {holidayListData?.map((item: any, index) => {
-        return (
-          <Fragment key={index}>
-            {moment(item.holidayList.holidayDate).format("DD-MM-YYYY") <
-            moment(new Date()).format("DD-MM-YYYY") ? (
-              <>
-                {" "}
-                <div className="max-w-md  bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-3">
+      {holidayListData.length > 0 ? (
+        holidayListData?.map((item: any, index) => {
+          return (
+            <Fragment key={index}>
+              <div className=" bg-white rounded-xl shadow-md overflow-hidden  m-3">
+                <div className="flex justify-between">
                   <div className="p-4 flex items-center">
-                    <div className="pr-4 bg-blue-500 p-2 rounded-lg text-center">
+                    <div
+                      className={`pr-4 ${
+                        new Date(item.holidayList.holidayDate) > new Date()
+                          ? "bg-blue-500"
+                          : "bg-blue-200"
+                      } p-2 rounded-lg text-center`}
+                    >
                       <p className="text-4xl font-bold text-white">
-                        {moment(item.holidayList.holidayDate).format("DDDD")}
-                      </p>
-                      <p className="text-sm text-white">
-                        {" "}
-                        {moment(item.holidayList.holidayDate).format(
-                          "MMMM, YYYY"
-                        )}
-                      </p>
-                    </div>
-                    <div className="ml-4">
-                      <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
-                        {item.holidayList.reason}
-                      </div>
-                      {/* <p className="mt-2 text-gray-500">Event Details...</p> */}
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                {" "}
-                <div className="max-w-md  bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-3">
-                  <div className="p-4 flex items-center">
-                    <div className="pr-4 bg-blue-200 p-2 rounded-lg text-center">
-                      <p className="text-4xl font-bold text-white">
-                        {" "}
                         {moment(item.holidayList.holidayDate).format("DDD")}
                       </p>
                       <p className="text-sm text-white">
@@ -169,15 +172,41 @@ const HolidayList = () => {
                       <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
                         {item.holidayList.reason}
                       </div>
-                      {/* <p className="mt-2 text-gray-500">9:20 AM - 9:40 AM</p> */}
+                      <p className="mt-2 text-gray-500">
+                        {moment(item.holidayList.holidayDate).format("dddd")}
+                      </p>
                     </div>
                   </div>
+                  <div className="p-4 flex items-center">
+                    {" "}
+                    <IconButton
+                      aria-label="delete"
+                      onClick={() => handelDeleteHoliday(item)}
+                      sx={{
+                        ":hover": {
+                          backgroundColor: "whitesmoke",
+                        },
+                      }}
+                    >
+                      <DeleteIcon
+                        sx={{
+                          fontSize: "30px",
+                          margin: "auto",
+                          color: "red",
+                        }}
+                      />
+                    </IconButton>
+                  </div>
                 </div>
-              </>
-            )}
-          </Fragment>
-        );
-      })}
+              </div>
+            </Fragment>
+          );
+        })
+      ) : (
+        <div className=" mt-20 ">
+          <h4 className="text-center"> No Data Avliable</h4>
+        </div>
+      )}
 
       {/* </div> */}
 
@@ -191,7 +220,11 @@ const HolidayList = () => {
           <strong>Add Holiday</strong>
         </DialogTitle>
         <DialogContent>
-          <Formik initialValues={initialValue} onSubmit={submitLeave}>
+          <Formik
+            initialValues={initialValue}
+            onSubmit={submitLeave}
+            validationSchema={validationSchema}
+          >
             {({ handleSubmit }) => (
               <Form onSubmit={handleSubmit} className="mt-3">
                 <Grid
