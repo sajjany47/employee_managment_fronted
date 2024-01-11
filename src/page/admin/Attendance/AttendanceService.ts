@@ -24,4 +24,16 @@ export class AttendanceService {
       throw err;
     }
   };
+
+  getHolidayList = async (id: any) => {
+    try {
+      const response = await axios.get(`${apiPath}/holiday-list/${id}`, {
+        headers: this.headers,
+      });
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
 }
