@@ -3,13 +3,13 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  FormControl,
+  // FormControl,
   Grid,
-  MenuItem,
-  Select,
+  // MenuItem,
+  // Select,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import { DateField, InputField } from "../../../components/DynamicField";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -17,17 +17,48 @@ import { useTheme } from "@mui/material/styles";
 import { AttendanceService } from "./AttendanceService";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
+import { useSelector } from "react-redux";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import moment from "moment";
 
 const HolidayList = () => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const attendanceService = new AttendanceService();
-  const [id, setId] = useState("2024");
+  const [id, setId] = useState(moment.utc(new Date()));
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [holidayListData, setHolidayListData] = useState([]);
 
-  const handleChange = (event: any) => {
-    setId(event.target.value);
+  const userType = useSelector((state: any) => state.auth.auth.user);
+
+  useEffect(() => {
+    holidayList(moment(id).format("YYYY"));
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleChange = (value: any) => {
+    setId(moment.utc(value));
+    const formatDate = moment(value).format("YYYY");
+    holidayList(formatDate);
+  };
+
+  const holidayList = (year: any) => {
+    setLoading(true);
+    attendanceService
+      .getHolidayList(year)
+      .then((res) => {
+        setHolidayListData(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        enqueueSnackbar(err.response.data.message, { variant: "error" });
+        setLoading(false);
+      });
   };
 
   const handleClickOpen = () => {
@@ -43,7 +74,7 @@ const HolidayList = () => {
   const submitLeave = (values: any) => {
     setLoading(true);
     attendanceService
-      .createHolidayList(values)
+      .createHolidayList({ ...values, createdBy: userType.username })
       .then((res) => {
         enqueueSnackbar(res.message, { variant: "success" });
         setLoading(false);
@@ -55,6 +86,7 @@ const HolidayList = () => {
       });
   };
 
+  console.log(holidayListData);
   return (
     <>
       {loading && <Loader />}
@@ -63,18 +95,22 @@ const HolidayList = () => {
           <strong>Holiday List</strong>
         </h6>
         <div className="flex justify-between gap-1">
-          <FormControl sx={{ minWidth: 150 }} size="small">
-            <Select value={id} onChange={handleChange}>
-              <MenuItem value={"2024"}>2024</MenuItem>
-              <MenuItem value={"2023"}>2023</MenuItem>
-              <MenuItem value={"2022"}>2022</MenuItem>
-            </Select>
-          </FormControl>
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <DemoContainer components={["DatePicker"]}>
+              <DatePicker
+                label="Select Year"
+                value={id}
+                views={["year"]}
+                // onChange={(newValue) => setId(moment.utc(newValue))}
+                onChange={handleChange}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
+
           <Button
             variant="contained"
             startIcon={<AddIcon />}
-            sx={{ minWidth: 150 }}
-            size="small"
+            sx={{ minWidth: 150, height: "55px", marginTop: "6px" }}
             onClick={handleClickOpen}
           >
             Add
@@ -83,35 +119,66 @@ const HolidayList = () => {
       </div>
 
       {/* <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-5"> */}
-      <div className="max-w-md  bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-3">
-        <div className="p-4 flex items-center">
-          <div className="pr-4 bg-blue-500 p-2 rounded-lg text-center">
-            <p className="text-4xl font-bold text-white">18th</p>
-            <p className="text-sm text-white">November, 2023</p>
-          </div>
-          <div className="ml-4">
-            <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
-              9:20 AM - 9:40 AM
-            </div>
-            <p className="mt-2 text-gray-500">Event Details...</p>
-          </div>
-        </div>
-      </div>
+      {holidayListData?.map((item: any, index) => {
+        return (
+          <Fragment key={index}>
+            {moment(item.holidayList.holidayDate).format("DD-MM-YYYY") <
+            moment(new Date()).format("DD-MM-YYYY") ? (
+              <>
+                {" "}
+                <div className="max-w-md  bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-3">
+                  <div className="p-4 flex items-center">
+                    <div className="pr-4 bg-blue-500 p-2 rounded-lg text-center">
+                      <p className="text-4xl font-bold text-white">
+                        {moment(item.holidayList.holidayDate).format("DDDD")}
+                      </p>
+                      <p className="text-sm text-white">
+                        {" "}
+                        {moment(item.holidayList.holidayDate).format(
+                          "MMMM, YYYY"
+                        )}
+                      </p>
+                    </div>
+                    <div className="ml-4">
+                      <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+                        {item.holidayList.reason}
+                      </div>
+                      {/* <p className="mt-2 text-gray-500">Event Details...</p> */}
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                {" "}
+                <div className="max-w-md  bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-3">
+                  <div className="p-4 flex items-center">
+                    <div className="pr-4 bg-blue-200 p-2 rounded-lg text-center">
+                      <p className="text-4xl font-bold text-white">
+                        {" "}
+                        {moment(item.holidayList.holidayDate).format("DDD")}
+                      </p>
+                      <p className="text-sm text-white">
+                        {" "}
+                        {moment(item.holidayList.holidayDate).format(
+                          "MMMM, YYYY"
+                        )}
+                      </p>
+                    </div>
+                    <div className="ml-4">
+                      <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+                        {item.holidayList.reason}
+                      </div>
+                      {/* <p className="mt-2 text-gray-500">9:20 AM - 9:40 AM</p> */}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </Fragment>
+        );
+      })}
 
-      <div className="max-w-md  bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-3">
-        <div className="p-4 flex items-center">
-          <div className="pr-4 bg-blue-200 p-2 rounded-lg text-center">
-            <p className="text-4xl font-bold text-white">18th</p>
-            <p className="text-sm text-white">November, 2023</p>
-          </div>
-          <div className="ml-4">
-            <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
-              Clinic Appointment
-            </div>
-            <p className="mt-2 text-gray-500">9:20 AM - 9:40 AM</p>
-          </div>
-        </div>
-      </div>
       {/* </div> */}
 
       <Dialog
