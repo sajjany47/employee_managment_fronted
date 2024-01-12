@@ -19,11 +19,11 @@ export const InputField = (props: any) => {
     <>
       <TextField
         sx={{ marginTop: 1 }}
-        id={field.name}
         size="medium"
         {...field}
         {...props}
         value={field.value !== null ? field.value : ""}
+        id={field.name}
         variant="outlined"
         className="w-full"
         // helperText={meta.touched ? meta.error : ""}
@@ -87,6 +87,7 @@ export const DateField = (props: any) => {
             value={field.value !== null ? moment.utc(field.value) : ""}
             views={props.views}
             onChange={(e: any) => setFieldValue(field.name, moment(e))}
+            sx={{ width: "100%" }}
             slotProps={{
               textField: {
                 size: "medium",

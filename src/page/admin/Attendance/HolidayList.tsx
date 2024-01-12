@@ -42,7 +42,7 @@ const HolidayList = () => {
     holidayList(moment(id).format("YYYY"));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id, open, loading]);
 
   const handleChange = (value: any) => {
     setId(moment.utc(value));
@@ -96,8 +96,10 @@ const HolidayList = () => {
   };
 
   const handelDeleteHoliday = (item: any) => {
-    console.log(item);
-    const requestData = { _id: item._id, holidayYear: item.holidayYear };
+    const requestData = {
+      _id: item.holidayList._id,
+      holidayYear: item.holidayYear,
+    };
     attendanceService
       .deleteHolidayList(requestData)
       .then((res) => {
