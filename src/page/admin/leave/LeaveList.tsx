@@ -35,19 +35,19 @@ const LeaveList = () => {
 
   useEffect(() => {
     userList();
-    leaveList(moment(id).format("YYYY"));
+    leaveListApi(moment(id).format("YYYY"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   const handleChange = (value: any) => {
     setId(moment.utc(value));
     const formatDate = moment(value).format("YYYY");
-    leaveList(formatDate);
+    leaveListApi(formatDate);
   };
 
-  const leaveList = (id: any) => {
+  const leaveListApi = (value: any) => {
     leaveService
-      .leaveList(id)
+      .leaveList(value)
       .then((res) => {
         setLeaveListData(res.data);
       })
@@ -151,7 +151,7 @@ const LeaveList = () => {
         <h6>
           <strong>Leave Details</strong>
         </h6>
-        <div>
+        <div className="flex gap-1">
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <DemoContainer components={["DatePicker"]}>
               <DatePicker

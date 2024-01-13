@@ -147,7 +147,7 @@ const HolidayList = () => {
 
       {/* <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-5"> */}
       {holidayListData.length > 0 ? (
-        holidayListData?.map((item: any, index) => {
+        holidayListData?.map((item: any, index: any) => {
           return (
             <Fragment key={index}>
               <div className=" bg-white rounded-xl shadow-md overflow-hidden  m-3">
