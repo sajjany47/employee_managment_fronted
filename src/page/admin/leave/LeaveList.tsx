@@ -7,21 +7,48 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState } from "react";
-import { Field, Form, Formik } from "formik";
-import { inputField, selectField } from "../../../components/FieldType";
+import { Form, Formik } from "formik";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { ConfigData } from "../../../shared/ConfigData";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import {
+  DateField,
+  InputField,
+  SelectField,
+} from "../../../components/DynamicField";
+import { LeaveService } from "./LeaveService";
+import { enqueueSnackbar } from "notistack";
+import Loader from "../../../components/Loader";
 
 const LeaveList = () => {
+  const leaveService = new LeaveService();
   const [open, setOpen] = useState(false);
   const [usernameList, setUsernameList] = useState([]);
   const [leaveListData, setLeaveListData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setUsernameList([]);
+    userList();
     setLeaveListData([]);
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  const userList = () => {
+    leaveService
+      .userList()
+      .then((res) =>
+        setUsernameList(
+          res.data.map((item: any) => ({
+            ...item,
+            value: item.username,
+            label: `${item.name} (${item.username})`,
+          }))
+        )
+      )
+      .catch((err: any) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      );
+  };
 
   const columns: GridColDef[] = [
     {
@@ -74,23 +101,34 @@ const LeaveList = () => {
     setOpen(false);
   };
 
-  const initialValue = {};
+  const initialValue = { user_id: "", leaveYear: "", leaveAlloted: "" };
 
   const submitLeave = (values: any) => {
-    console.log(values);
+    setLoading(true);
+    leaveService
+      .singleLeaveAlloted(values)
+      .then((res) => {
+        enqueueSnackbar(res.message, { variant: "success" });
+        setLoading(false);
+      })
+      .catch((error) => {
+        enqueueSnackbar(error.response.data.message, { variant: "error" });
+        setLoading(false);
+      });
   };
   return (
     <>
+      {loading && <Loader />}
       <div className="flex justify-between">
         <h6>
-          <strong>Attendance Details</strong>
+          <strong>Leave Details</strong>
         </h6>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={handleClickOpen}
         >
-          Leave
+          Leave Alloted
         </Button>
       </div>
       <div
@@ -136,26 +174,21 @@ const LeaveList = () => {
                   columns={{ xs: 4, sm: 8, md: 12 }}
                 >
                   <Grid item xs={2} sm={4} md={6}>
-                    <Field
-                      name="username"
+                    <SelectField
+                      name="user_id"
                       label="Username"
-                      component={selectField}
                       options={usernameList}
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
-                    <Field
-                      name="yearOfLeave"
+                    <DateField
+                      name="leaveYear"
                       label="Leave Year"
-                      component={inputField}
+                      views={["year"]}
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
-                    <Field
-                      name="allotedLeave"
-                      label="Alloted Leave"
-                      component={inputField}
-                    />
+                    <InputField name="leaveAlloted" label="Alloted Leave" />
                   </Grid>
                   <Grid
                     item
