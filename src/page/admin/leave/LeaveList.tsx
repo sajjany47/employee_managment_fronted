@@ -8,8 +8,6 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { ConfigData } from "../../../shared/ConfigData";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
   DateField,
@@ -24,9 +22,13 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from "moment";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { ConfigData } from "../../../shared/ConfigData";
+import { useSelector } from "react-redux";
 
 const LeaveList = () => {
   const leaveService = new LeaveService();
+  const userType = useSelector((state: any) => state.auth.auth.user);
   const [open, setOpen] = useState(false);
   const [id, setId] = useState(moment.utc(new Date()));
   const [usernameList, setUsernameList] = useState([]);
@@ -76,35 +78,61 @@ const LeaveList = () => {
       });
   };
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const initialValue = { user_id: "", leaveYear: "", leaveAlloted: "" };
+
+  const submitLeave = (values: any) => {
+    setLoading(true);
+    leaveService
+      .singleLeaveAlloted({ ...values, createdBy: userType.username })
+      .then((res) => {
+        enqueueSnackbar(res.message, { variant: "success" });
+        setLoading(false);
+      })
+      .catch((error) => {
+        enqueueSnackbar(error.response.data.message, { variant: "error" });
+        setLoading(false);
+      });
+  };
+
   const columns: GridColDef[] = [
     {
-      field: "leaveDetail.leaveYear",
+      field: "leaveYear",
       headerName: "Year Of Leave",
       width: 200,
+      renderCell: (value: any) => (
+        <span>{value.row.leaveDetail.leaveYear}</span>
+      ),
     },
     {
-      field: "",
+      field: "user_id",
       headerName: "Username",
       width: 150,
+      renderCell: (value: any) => <span>{value.row.user_id}</span>,
     },
     {
-      field: "",
+      field: "totalLeave",
       headerName: "Alloted Leave",
       width: 200,
+      renderCell: (value: any) => (
+        <span>{value.row.leaveDetail.totalLeave}</span>
+      ),
     },
 
     {
       field: "",
-      headerName: "Used Leave",
-      width: 200,
+      headerName: "UpdatedBy ",
+      width: 130,
+      renderCell: (value: any) => (
+        <span>{value.row.leaveDetail?.updatedBy}</span>
+      ),
     },
-    {
-      field: "",
-      headerName: "Total Days",
-      width: 150,
-    },
-
-    { field: "", headerName: "UpdatedBy ", width: 130 },
     {
       field: "action",
       headerName: "Action",
@@ -119,29 +147,6 @@ const LeaveList = () => {
       ),
     },
   ];
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const initialValue = { user_id: "", leaveYear: "", leaveAlloted: "" };
-
-  const submitLeave = (values: any) => {
-    setLoading(true);
-    leaveService
-      .singleLeaveAlloted(values)
-      .then((res) => {
-        enqueueSnackbar(res.message, { variant: "success" });
-        setLoading(false);
-      })
-      .catch((error) => {
-        enqueueSnackbar(error.response.data.message, { variant: "error" });
-        setLoading(false);
-      });
-  };
 
   console.log(leaveListData);
   return (
@@ -176,14 +181,15 @@ const LeaveList = () => {
       </div>
       <div
         className="mt-10"
-        style={{
-          height: leaveListData.length > 0 ? "100%" : 200,
-          width: "100%",
-        }}
+        // style={{
+        //   height: leaveListData.length === 0 ? "100%" : 200,
+        //   width: "100%",
+        // }}
       >
         <DataGrid
-          rows={[]}
+          rows={leaveListData}
           columns={columns}
+          getRowId={(row) => row._id}
           initialState={{
             pagination: {
               paginationModel: {
