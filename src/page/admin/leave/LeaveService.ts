@@ -25,6 +25,18 @@ export class LeaveService {
     }
   };
 
+  leaveList = async (id: any) => {
+    try {
+      const response = await axios.get(`${apiPath}/leave-alloted-list/${id}`, {
+        headers: this.headers,
+      });
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
+
   singleLeaveAlloted = async (payload: any) => {
     try {
       const response = await axios.post(

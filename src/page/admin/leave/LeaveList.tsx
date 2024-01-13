@@ -19,66 +19,92 @@ import {
 import { LeaveService } from "./LeaveService";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import moment from "moment";
 
 const LeaveList = () => {
   const leaveService = new LeaveService();
   const [open, setOpen] = useState(false);
+  const [id, setId] = useState(moment.utc(new Date()));
   const [usernameList, setUsernameList] = useState([]);
   const [leaveListData, setLeaveListData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     userList();
-    setLeaveListData([]);
+    leaveList(moment(id).format("YYYY"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
+  const handleChange = (value: any) => {
+    setId(moment.utc(value));
+    const formatDate = moment(value).format("YYYY");
+    leaveList(formatDate);
+  };
+
+  const leaveList = (id: any) => {
+    leaveService
+      .leaveList(id)
+      .then((res) => {
+        setLeaveListData(res.data);
+      })
+      .catch((err: any) => {
+        setLoading(false);
+        enqueueSnackbar(err.response.data.message, { variant: "error" });
+      });
+  };
   const userList = () => {
+    setLoading(true);
     leaveService
       .userList()
-      .then((res) =>
+      .then((res) => {
         setUsernameList(
           res.data.map((item: any) => ({
             ...item,
             value: item.username,
             label: `${item.name} (${item.username})`,
           }))
-        )
-      )
-      .catch((err: any) =>
-        enqueueSnackbar(err.response.data.message, { variant: "error" })
-      );
+        );
+        setLoading(false);
+      })
+      .catch((err: any) => {
+        setLoading(false);
+        enqueueSnackbar(err.response.data.message, { variant: "error" });
+      });
   };
 
   const columns: GridColDef[] = [
     {
-      field: "yearOfLeave",
+      field: "leaveDetail.leaveYear",
       headerName: "Year Of Leave",
       width: 200,
     },
     {
-      field: "username",
+      field: "",
       headerName: "Username",
       width: 150,
     },
     {
-      field: "allotedLeave",
+      field: "",
       headerName: "Alloted Leave",
       width: 200,
     },
 
     {
-      field: "usedLeave",
+      field: "",
       headerName: "Used Leave",
       width: 200,
     },
     {
-      field: "totalDay",
+      field: "",
       headerName: "Total Days",
       width: 150,
     },
 
-    { field: "updatedBy", headerName: "UpdatedBy ", width: 130 },
+    { field: "", headerName: "UpdatedBy ", width: 130 },
     {
       field: "action",
       headerName: "Action",
@@ -116,6 +142,8 @@ const LeaveList = () => {
         setLoading(false);
       });
   };
+
+  console.log(leaveListData);
   return (
     <>
       {loading && <Loader />}
@@ -123,13 +151,28 @@ const LeaveList = () => {
         <h6>
           <strong>Leave Details</strong>
         </h6>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleClickOpen}
-        >
-          Leave Alloted
-        </Button>
+        <div>
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <DemoContainer components={["DatePicker"]}>
+              <DatePicker
+                sx={{ width: "50% " }}
+                label="Select Year"
+                value={id}
+                slotProps={{ textField: { size: "small", fullWidth: false } }}
+                views={["year"]}
+                // onChange={(newValue) => setId(moment.utc(newValue))}
+                onChange={handleChange}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleClickOpen}
+          >
+            Leave Alloted
+          </Button>
+        </div>
       </div>
       <div
         className="mt-10"
@@ -139,7 +182,7 @@ const LeaveList = () => {
         }}
       >
         <DataGrid
-          rows={leaveListData}
+          rows={[]}
           columns={columns}
           initialState={{
             pagination: {
