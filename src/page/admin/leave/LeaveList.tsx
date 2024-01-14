@@ -36,7 +36,7 @@ const LeaveList = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    userList();
+    userList(moment(new Date()).format("YYYY"));
     leaveListApi(moment(id).format("YYYY"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -58,10 +58,10 @@ const LeaveList = () => {
         enqueueSnackbar(err.response.data.message, { variant: "error" });
       });
   };
-  const userList = () => {
+  const userList = (value: any) => {
     setLoading(true);
     leaveService
-      .userList()
+      .userList(moment(value).format("YYYY"))
       .then((res) => {
         setUsernameList(
           res.data.map((item: any) => ({
@@ -99,6 +99,11 @@ const LeaveList = () => {
         enqueueSnackbar(error.response.data.message, { variant: "error" });
         setLoading(false);
       });
+  };
+
+  const handelDate = (setFieldValue: any, value: any) => {
+    setFieldValue("leaveYear", moment(value));
+    userList(moment(value).format("YYYY"));
   };
 
   const columns: GridColDef[] = [
@@ -215,7 +220,7 @@ const LeaveList = () => {
         </DialogTitle>
         <DialogContent>
           <Formik initialValues={initialValue} onSubmit={submitLeave}>
-            {({ handleSubmit }) => (
+            {({ handleSubmit, setFieldValue, values }) => (
               <Form onSubmit={handleSubmit}>
                 <Grid
                   container
@@ -223,19 +228,26 @@ const LeaveList = () => {
                   columns={{ xs: 4, sm: 8, md: 12 }}
                 >
                   <Grid item xs={2} sm={4} md={6}>
+                    <DateField
+                      name="leaveYear"
+                      label="Leave Year"
+                      views={["year"]}
+                      value={
+                        values.leaveYear !== " "
+                          ? moment.utc(values.leaveYear)
+                          : moment.utc(new Date())
+                      }
+                      onChange={(e: any) => handelDate(setFieldValue, e)}
+                    />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
                     <SelectField
                       name="user_id"
                       label="Username"
                       options={usernameList}
                     />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
-                    <DateField
-                      name="leaveYear"
-                      label="Leave Year"
-                      views={["year"]}
-                    />
-                  </Grid>
+
                   <Grid item xs={2} sm={4} md={6}>
                     <InputField name="leaveAlloted" label="Alloted Leave" />
                   </Grid>
