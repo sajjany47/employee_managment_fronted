@@ -108,3 +108,36 @@ export const DateField = (props: any) => {
     </>
   );
 };
+
+export const OnChangeDateField = (props: any) => {
+  const [field, meta] = useField(props);
+
+  return (
+    <>
+      <LocalizationProvider dateAdapter={AdapterMoment}>
+        <DemoContainer components={["DatePicker"]} sx={{ paddingTop: 1 }}>
+          <DatePicker
+            label={props.label}
+            // views={["year", "month", "day"]}
+            views={props.views}
+            sx={{ width: "100%" }}
+            slotProps={{
+              textField: {
+                size: "medium",
+                error:
+                  getIn(meta.error, field.name) &&
+                  getIn(meta.touched, field.name)
+                    ? true
+                    : false,
+              },
+            }}
+          />
+        </DemoContainer>
+      </LocalizationProvider>
+
+      {/* {meta.touched && meta.error ? (
+        <div className="error">{meta.error}</div>
+      ) : null} */}
+    </>
+  );
+};

@@ -10,8 +10,9 @@ import { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
-  DateField,
+  // DateField,
   InputField,
+  OnChangeDateField,
   SelectField,
 } from "../../../components/DynamicField";
 import { LeaveService } from "./LeaveService";
@@ -36,10 +37,10 @@ const LeaveList = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    userList(moment(new Date()).format("YYYY"));
+    // userList(new Date());
     leaveListApi(moment(id).format("YYYY"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+  }, [open, loading]);
 
   const handleChange = (value: any) => {
     setId(moment.utc(value));
@@ -58,10 +59,10 @@ const LeaveList = () => {
         enqueueSnackbar(err.response.data.message, { variant: "error" });
       });
   };
-  const userList = (value: any) => {
+  const userList = (year: any) => {
     setLoading(true);
     leaveService
-      .userList(moment(value).format("YYYY"))
+      .userList(moment(year).format("YYYY"))
       .then((res) => {
         setUsernameList(
           res.data.map((item: any) => ({
@@ -85,7 +86,7 @@ const LeaveList = () => {
     setOpen(false);
   };
 
-  const initialValue = { user_id: "", leaveYear: "", leaveAlloted: "" };
+  const initialValue = { user_id: "", leaveYear: null, leaveAlloted: "" };
 
   const submitLeave = (values: any) => {
     setLoading(true);
@@ -102,8 +103,9 @@ const LeaveList = () => {
   };
 
   const handelDate = (setFieldValue: any, value: any) => {
-    setFieldValue("leaveYear", moment(value));
-    userList(moment(value).format("YYYY"));
+    console.log(value);
+    setFieldValue("leaveYear", moment.utc(value));
+    userList(value);
   };
 
   const columns: GridColDef[] = [
@@ -153,7 +155,6 @@ const LeaveList = () => {
     },
   ];
 
-  console.log(leaveListData);
   return (
     <>
       {loading && <Loader />}
@@ -228,12 +229,12 @@ const LeaveList = () => {
                   columns={{ xs: 4, sm: 8, md: 12 }}
                 >
                   <Grid item xs={2} sm={4} md={6}>
-                    <DateField
+                    <OnChangeDateField
                       name="leaveYear"
                       label="Leave Year"
                       views={["year"]}
                       value={
-                        values.leaveYear !== " "
+                        values.leaveYear !== null
                           ? moment.utc(values.leaveYear)
                           : moment.utc(new Date())
                       }

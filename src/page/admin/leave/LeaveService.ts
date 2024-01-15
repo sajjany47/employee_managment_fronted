@@ -13,9 +13,9 @@ export class LeaveService {
     };
   }
 
-  userList = async (id: any) => {
+  userList = async (year: any) => {
     try {
-      const response = await axios.get(`${apiPath}/userlist/leave/${id}`, {
+      const response = await axios.get(`${apiPath}/userlist/leave/${year}`, {
         headers: this.headers,
       });
       return response.data;
