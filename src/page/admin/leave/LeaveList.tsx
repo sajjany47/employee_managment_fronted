@@ -30,9 +30,11 @@ const LeaveList = () => {
   const [usernameList, setUsernameList] = useState([]);
   const [leaveListData, setLeaveListData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [modalStatus, setModalStatus] = useState("add");
+  const [editData, setEditData] = useState<any>({});
 
   useEffect(() => {
-    leaveListApi(moment(id).format("YYYY"));
+    leaveListApi(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
@@ -44,13 +46,13 @@ const LeaveList = () => {
 
   const leaveListApi = (value: any) => {
     leaveService
-      .leaveList(value)
+      .leaveList(moment(value).format("YYYY"))
       .then((res) => {
         setLeaveListData(res.data);
       })
       .catch((err: any) => {
         setLoading(false);
-        enqueueSnackbar(err.response.data.message, { variant: "error" });
+        enqueueSnackbar(err.response?.data?.message, { variant: "error" });
       });
   };
   const userList = (year: any) => {
@@ -74,32 +76,71 @@ const LeaveList = () => {
   };
 
   const handleClickOpen = () => {
+    setModalStatus("add");
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
     setUsernameList([]);
+    leaveListApi(new Date());
   };
 
-  const initialValue = { user_id: "", leaveYear: "", leaveAlloted: "" };
-
   const submitLeave = (values: any) => {
+    // console.log(values);
     setLoading(true);
-    leaveService
-      .singleLeaveAlloted({ ...values, createdBy: userType.username })
-      .then((res) => {
-        enqueueSnackbar(res.message, { variant: "success" });
-        setLoading(false);
-      })
-      .catch((error) => {
-        enqueueSnackbar(error.response.data.message, { variant: "error" });
-        setLoading(false);
-      });
+    if (modalStatus === "add") {
+      leaveService
+        .singleLeaveAlloted({ ...values, createdBy: userType.username })
+        .then((res) => {
+          enqueueSnackbar(res.message, { variant: "success" });
+          setLoading(false);
+          handleClose();
+        })
+        .catch((error) => {
+          enqueueSnackbar(error.response.data.message, { variant: "error" });
+          setLoading(false);
+        });
+    }
+
+    if (modalStatus === "edit") {
+      let requestBody: any = {
+        user_id: values.user_id,
+        leaveAlloted: values.leaveAlloted,
+        _id: values._id,
+        updatedBy: userType.username,
+      };
+      if (editData?.leaveYear !== moment(values?.leaveYear).format("YYYY")) {
+        requestBody = { ...requestBody, leaveYear: values?.leaveYear };
+      }
+      console.log(requestBody);
+      leaveService
+        .singleEditLeaveAlloted(requestBody)
+        .then((res) => {
+          enqueueSnackbar(res.message, { variant: "success" });
+          setLoading(false);
+          handleClose();
+        })
+        .catch((error) => {
+          enqueueSnackbar(error.response.data.message, { variant: "error" });
+          setLoading(false);
+        });
+    }
   };
 
   const handelDate = (setFieldValue: any, value: any) => {
     setFieldValue("leaveYear", moment.utc(value));
     userList(value);
+  };
+
+  const handelEditClick = (data: any) => {
+    setModalStatus("edit");
+    setEditData({
+      user_id: data.user_id,
+      leaveYear: data.leaveDetail.leaveYear,
+      leaveAlloted: data.leaveDetail.totalLeave,
+      _id: data.leaveDetail._id,
+    });
+    setOpen(true);
   };
 
   const columns: GridColDef[] = [
@@ -114,7 +155,7 @@ const LeaveList = () => {
     {
       field: "user_id",
       headerName: "Username",
-      width: 150,
+      width: 200,
       renderCell: (value: any) => <span>{value.row.user_id}</span>,
     },
     {
@@ -129,7 +170,7 @@ const LeaveList = () => {
     {
       field: "",
       headerName: "UpdatedBy ",
-      width: 130,
+      width: 200,
       renderCell: (value: any) => (
         <span>{value.row.leaveDetail?.updatedBy}</span>
       ),
@@ -137,17 +178,23 @@ const LeaveList = () => {
     {
       field: "action",
       headerName: "Action",
-      width: 120,
+      width: 200,
       renderCell: (value: any) => (
         <>
           <EditNoteIcon
+            style={{ cursor: "pointer" }}
             color="primary"
-            onClick={() => console.log(value.row)}
+            onClick={() => handelEditClick(value.row)}
           />
         </>
       ),
     },
   ];
+
+  const initialValue =
+    modalStatus === "add"
+      ? { user_id: "", leaveYear: "", leaveAlloted: "" }
+      : { ...editData };
 
   return (
     <>
@@ -165,7 +212,6 @@ const LeaveList = () => {
                 value={id}
                 slotProps={{ textField: { size: "small", fullWidth: false } }}
                 views={["year"]}
-                // onChange={(newValue) => setId(moment.utc(newValue))}
                 onChange={handleChange}
               />
             </DemoContainer>
@@ -199,19 +245,20 @@ const LeaveList = () => {
           }}
           pageSizeOptions={ConfigData.pageRow}
           localeText={{ noRowsLabel: "No Data Available!!!" }}
-          // checkboxSelection
-          // disableRowSelectionOnClick
         />
       </div>
 
       <Dialog
-        // fullScreen={fullScreen}
         open={open}
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
-          <strong>Apply Leave</strong>
+          <strong>
+            {modalStatus === "add"
+              ? "Add Leave Allotment"
+              : "Edit Leave Allotment"}
+          </strong>
         </DialogTitle>
         <DialogContent>
           <Formik initialValues={initialValue} onSubmit={submitLeave}>
@@ -223,23 +270,11 @@ const LeaveList = () => {
                   columns={{ xs: 4, sm: 8, md: 12 }}
                 >
                   <Grid item xs={2} sm={4} md={6}>
-                    {/* <OnChangeDateField
-                      name="leaveYear"
-                      label="Leave Year"
-                      views={["year"]}
-                      value={
-                        values.leaveYear !== null
-                          ? moment.utc(values.leaveYear)
-                          : moment.utc(new Date())
-                      }
-                      onDateChange={(e: any) =>
-                        handelDate(setFieldValue, e)
-                      }
-                    /> */}
                     <LocalizationProvider dateAdapter={AdapterMoment}>
                       <DemoContainer components={["DatePicker"]}>
                         <DatePicker
                           label="Leave Year"
+                          name="leaveYear"
                           value={
                             values.leaveYear !== null
                               ? moment.utc(values.leaveYear)
@@ -256,18 +291,21 @@ const LeaveList = () => {
                             },
                           }}
                           views={["year"]}
-                          // onChange={(newValue) => setId(moment.utc(newValue))}
                           onChange={(e: any) => handelDate(setFieldValue, e)}
                         />
                       </DemoContainer>
                     </LocalizationProvider>
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
-                    <SelectField
-                      name="user_id"
-                      label="Username"
-                      options={usernameList}
-                    />
+                    {modalStatus === "add" ? (
+                      <SelectField
+                        name="user_id"
+                        label="Username"
+                        options={usernameList}
+                      />
+                    ) : (
+                      <InputField name="user_id" label="Username" disabled />
+                    )}
                   </Grid>
 
                   <Grid item xs={2} sm={4} md={6}>
@@ -294,11 +332,7 @@ const LeaveList = () => {
                     >
                       Cancel
                     </Button>
-                    <Button
-                      // onClick={handleGenerateKey}
-                      variant="contained"
-                      type="submit"
-                    >
+                    <Button variant="contained" type="submit">
                       Submit
                     </Button>
                   </Grid>

@@ -52,4 +52,20 @@ export class LeaveService {
       throw err;
     }
   };
+
+  singleEditLeaveAlloted = async (payload: any) => {
+    try {
+      const response = await axios.post(
+        `${apiPath}/leave-alloted/edit`,
+        payload,
+        {
+          headers: this.headers,
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
 }
