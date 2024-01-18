@@ -42,7 +42,7 @@ const HolidayList = () => {
     holidayList(moment(id).format("YYYY"));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, open, loading]);
+  }, []);
 
   const handleChange = (value: any) => {
     setId(moment.utc(value));
@@ -92,7 +92,8 @@ const HolidayList = () => {
       .catch((error) => {
         enqueueSnackbar(error.response.data.message, { variant: "error" });
         setLoading(false);
-      });
+      })
+      .finally(() => holidayList(moment(id).format("YYYY")));
   };
 
   const handelDeleteHoliday = (item: any) => {
@@ -109,7 +110,8 @@ const HolidayList = () => {
       .catch((error) => {
         enqueueSnackbar(error.response.data.message, { variant: "error" });
         setLoading(false);
-      });
+      })
+      .finally(() => holidayList(moment(id).format("YYYY")));
   };
 
   return (

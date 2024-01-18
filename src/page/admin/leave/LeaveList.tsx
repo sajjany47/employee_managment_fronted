@@ -7,14 +7,9 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState } from "react";
-import { Form, Formik } from "formik";
+import { Form, Formik, getIn } from "formik";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import {
-  // DateField,
-  InputField,
-  OnChangeDateField,
-  SelectField,
-} from "../../../components/DynamicField";
+import { InputField, SelectField } from "../../../components/DynamicField";
 import { LeaveService } from "./LeaveService";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
@@ -37,10 +32,9 @@ const LeaveList = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // userList(new Date());
     leaveListApi(moment(id).format("YYYY"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, loading]);
+  }, [open]);
 
   const handleChange = (value: any) => {
     setId(moment.utc(value));
@@ -84,9 +78,10 @@ const LeaveList = () => {
   };
   const handleClose = () => {
     setOpen(false);
+    setUsernameList([]);
   };
 
-  const initialValue = { user_id: "", leaveYear: null, leaveAlloted: "" };
+  const initialValue = { user_id: "", leaveYear: "", leaveAlloted: "" };
 
   const submitLeave = (values: any) => {
     setLoading(true);
@@ -103,7 +98,6 @@ const LeaveList = () => {
   };
 
   const handelDate = (setFieldValue: any, value: any) => {
-    console.log(value);
     setFieldValue("leaveYear", moment.utc(value));
     userList(value);
   };
@@ -221,7 +215,7 @@ const LeaveList = () => {
         </DialogTitle>
         <DialogContent>
           <Formik initialValues={initialValue} onSubmit={submitLeave}>
-            {({ handleSubmit, setFieldValue, values }) => (
+            {({ handleSubmit, setFieldValue, values, errors, touched }) => (
               <Form onSubmit={handleSubmit}>
                 <Grid
                   container
@@ -229,7 +223,7 @@ const LeaveList = () => {
                   columns={{ xs: 4, sm: 8, md: 12 }}
                 >
                   <Grid item xs={2} sm={4} md={6}>
-                    <OnChangeDateField
+                    {/* <OnChangeDateField
                       name="leaveYear"
                       label="Leave Year"
                       views={["year"]}
@@ -238,8 +232,35 @@ const LeaveList = () => {
                           ? moment.utc(values.leaveYear)
                           : moment.utc(new Date())
                       }
-                      onChange={(e: any) => handelDate(setFieldValue, e)}
-                    />
+                      onDateChange={(e: any) =>
+                        handelDate(setFieldValue, e)
+                      }
+                    /> */}
+                    <LocalizationProvider dateAdapter={AdapterMoment}>
+                      <DemoContainer components={["DatePicker"]}>
+                        <DatePicker
+                          label="Leave Year"
+                          value={
+                            values.leaveYear !== null
+                              ? moment.utc(values.leaveYear)
+                              : ""
+                          }
+                          slotProps={{
+                            textField: {
+                              size: "medium",
+                              error:
+                                getIn(errors, "leaveYear") &&
+                                getIn(touched, "leaveYear")
+                                  ? true
+                                  : false,
+                            },
+                          }}
+                          views={["year"]}
+                          // onChange={(newValue) => setId(moment.utc(newValue))}
+                          onChange={(e: any) => handelDate(setFieldValue, e)}
+                        />
+                      </DemoContainer>
+                    </LocalizationProvider>
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
                     <SelectField
