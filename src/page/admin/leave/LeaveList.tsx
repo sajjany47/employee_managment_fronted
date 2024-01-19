@@ -292,6 +292,7 @@ const LeaveList = () => {
                           }}
                           views={["year"]}
                           onChange={(e: any) => handelDate(setFieldValue, e)}
+                          disabled={modalStatus === "add" ? false : true}
                         />
                       </DemoContainer>
                     </LocalizationProvider>
