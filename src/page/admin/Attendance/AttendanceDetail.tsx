@@ -11,10 +11,16 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import moment from "moment";
 import { ConfigData } from "../../../shared/ConfigData";
+import { DateField } from "../../../components/DynamicField";
+import { useSelector } from "react-redux";
+import { AttendanceService } from "./AttendanceService";
+import { enqueueSnackbar } from "notistack";
 
 const AttendanceDetail = () => {
-  const [open, setOpen] = useState(false);
+  const attendanceService = new AttendanceService();
   const theme = useTheme();
+  const user = useSelector((state: any) => state.auth.auth.user);
+  const [open, setOpen] = useState(false);
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [leaveListData, setLeaveListData] = useState([]);
 
@@ -111,10 +117,22 @@ const AttendanceDetail = () => {
     setOpen(false);
   };
 
-  const initialValue = {};
+  const initialValue = { startDay: "", endDay: "", reason: "" };
 
   const submitLeave = (values: any) => {
-    console.log(values);
+    console.log({ ...values, user_id: user.username });
+    const requestData = {
+      startDay: new Date(values.startDay),
+      endDay: new Date(values.endDay),
+      reason: values.reason,
+      user_id: user.username,
+    };
+    attendanceService
+      .leaveApply(requestData)
+      .then((res) => enqueueSnackbar(res.message, { variant: "success" }))
+      .catch((err: any) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      );
   };
 
   return (
@@ -171,17 +189,27 @@ const AttendanceDetail = () => {
                   columns={{ xs: 4, sm: 8, md: 12 }}
                 >
                   <Grid item xs={2} sm={4} md={6}>
-                    <Field
+                    {/* <Field
                       name="startDay"
                       label="Start Day"
                       component={inputField}
+                    /> */}
+                    <DateField
+                      name="startDay"
+                      label="Start Day"
+                      views={["year", "month", "day"]}
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
-                    <Field
+                    {/* <Field
                       name="endDay"
                       label="End Day"
                       component={inputField}
+                    /> */}
+                    <DateField
+                      name="endDay"
+                      label="End Day"
+                      views={["year", "month", "day"]}
                     />
                   </Grid>
                   <Grid item xs={2} sm={12} md={12}>
