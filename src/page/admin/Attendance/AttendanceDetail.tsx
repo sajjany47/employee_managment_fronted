@@ -122,8 +122,8 @@ const AttendanceDetail = () => {
   const submitLeave = (values: any) => {
     console.log({ ...values, user_id: user.username });
     const requestData = {
-      startDay: new Date(values.startDay),
-      endDay: new Date(values.endDay),
+      startDay: values.startDay,
+      endDay: values.endDay,
       reason: values.reason,
       user_id: user.username,
     };
