@@ -26,7 +26,19 @@ const AttendanceDetail = () => {
 
   useEffect(() => {
     setLeaveListData([]);
+    applyLeaveList(user.username, "2024");
   }, []);
+
+  const applyLeaveList = (id: any, leaveYear: any) => {
+    attendanceService
+      .applyLeaveList({ user_id: id, leaveYear: leaveYear })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err: any) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      );
+  };
   const customRegistrationStatus = (value: any) => {
     switch (value) {
       case "pending":
