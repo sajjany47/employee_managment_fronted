@@ -25,7 +25,6 @@ const AttendanceDetail = () => {
   const [leaveListData, setLeaveListData] = useState([]);
 
   useEffect(() => {
-    setLeaveListData([]);
     applyLeaveList(user.username, "2024");
   }, []);
 
@@ -33,7 +32,18 @@ const AttendanceDetail = () => {
     attendanceService
       .applyLeaveList({ user_id: id, leaveYear: leaveYear })
       .then((res) => {
-        console.log(res);
+        const attendanceDetails =
+          res.data.leaveDetail.leaveUseDetail.length > 0
+            ? res.data.leaveDetail.leaveUseDetail.map((item: any) => ({
+                ...item,
+                user_id: res.data.user_id,
+                leaveYear: res.data.leaveDetail.leaveYear,
+                totalLeaveLeft: res.data.leaveDetail.totalLeaveLeft,
+                totalLeave: res.data.leaveDetail.totalLeave,
+              }))
+            : [];
+        console.log(attendanceDetails);
+        setLeaveListData(attendanceDetails);
       })
       .catch((err: any) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
@@ -74,33 +84,31 @@ const AttendanceDetail = () => {
   };
   const columns: GridColDef[] = [
     {
-      field: "username",
+      field: "user_id",
       headerName: "Username",
       width: 150,
-      renderCell: (value: any) => (
-        <span style={{ textTransform: "capitalize" }}>{value.value}</span>
-      ),
+      renderCell: (value: any) => <span>{value.value}</span>,
     },
     {
-      field: "startDate",
+      field: "startDay",
       headerName: "Leave Start Date",
-      width: 200,
+      width: 150,
       renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
     },
     {
-      field: "endDate",
+      field: "endDay",
       headerName: "Leave Start Date",
-      width: 200,
+      width: 150,
       renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
     },
     {
       field: "reason",
       headerName: "Reason",
       width: 200,
-      renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
+      // renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
     },
     {
-      field: "totalDay",
+      field: "totalDays",
       headerName: "Total Days",
       width: 150,
       // renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
@@ -108,14 +116,14 @@ const AttendanceDetail = () => {
     {
       field: "leaveStatus",
       headerName: "Leave Status",
-      width: 120,
+      width: 150,
       renderCell: (value: any) => customRegistrationStatus(value.value),
     },
     { field: "approvedBy", headerName: "ApprovedBy ", width: 130 },
     {
       field: "action",
       headerName: "Action",
-      width: 120,
+      width: 150,
       renderCell: (value: any) => (
         <>{value.value === "pending" && <EditNoteIcon color="primary" />}</>
       ),
@@ -161,7 +169,7 @@ const AttendanceDetail = () => {
       <div
         className="mt-10"
         style={{
-          height: leaveListData.length > 0 ? "100%" : 200,
+          height: leaveListData.length > 0 ? "50%" : 200,
           width: "100%",
         }}
       >
@@ -175,6 +183,7 @@ const AttendanceDetail = () => {
               },
             },
           }}
+          getRowId={(row) => row._id}
           pageSizeOptions={ConfigData.pageRow}
           localeText={{ noRowsLabel: "No Data Available!!!" }}
           // checkboxSelection
@@ -201,11 +210,6 @@ const AttendanceDetail = () => {
                   columns={{ xs: 4, sm: 8, md: 12 }}
                 >
                   <Grid item xs={2} sm={4} md={6}>
-                    {/* <Field
-                      name="startDay"
-                      label="Start Day"
-                      component={inputField}
-                    /> */}
                     <DateField
                       name="startDay"
                       label="Start Day"
@@ -213,11 +217,6 @@ const AttendanceDetail = () => {
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
-                    {/* <Field
-                      name="endDay"
-                      label="End Day"
-                      component={inputField}
-                    /> */}
                     <DateField
                       name="endDay"
                       label="End Day"
