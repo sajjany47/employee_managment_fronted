@@ -163,17 +163,12 @@ const Attendance = () => {
       </div>
 
       <Grid container rowSpacing={2} columnSpacing={2} marginTop={5}>
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={12}
-          sx={{
-            height: allUserLeaveList.length > 0 ? "100%" : 200,
-            width: "100%",
-          }}
-        >
+        <Grid item xs={12} sm={12} md={12}>
           <DataGrid
+            style={{
+              height: allUserLeaveList.length !== 0 ? "100%" : 200,
+              width: "100%",
+            }}
             rows={allUserLeaveList}
             columns={columns}
             initialState={{

@@ -225,14 +225,12 @@ const LeaveList = () => {
           </Button>
         </div>
       </div>
-      <div
-        className="mt-10"
-        // style={{
-        //   height: leaveListData.length === 0 ? "100%" : 200,
-        //   width: "100%",
-        // }}
-      >
+      <div className="mt-10">
         <DataGrid
+          style={{
+            height: leaveListData.length !== 0 ? "100%" : 200,
+            width: "100%",
+          }}
           rows={leaveListData}
           columns={columns}
           getRowId={(row) => row._id}

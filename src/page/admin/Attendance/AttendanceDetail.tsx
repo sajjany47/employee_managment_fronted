@@ -100,7 +100,7 @@ const AttendanceDetail = () => {
     },
     {
       field: "endDay",
-      headerName: "Leave Start Date",
+      headerName: "Leave End Date",
       width: 150,
       renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
     },
@@ -174,14 +174,12 @@ const AttendanceDetail = () => {
         </Button>
       </div>
 
-      <div
-        className="mt-10"
-        style={{
-          height: leaveListData.length > 0 ? "50%" : 200,
-          width: "100%",
-        }}
-      >
+      <div className="mt-10">
         <DataGrid
+          style={{
+            height: leaveListData.length !== 0 ? "100%" : 200,
+            width: "100%",
+          }}
           rows={leaveListData}
           columns={columns}
           initialState={{

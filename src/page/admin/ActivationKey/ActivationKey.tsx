@@ -295,13 +295,12 @@ export default function ActivationKey() {
             Activation Key List
           </Typography>
 
-          <Box
-            sx={{
-              height: activationKeyData.length > 0 ? "100%" : 200,
-              width: "100%",
-            }}
-          >
+          <Box>
             <DataGrid
+              style={{
+                height: activationKeyData.length > 0 ? "100%" : 200,
+                width: "100%",
+              }}
               rows={activationKeyData}
               columns={columns}
               initialState={{
