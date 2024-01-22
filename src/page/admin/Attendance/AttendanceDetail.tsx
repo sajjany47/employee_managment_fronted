@@ -8,13 +8,14 @@ import { useEffect, useState } from "react";
 import { Field, Form, Formik } from "formik";
 import { inputField } from "../../../components/FieldType";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import EditNoteIcon from "@mui/icons-material/EditNote";
+// import EditNoteIcon from "@mui/icons-material/EditNote";
 import moment from "moment";
 import { ConfigData } from "../../../shared/ConfigData";
 import { DateField } from "../../../components/DynamicField";
 import { useSelector } from "react-redux";
 import { AttendanceService } from "./AttendanceService";
 import { enqueueSnackbar } from "notistack";
+import Loader from "../../../components/Loader";
 
 const AttendanceDetail = () => {
   const attendanceService = new AttendanceService();
@@ -23,12 +24,15 @@ const AttendanceDetail = () => {
   const [open, setOpen] = useState(false);
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [leaveListData, setLeaveListData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     applyLeaveList(user.username, "2024");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const applyLeaveList = (id: any, leaveYear: any) => {
+    setLoading(true);
     attendanceService
       .applyLeaveList({ user_id: id, leaveYear: leaveYear })
       .then((res) => {
@@ -37,17 +41,16 @@ const AttendanceDetail = () => {
             ? res.data.leaveDetail.leaveUseDetail.map((item: any) => ({
                 ...item,
                 user_id: res.data.user_id,
-                leaveYear: res.data.leaveDetail.leaveYear,
-                totalLeaveLeft: res.data.leaveDetail.totalLeaveLeft,
-                totalLeave: res.data.leaveDetail.totalLeave,
               }))
             : [];
-        console.log(attendanceDetails);
         setLeaveListData(attendanceDetails);
       })
       .catch((err: any) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
-      );
+      )
+      .finally(() => {
+        setLoading(false);
+      });
   };
   const customRegistrationStatus = (value: any) => {
     switch (value) {
@@ -120,14 +123,14 @@ const AttendanceDetail = () => {
       renderCell: (value: any) => customRegistrationStatus(value.value),
     },
     { field: "approvedBy", headerName: "ApprovedBy ", width: 130 },
-    {
-      field: "action",
-      headerName: "Action",
-      width: 150,
-      renderCell: (value: any) => (
-        <>{value.value === "pending" && <EditNoteIcon color="primary" />}</>
-      ),
-    },
+    // {
+    //   field: "action",
+    //   headerName: "Action",
+    //   width: 150,
+    //   renderCell: (value: any) => (
+    //     <>{value.value === "pending" && <EditNoteIcon color="primary" />}</>
+    //   ),
+    // },
   ];
   const handleClickOpen = () => {
     setOpen(true);
@@ -140,7 +143,7 @@ const AttendanceDetail = () => {
   const initialValue = { startDay: "", endDay: "", reason: "" };
 
   const submitLeave = (values: any) => {
-    console.log({ ...values, user_id: user.username });
+    setLoading(true);
     const requestData = {
       startDay: values.startDay,
       endDay: values.endDay,
@@ -152,11 +155,16 @@ const AttendanceDetail = () => {
       .then((res) => enqueueSnackbar(res.message, { variant: "success" }))
       .catch((err: any) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
-      );
+      )
+      .finally(() => {
+        setLoading(false);
+        applyLeaveList(user.username, "2024");
+      });
   };
 
   return (
     <>
+      {loading && <Loader />}
       <div className="flex justify-between">
         <h6>
           <strong>Attendance Details</strong>
