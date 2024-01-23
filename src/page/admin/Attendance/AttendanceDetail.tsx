@@ -16,6 +16,10 @@ import { useSelector } from "react-redux";
 import { AttendanceService } from "./AttendanceService";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
+import AddIcon from "@mui/icons-material/Add";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 
 const AttendanceDetail = () => {
   const attendanceService = new AttendanceService();
@@ -25,9 +29,10 @@ const AttendanceDetail = () => {
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [leaveListData, setLeaveListData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [year, setYear] = useState(moment.utc(new Date()));
 
   useEffect(() => {
-    applyLeaveList(user.username, "2024");
+    applyLeaveList(user.username, moment(year).format("YYYY"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -37,13 +42,20 @@ const AttendanceDetail = () => {
       .applyLeaveList({ user_id: id, leaveYear: leaveYear })
       .then((res) => {
         const attendanceDetails =
-          res.data.leaveDetail.leaveUseDetail.length > 0
-            ? res.data.leaveDetail.leaveUseDetail.map((item: any) => ({
+          res?.data?.leaveDetail.leaveUseDetail.length > 0
+            ? res?.data?.leaveDetail.leaveUseDetail.map((item: any) => ({
                 ...item,
                 user_id: res.data.user_id,
               }))
             : [];
-        setLeaveListData(attendanceDetails);
+
+        const allPoints = attendanceDetails.sort((a: any, b: any) => {
+          const date1: any = new Date(a.createOn);
+          const date2: any = new Date(b.createOn);
+          return date2 - date1;
+        });
+
+        setLeaveListData(allPoints);
       })
       .catch((err: any) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
@@ -152,7 +164,10 @@ const AttendanceDetail = () => {
     };
     attendanceService
       .leaveApply(requestData)
-      .then((res) => enqueueSnackbar(res.message, { variant: "success" }))
+      .then((res) => {
+        enqueueSnackbar(res.message, { variant: "success" });
+        handleClose();
+      })
       .catch((err: any) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
       )
@@ -160,6 +175,12 @@ const AttendanceDetail = () => {
         setLoading(false);
         applyLeaveList(user.username, "2024");
       });
+  };
+  const handleChange = (value: any) => {
+    setLeaveListData([]);
+    setYear(moment.utc(value));
+    const formatDate = moment(value).format("YYYY");
+    applyLeaveList(user.username, formatDate);
   };
 
   return (
@@ -169,9 +190,30 @@ const AttendanceDetail = () => {
         <h6>
           <strong>Attendance Details</strong>
         </h6>
-        <Button variant="contained" onClick={handleClickOpen}>
+        <div className="flex gap-1">
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <DemoContainer components={["DatePicker"]}>
+              <DatePicker
+                sx={{ width: "50% " }}
+                label="Select Year"
+                value={year}
+                slotProps={{ textField: { size: "small", fullWidth: false } }}
+                views={["year"]}
+                onChange={handleChange}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleClickOpen}
+          >
+            Apply Leave
+          </Button>
+        </div>
+        {/* <Button variant="contained" onClick={handleClickOpen}>
           Apply Leave
-        </Button>
+        </Button> */}
       </div>
 
       <div className="mt-10">
