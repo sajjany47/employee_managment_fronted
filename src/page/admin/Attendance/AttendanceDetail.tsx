@@ -27,7 +27,8 @@ const AttendanceDetail = () => {
   const user = useSelector((state: any) => state.auth.auth.user);
   const [open, setOpen] = useState(false);
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const [leaveListData, setLeaveListData] = useState([]);
+  const [leaveListData, setLeaveListData] = useState<any>({});
+  const [leaveUseListData, setLeaveUseListData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [year, setYear] = useState(moment.utc(new Date()));
 
@@ -41,21 +42,15 @@ const AttendanceDetail = () => {
     attendanceService
       .applyLeaveList({ user_id: id, leaveYear: leaveYear })
       .then((res) => {
-        const attendanceDetails =
-          res?.data?.leaveDetail.leaveUseDetail.length > 0
-            ? res?.data?.leaveDetail.leaveUseDetail.map((item: any) => ({
-                ...item,
-                user_id: res.data.user_id,
-              }))
-            : [];
-
-        const allPoints = attendanceDetails.sort((a: any, b: any) => {
-          const date1: any = new Date(a.createOn);
-          const date2: any = new Date(b.createOn);
-          return date2 - date1;
-        });
-
-        setLeaveListData(allPoints);
+        if (Object.keys(res.data).length > 0) {
+          setLeaveListData(res.data);
+          setLeaveUseListData(
+            res.data?.leaveUse?.map((item: any) => ({
+              ...item,
+              user_id: res.data?.user_id,
+            }))
+          );
+        }
       })
       .catch((err: any) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
@@ -177,7 +172,7 @@ const AttendanceDetail = () => {
       });
   };
   const handleChange = (value: any) => {
-    setLeaveListData([]);
+    setLeaveUseListData([]);
     setYear(moment.utc(value));
     const formatDate = moment(value).format("YYYY");
     applyLeaveList(user.username, formatDate);
@@ -219,10 +214,10 @@ const AttendanceDetail = () => {
       <div className="mt-10">
         <DataGrid
           style={{
-            height: leaveListData.length !== 0 ? "100%" : 200,
+            height: leaveUseListData.length !== 0 ? "100%" : 200,
             width: "100%",
           }}
-          rows={leaveListData}
+          rows={leaveUseListData}
           columns={columns}
           initialState={{
             pagination: {
