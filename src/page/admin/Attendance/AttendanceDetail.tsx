@@ -27,7 +27,7 @@ const AttendanceDetail = () => {
   const user = useSelector((state: any) => state.auth.auth.user);
   const [open, setOpen] = useState(false);
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const [leaveListData, setLeaveListData] = useState<any>({});
+  // const [leaveListData, setLeaveListData] = useState<any>({});
   const [leaveUseListData, setLeaveUseListData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [year, setYear] = useState(moment.utc(new Date()));
@@ -43,7 +43,7 @@ const AttendanceDetail = () => {
       .applyLeaveList({ user_id: id, leaveYear: leaveYear })
       .then((res) => {
         if (Object.keys(res.data).length > 0) {
-          setLeaveListData(res.data);
+          // setLeaveListData(res.data);
           setLeaveUseListData(
             res.data?.leaveUse?.map((item: any) => ({
               ...item,
@@ -59,6 +59,7 @@ const AttendanceDetail = () => {
         setLoading(false);
       });
   };
+
   const customRegistrationStatus = (value: any) => {
     switch (value) {
       case "pending":

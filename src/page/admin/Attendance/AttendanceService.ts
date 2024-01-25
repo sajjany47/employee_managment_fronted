@@ -76,4 +76,16 @@ export class AttendanceService {
       throw err;
     }
   };
+
+  allUserLeaveList = async (year: any) => {
+    try {
+      const response = await axios.get(`${apiPath}/leave-apply-list/${year}`, {
+        headers: this.headers,
+      });
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
 }

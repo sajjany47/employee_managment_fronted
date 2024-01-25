@@ -17,16 +17,36 @@ import { ConfigData } from "../../../shared/ConfigData";
 import { Field, Form, Formik } from "formik";
 import { selectField } from "../../../components/FieldType";
 import AddIcon from "@mui/icons-material/Add";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AttendanceService } from "./AttendanceService";
+import { enqueueSnackbar } from "notistack";
+import Loader from "../../../components/Loader";
 
 const Attendance = () => {
   const navigate = useNavigate();
+  const attendanceService = new AttendanceService();
   const [allUserLeaveList, setAllUserLeaveList] = useState([]);
   const [open, setOpen] = useState(false);
+  const [year, setYear] = useState(moment.utc(new Date()));
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setAllUserLeaveList([]);
+    allUserLeave(year);
   }, []);
 
+  const allUserLeave = (year: any) => {
+    attendanceService
+      .allUserLeaveList(moment(year).format("YYYY"))
+      .then((res) => {
+        setAllUserLeaveList(res.data);
+      })
+      .catch((err: any) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      )
+      .finally(() => setLoading(false));
+  };
   const customRegistrationStatus = (value: any) => {
     switch (value) {
       case "pending":
@@ -62,44 +82,70 @@ const Attendance = () => {
   };
   const columns: GridColDef[] = [
     {
-      field: "username",
-      headerName: "Name",
+      field: "user_id",
+      headerName: "UserName",
       width: 150,
-      // renderCell: (value: any) => (
-      //   <span style={{ textTransform: "capitalize" }}>{value.value}</span>
-      // ),
+      renderCell: (value: any) => <span>{value.row.user_id}</span>,
     },
     {
-      field: "startDate",
-      headerName: "Leave Start Date",
-      width: 200,
-      renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
+      field: "totalLeaveLeft",
+      headerName: "Leave Left",
+      width: 150,
+      renderCell: (value: any) => (
+        <span>{value.row.leaveDetail.totalLeaveLeft}</span>
+      ),
     },
     {
-      field: "endDate",
+      field: "startDay",
       headerName: "Leave Start Date",
       width: 200,
-      renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
+      renderCell: (value: any) =>
+        moment(value.row.leaveDetail.leaveUseDetail.startDay).format(
+          "Do MMM, YYYY"
+        ),
+    },
+    {
+      field: "endDay",
+      headerName: "Leave Start Date",
+      width: 200,
+      renderCell: (value: any) =>
+        moment(value.row.leaveDetail.leaveUseDetail.endDay).format(
+          "Do MMM, YYYY"
+        ),
     },
     {
       field: "reason",
       headerName: "Reason",
       width: 200,
-      renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
+      renderCell: (value: any) => (
+        <span>{value.row.leaveDetail.leaveUseDetail.reason}</span>
+      ),
     },
     {
-      field: "totalDay",
+      field: "totalDays",
       headerName: "Total Days",
       width: 150,
-      // renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
+      renderCell: (value: any) => (
+        <span>{value.row.leaveDetail.leaveUseDetail.totalDays}</span>
+      ),
     },
     {
       field: "leaveStatus",
       headerName: "Leave Status",
       width: 100,
-      renderCell: (value: any) => customRegistrationStatus(value.value),
+      renderCell: (value: any) =>
+        customRegistrationStatus(
+          value.row.leaveDetail.leaveUseDetail.leaveStatus
+        ),
     },
-    { field: "approvedBy", headerName: "ApprovedBy ", width: 150 },
+    {
+      field: "approvedBy",
+      headerName: "ApprovedBy ",
+      width: 150,
+      renderCell: (value: any) => (
+        <span>{value.row.leaveDetail.leaveUseDetail.approvedBy}</span>
+      ),
+    },
     {
       field: "action",
       headerName: "Action",
@@ -126,12 +172,19 @@ const Attendance = () => {
   const handleClose = () => {
     setOpen(false);
   };
+  const handleChange = (value: any) => {
+    setAllUserLeaveList([]);
+    setYear(moment.utc(value));
+
+    allUserLeave(value);
+  };
   const initialValue = {};
   const handelStatusChanges = (values: any) => {
     console.log(values);
   };
   return (
     <>
+      {loading && <Loader />}
       <div className="flex justify-between">
         <div>
           <h6>
@@ -145,6 +198,18 @@ const Attendance = () => {
             size="small"
             // className="w-full"
           />
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <DemoContainer components={["DatePicker"]}>
+              <DatePicker
+                sx={{ width: "50% " }}
+                label="Select Year"
+                value={year}
+                slotProps={{ textField: { size: "small", fullWidth: false } }}
+                views={["year"]}
+                onChange={handleChange}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
           <Button
             variant="contained"
             startIcon={<AddIcon />}
@@ -152,6 +217,7 @@ const Attendance = () => {
           >
             Holiday List
           </Button>
+
           <Button
             variant="contained"
             // startIcon={<AddIcon />}
@@ -178,6 +244,7 @@ const Attendance = () => {
                 },
               },
             }}
+            getRowId={(row) => row.leaveDetail.leaveUseDetail._id}
             pageSizeOptions={ConfigData.pageRow}
             localeText={{ noRowsLabel: "No Data Available!!!" }}
             // checkboxSelection
