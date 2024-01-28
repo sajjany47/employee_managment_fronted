@@ -354,32 +354,15 @@ export default function ActivationKey() {
                     columns={{ xs: 4, sm: 8, md: 12 }}
                   >
                     <Grid item xs={2} sm={4} md={6}>
-                      {/* <Field name="name" label="Name" component={inputField} /> */}
                       <InputField name="name" label="Name" />
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      {/* <Field
-                        name="username"
-                        label="Username"
-                        component={inputField}
-                      /> */}
                       <InputField name="username" label="Username" />
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      {/* <Field
-                        name="email"
-                        label="Email"
-                        type="email"
-                        component={inputField}
-                      /> */}
                       <InputField name="email" label="Email" type="email" />
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      {/* <Field
-                        name="mobile"
-                        label="Mobile"
-                        component={inputField}
-                      /> */}
                       <InputField name="mobile" label="Mobile" />
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
@@ -399,24 +382,8 @@ export default function ActivationKey() {
                         label="Date Of Birth"
                         views={["year", "month", "day"]}
                       />
-                      {/* <Field
-                        name="dob"
-                        label="DOB"
-                        component={dateField}
-                        views={["year", "month", "day"]}
-                      /> */}
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      {/* <Field
-                        name="role"
-                        label="Role"
-                        component={selectField}
-                        options={
-                          userType?.role === "admin"
-                            ? ConfigData.adminType
-                            : ConfigData.HRtype
-                        }
-                      /> */}
                       <SelectField
                         name="role"
                         label="Role"
@@ -428,20 +395,9 @@ export default function ActivationKey() {
                       />
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      {/* <Field
-                        name="position"
-                        label="Position"
-                        component={inputField}
-                      /> */}
                       <InputField name="position" label="Position" />
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      {/* <Field
-                        name="password"
-                        label="Password"
-                        component={inputField}
-                        type="password"
-                      /> */}
                       <InputField
                         name="password"
                         label="Password"

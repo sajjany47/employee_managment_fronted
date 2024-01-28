@@ -166,6 +166,14 @@ const LeaveList = () => {
         <span>{value.row.leaveDetail.totalLeave}</span>
       ),
     },
+    {
+      field: "totalLeaveLeft",
+      headerName: "Leave Left",
+      width: 200,
+      renderCell: (value: any) => (
+        <span>{value.row.leaveDetail.totalLeaveLeft}</span>
+      ),
+    },
 
     {
       field: "",

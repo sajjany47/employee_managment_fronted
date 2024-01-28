@@ -14,8 +14,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import moment from "moment";
 import { ConfigData } from "../../../shared/ConfigData";
-import { Field, Form, Formik } from "formik";
-import { selectField } from "../../../components/FieldType";
+import { Form, Formik } from "formik";
 import AddIcon from "@mui/icons-material/Add";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
@@ -23,14 +22,18 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AttendanceService } from "./AttendanceService";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
+import { SelectField } from "../../../components/DynamicField";
+import { useSelector } from "react-redux";
 
 const Attendance = () => {
   const navigate = useNavigate();
   const attendanceService = new AttendanceService();
+  const user = useSelector((state: any) => state.auth.auth.user);
   const [allUserLeaveList, setAllUserLeaveList] = useState([]);
   const [open, setOpen] = useState(false);
   const [year, setYear] = useState(moment.utc(new Date()));
   const [loading, setLoading] = useState(false);
+  const [selectLeave, setSelectLeave] = useState<any>({});
 
   useEffect(() => {
     allUserLeave(year);
@@ -152,10 +155,27 @@ const Attendance = () => {
       width: 120,
       renderCell: (value: any) => (
         <>
-          {value.value === "pending" && <EditNoteIcon color="primary" />}
+          {value.row.leaveDetail.leaveUseDetail.leaveStatus === "pending" && (
+            <EditNoteIcon
+              color="primary"
+              style={{
+                cursor: "pointer",
+                fontSize: "30px",
+                marginRight: "5px",
+              }}
+              onClick={() => {
+                setSelectLeave(value.row);
+                setOpen(true);
+              }}
+            />
+          )}
 
           <VisibilityIcon
             color="secondary"
+            style={{
+              cursor: "pointer",
+              fontSize: "30px",
+            }}
             onClick={() => {
               navigate("/admin/attendance/details", {
                 state: { data: value.row },
@@ -171,6 +191,8 @@ const Attendance = () => {
   };
   const handleClose = () => {
     setOpen(false);
+    setLoading(false);
+    setSelectLeave({});
   };
   const handleChange = (value: any) => {
     setAllUserLeaveList([]);
@@ -178,10 +200,35 @@ const Attendance = () => {
 
     allUserLeave(value);
   };
-  const initialValue = {};
-  const handelStatusChanges = (values: any) => {
-    console.log(values);
+  const initialValue = {
+    statusChange:
+      Object.keys(selectLeave).length > 0
+        ? selectLeave.leaveDetail.leaveUseDetail.leaveStatus
+        : "",
   };
+  const handelStatusChanges = (values: any) => {
+    setLoading(true);
+    const requestBody = {
+      id: selectLeave.leaveDetail.leaveUseDetail._id,
+      leaveStatus: values.statusChange,
+      approvedBy: user.username,
+      leaveYear: selectLeave.leaveDetail.leaveYear,
+      user_id: selectLeave.user_id,
+      outerId: selectLeave.leaveDetail._id,
+    };
+    attendanceService
+      .applyLeaveApproved(requestBody)
+      .then((res) => {
+        enqueueSnackbar(res.message, { variant: "success" });
+        handleClose();
+      })
+      .catch((err: any) => {
+        enqueueSnackbar(err.response.data.message, { variant: "error" });
+        setLoading(false);
+      })
+      .finally(() => allUserLeave(year));
+  };
+
   return (
     <>
       {loading && <Loader />}
@@ -271,10 +318,9 @@ const Attendance = () => {
                   columns={{ xs: 4, sm: 8, md: 12 }}
                 >
                   <Grid item xs={2} sm={4} md={12}>
-                    <Field
+                    <SelectField
                       name="statusChange"
                       label="Status"
-                      component={selectField}
                       options={ConfigData.leaveStatus}
                     />
                   </Grid>
