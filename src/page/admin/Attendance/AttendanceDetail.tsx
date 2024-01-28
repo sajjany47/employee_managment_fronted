@@ -20,6 +20,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import BarChart from "../../../components/BarChart";
 
 const AttendanceDetail = () => {
   const attendanceService = new AttendanceService();
@@ -27,7 +28,7 @@ const AttendanceDetail = () => {
   const user = useSelector((state: any) => state.auth.auth.user);
   const [open, setOpen] = useState(false);
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  // const [leaveListData, setLeaveListData] = useState<any>({});
+  const [leaveListData, setLeaveListData] = useState<any>({});
   const [leaveUseListData, setLeaveUseListData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [year, setYear] = useState(moment.utc(new Date()));
@@ -43,6 +44,7 @@ const AttendanceDetail = () => {
       .applyLeaveList({ user_id: id, leaveYear: leaveYear })
       .then((res) => {
         if (Object.keys(res.data).length > 0) {
+          setLeaveListData(res.data.leaveDetail);
           // setLeaveListData(res.data);
           setLeaveUseListData(
             res.data?.leaveUse?.map((item: any) => ({
@@ -178,7 +180,7 @@ const AttendanceDetail = () => {
     const formatDate = moment(value).format("YYYY");
     applyLeaveList(user.username, formatDate);
   };
-
+  console.log(leaveListData);
   return (
     <>
       {loading && <Loader />}
@@ -233,6 +235,19 @@ const AttendanceDetail = () => {
           // checkboxSelection
           // disableRowSelectionOnClick
         />
+      </div>
+      <div className="grid grid-cols-4 sm:grid-cols-12  px-4">
+        <div className="col-span-4 sm:col-span-3">
+          <BarChart
+            label={["Leave Alloted", "Leave Use"]}
+            title={`Leave Details - ${leaveListData?.leaveYear}`}
+            data={[
+              Number(leaveListData?.totalLeave),
+              Number(leaveListData?.totalLeave) -
+                Number(leaveListData?.totalLeaveLeft),
+            ]}
+          />
+        </div>
       </div>
 
       <Dialog
