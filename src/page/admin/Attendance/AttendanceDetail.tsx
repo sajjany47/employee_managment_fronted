@@ -20,7 +20,9 @@ import AddIcon from "@mui/icons-material/Add";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import BarChart from "../../../components/BarChart";
+import LanguageIcon from "@mui/icons-material/Language";
+import ContentPasteIcon from "@mui/icons-material/ContentPaste";
+import NoEncryptionIcon from "@mui/icons-material/NoEncryption";
 
 const AttendanceDetail = () => {
   const attendanceService = new AttendanceService();
@@ -45,7 +47,7 @@ const AttendanceDetail = () => {
       .then((res) => {
         if (Object.keys(res.data).length > 0) {
           setLeaveListData(res.data.leaveDetail);
-          // setLeaveListData(res.data);
+          setLeaveListData(res.data);
           setLeaveUseListData(
             res.data?.leaveUse?.map((item: any) => ({
               ...item,
@@ -176,11 +178,11 @@ const AttendanceDetail = () => {
   };
   const handleChange = (value: any) => {
     setLeaveUseListData([]);
+    setLeaveListData({});
     setYear(moment.utc(value));
     const formatDate = moment(value).format("YYYY");
     applyLeaveList(user.username, formatDate);
   };
-  console.log(leaveListData);
   return (
     <>
       {loading && <Loader />}
@@ -214,6 +216,58 @@ const AttendanceDetail = () => {
         </Button> */}
       </div>
 
+      <div className="max-w-screen-xl mx-auto px-4 md:px-8">
+        <ul className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <li className="border rounded-lg">
+            <div className="flex items-start justify-center p-4">
+              <div className="space-y-2 text-center">
+                <LanguageIcon />
+                <h4 className="text-gray-800 font-semibold ">
+                  Total Leave Alloted
+                </h4>
+                <p className="text-gray-600 text-sm">
+                  {Object.keys(leaveListData).length > 0
+                    ? leaveListData?.leaveDetail?.totalLeave
+                    : 0}
+                </p>
+              </div>
+            </div>
+          </li>
+          <li className="border rounded-lg">
+            <div className="flex items-start justify-center p-4">
+              <div className="space-y-2 text-center">
+                <NoEncryptionIcon />
+
+                <h4 className="text-gray-800 font-semibold">
+                  Total Leave Used
+                </h4>
+                <p className="text-gray-600 text-sm">
+                  {Object.keys(leaveListData).length > 0
+                    ? leaveListData?.leaveDetail?.totalLeave -
+                      leaveListData?.leaveDetail?.totalLeaveLeft
+                    : 0}
+                </p>
+              </div>
+            </div>
+          </li>
+          <li className="border rounded-lg">
+            <div className="flex items-start justify-center p-4">
+              <div className="space-y-2 text-center">
+                <ContentPasteIcon />
+                <h4 className="text-gray-800 font-semibold">
+                  Total Leave Left
+                </h4>
+                <p className="text-gray-600 text-sm">
+                  {Object.keys(leaveListData).length > 0
+                    ? leaveListData?.leaveDetail?.totalLeaveLeft
+                    : 0}
+                </p>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
       <div className="mt-10">
         <DataGrid
           style={{
@@ -235,19 +289,6 @@ const AttendanceDetail = () => {
           // checkboxSelection
           // disableRowSelectionOnClick
         />
-      </div>
-      <div className="grid grid-cols-4 sm:grid-cols-12  px-4">
-        <div className="col-span-4 sm:col-span-3">
-          <BarChart
-            label={["Leave Alloted", "Leave Use"]}
-            title={`Leave Details - ${leaveListData?.leaveYear}`}
-            data={[
-              Number(leaveListData?.totalLeave),
-              Number(leaveListData?.totalLeave) -
-                Number(leaveListData?.totalLeaveLeft),
-            ]}
-          />
-        </div>
       </div>
 
       <Dialog

@@ -2,7 +2,6 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 
 const BarChart = (props: any) => {
-  console.log(props.data);
   ChartJS.register(ArcElement, Tooltip, Legend);
   const data = {
     labels: props.label,
