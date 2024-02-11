@@ -163,7 +163,7 @@ const HolidayList = () => {
                       } p-2 rounded-lg text-center`}
                     >
                       <p className="text-4xl font-bold text-white">
-                        {moment(item.holidayList.holidayDate).format("DDD")}
+                        {moment(item.holidayList.holidayDate).format("DD")}
                       </p>
                       <p className="text-sm text-white">
                         {" "}

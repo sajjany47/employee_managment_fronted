@@ -34,6 +34,9 @@ const AttendanceDetail = () => {
   const [leaveUseListData, setLeaveUseListData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [year, setYear] = useState(moment.utc(new Date()));
+  const [startDisabled, setStartDisabled] = useState(false);
+  const [endDisabled, setEndDisabled] = useState(true);
+  const [startTime, setStartTime] = useState<any>("");
 
   useEffect(() => {
     applyLeaveList(user.username, moment(year).format("YYYY"));
@@ -183,6 +186,18 @@ const AttendanceDetail = () => {
     const formatDate = moment(value).format("YYYY");
     applyLeaveList(user.username, formatDate);
   };
+
+  const handleStartTime = () => {
+    setStartDisabled(true);
+    setEndDisabled(false);
+    setStartTime(new Date());
+  };
+
+  const handleEndTime = () => {
+    console.log(startTime);
+    setStartDisabled(false);
+    setEndDisabled(true);
+  };
   return (
     <>
       {loading && <Loader />}
@@ -289,6 +304,23 @@ const AttendanceDetail = () => {
           // checkboxSelection
           // disableRowSelectionOnClick
         />
+      </div>
+
+      <div className="mt-5 flex gap-2">
+        <Button
+          variant="contained"
+          disabled={startDisabled === true ? true : false}
+          onClick={handleStartTime}
+        >
+          Start Time
+        </Button>
+        <Button
+          variant="contained"
+          disabled={endDisabled === true ? true : false}
+          onClick={handleEndTime}
+        >
+          End Time
+        </Button>
       </div>
 
       <Dialog
