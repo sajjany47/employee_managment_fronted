@@ -34,12 +34,13 @@ const AttendanceDetail = () => {
   const [leaveUseListData, setLeaveUseListData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [year, setYear] = useState(moment.utc(new Date()));
-  const [startDisabled, setStartDisabled] = useState(false);
-  const [endDisabled, setEndDisabled] = useState(true);
+  const [startDisabled, setStartDisabled] = useState<any>(false);
+  const [endDisabled, setEndDisabled] = useState<any>(true);
   const [startTime, setStartTime] = useState<any>("");
 
   useEffect(() => {
     applyLeaveList(user.username, moment(year).format("YYYY"));
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -188,15 +189,16 @@ const AttendanceDetail = () => {
   };
 
   const handleStartTime = () => {
-    setStartDisabled(true);
-    setEndDisabled(false);
+    localStorage.setItem("startTime", JSON.stringify(true));
+    localStorage.setItem("endTime", JSON.stringify(false));
+
     setStartTime(new Date());
   };
 
   const handleEndTime = () => {
+    localStorage.setItem("startTime", JSON.stringify(false));
+    localStorage.setItem("endTime", JSON.stringify(true));
     console.log(startTime);
-    setStartDisabled(false);
-    setEndDisabled(true);
   };
   return (
     <>
