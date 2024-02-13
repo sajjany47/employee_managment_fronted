@@ -1,4 +1,4 @@
-import { Button, Chip, Grid } from "@mui/material";
+import { Button, Card, Chip, Grid } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -34,16 +34,34 @@ const AttendanceDetail = () => {
   const [leaveUseListData, setLeaveUseListData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [year, setYear] = useState(moment.utc(new Date()));
-  const [startDisabled, setStartDisabled] = useState<any>(false);
-  const [endDisabled, setEndDisabled] = useState<any>(true);
-  const [startTime, setStartTime] = useState<any>("");
+
+  const [dateCheckData, setDateCheckData] = useState<any>({});
+  // const [startTime, setStartTime] = useState<any>("");
 
   useEffect(() => {
     applyLeaveList(user.username, moment(year).format("YYYY"));
+    attendanceDateChecker();
+    // setStartTime(
+    //   moment(new Date()).diff(moment(dateCheckData.startTime), "minutes")
+    // );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const attendanceDateChecker = () => {
+    setLoading(true);
+    attendanceService
+      .attendanceDateCheck({ username: user.username, checkDate: new Date() })
+      .then((res) => {
+        setDateCheckData(res.data);
+      })
+      .catch((err: any) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      )
+      .finally(() => {
+        setLoading(false);
+      });
+  };
   const applyLeaveList = (id: any, leaveYear: any) => {
     setLoading(true);
     attendanceService
@@ -189,16 +207,50 @@ const AttendanceDetail = () => {
   };
 
   const handleStartTime = () => {
-    localStorage.setItem("startTime", JSON.stringify(true));
-    localStorage.setItem("endTime", JSON.stringify(false));
-
-    setStartTime(new Date());
+    setLoading(true);
+    const reqData = {
+      startTime: new Date(),
+      username: user.username,
+      date: new Date(),
+    };
+    attendanceService
+      .dailyAttendance(reqData)
+      .then(() => {
+        enqueueSnackbar("Attendance time started", { variant: "success" });
+      })
+      .catch((err) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      )
+      .finally(() => {
+        setLoading(false);
+        attendanceDateChecker();
+      });
   };
 
   const handleEndTime = () => {
-    localStorage.setItem("startTime", JSON.stringify(false));
-    localStorage.setItem("endTime", JSON.stringify(true));
-    console.log(startTime);
+    setLoading(true);
+    const reqData = {
+      endTime: new Date(),
+      username: user.username,
+      totalTime: moment(new Date()).diff(
+        moment(dateCheckData.startTime),
+        "minutes"
+      ),
+      date: dateCheckData.date,
+    };
+
+    attendanceService
+      .dailyAttendance(reqData)
+      .then(() => {
+        enqueueSnackbar("Attendance time End", { variant: "success" });
+      })
+      .catch((err) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      )
+      .finally(() => {
+        setLoading(false);
+        attendanceDateChecker();
+      });
   };
   return (
     <>
@@ -309,16 +361,24 @@ const AttendanceDetail = () => {
       </div>
 
       <div className="mt-5 flex gap-2">
+        <Card sx={{ minWidth: 200 }}>
+          TotalTime:
+          {moment(new Date()).diff(
+            moment(dateCheckData.startTime),
+            "minutes"
+          )}{" "}
+          Mintues
+        </Card>
         <Button
           variant="contained"
-          disabled={startDisabled === true ? true : false}
+          disabled={dateCheckData.startDisabled === true ? true : false}
           onClick={handleStartTime}
         >
           Start Time
         </Button>
         <Button
           variant="contained"
-          disabled={endDisabled === true ? true : false}
+          disabled={dateCheckData.endDisabled === true ? true : false}
           onClick={handleEndTime}
         >
           End Time
