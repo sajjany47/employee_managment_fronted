@@ -361,14 +361,7 @@ const AttendanceDetail = () => {
       </div>
 
       <div className="mt-5 flex gap-2">
-        <Card sx={{ minWidth: 200 }}>
-          TotalTime:
-          {moment(new Date()).diff(
-            moment(dateCheckData.startTime),
-            "minutes"
-          )}{" "}
-          Mintues
-        </Card>
+        <Card sx={{ minWidth: 200 }}>TotalTime:</Card>
         <Button
           variant="contained"
           disabled={dateCheckData.startDisabled === true ? true : false}
