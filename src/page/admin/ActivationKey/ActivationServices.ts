@@ -82,4 +82,66 @@ export class ActivationService {
       throw err;
     }
   };
+  getAllCountry = async () => {
+    try {
+      const response = await axios.get(
+        `https://api.countrystatecity.in/v1/countries`,
+        {
+          headers: {
+            "X-CSCAPI-KEY":
+              "OU5ycmZrek91NnpXVjdUTVJoUVZ1N3ZWWWJGM3lnQVB0N0djYngzMA==",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
+  getStateByCountry = async (country: any) => {
+    try {
+      const response = await axios.get(
+        `https://api.countrystatecity.in/v1/countries/${country}/states`,
+        {
+          headers: {
+            "X-CSCAPI-KEY":
+              "OU5ycmZrek91NnpXVjdUTVJoUVZ1N3ZWWWJGM3lnQVB0N0djYngzMA==",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
+
+  getCityByState = async (country: any, state: any) => {
+    try {
+      const response = await axios.get(
+        `https://api.countrystatecity.in/v1/countries/${country}/states/${state}/cities`,
+        {
+          headers: {
+            "X-CSCAPI-KEY":
+              "OU5ycmZrek91NnpXVjdUTVJoUVZ1N3ZWWWJGM3lnQVB0N0djYngzMA==",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
+
+  getBankDetails = async (ifsc: any) => {
+    try {
+      const response = await axios.get(`https://ifsc.razorpay.com/${ifsc}`);
+      return response.data;
+    } catch (error) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
 }

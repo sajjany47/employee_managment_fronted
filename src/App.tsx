@@ -11,6 +11,7 @@ import Attendance from "./page/admin/Attendance/Attendance";
 import AttendanceDetail from "./page/admin/Attendance/AttendanceDetail";
 import LeaveList from "./page/admin/leave/LeaveList";
 import HolidayList from "./page/admin/Attendance/HolidayList";
+import UserUpdat from "./page/admin/ActivationKey/UserUpdat";
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="/admin/activation-key" element={<ActivationKey />} />
-            <Route path="/admin/user-update" element={<UserUpdate />} />
+            <Route path="/admin/user-update" element={<UserUpdat />} />
             <Route path="/admin/user-verified" element={<UserVerified />} />
             <Route path="/admin/employee" element={<Employee />} />
             <Route path="/admin/attendance" element={<Attendance />} />
