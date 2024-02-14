@@ -143,12 +143,12 @@ export default function ActivationKey() {
         <span style={{ textTransform: "capitalize" }}>{value.value}</span>
       ),
     },
-    { field: "mobile", headerName: "Number", width: 130 },
-    { field: "activationCode", headerName: "Activation Code", width: 190 },
+    { field: "mobile", headerName: "Number", width: 120 },
+    // { field: "activationCode", headerName: "Activation Code", width: 190 },
     {
       field: "role",
       headerName: "Role",
-      width: 100,
+      width: 120,
       renderCell: (value: any) => (
         <span style={{ textTransform: "capitalize" }}>{value.value}</span>
       ),
@@ -156,15 +156,16 @@ export default function ActivationKey() {
     {
       field: "registrationStatus",
       headerName: "Status",
-      width: 110,
+      width: 120,
+
       renderCell: (value: any) => customRegistrationStatus(value.value),
-      align: "center",
+
       // valueGetter: (value) => customRegistrationStatus(value.value),
     },
     {
       field: "activeStatus",
       headerName: "IsActive",
-      width: 80,
+      width: 120,
       renderCell: (value: any) => (
         <Switch
           checked={value.value}
@@ -172,20 +173,21 @@ export default function ActivationKey() {
         />
       ),
     },
-    { field: "createdBy", headerName: "CreatedBy ", width: 110 },
-    { field: "updatedBy", headerName: "UpdatedBy ", width: 110 },
-    { field: "approvedBy", headerName: "ApprovedBy ", width: 110 },
+    { field: "createdBy", headerName: "CreatedBy ", width: 120 },
+    { field: "updatedBy", headerName: "UpdatedBy ", width: 120 },
+    { field: "approvedBy", headerName: "ApprovedBy ", width: 120 },
     {
       field: "createdAt",
       headerName: "CreatedAt",
-      width: 150,
-      renderCell: (value: any) =>
-        moment(value.value).format("Do MMM, YY HH:mm"),
+      width: 120,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (value: any) => moment(value.value).format("Do MMM,YYYY"),
     },
     {
       field: "action",
       headerName: "Action",
-      width: 90,
+      width: 120,
       renderCell: (value: any) => (
         <>
           <EditNoteIcon
