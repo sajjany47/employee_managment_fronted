@@ -1,15 +1,7 @@
 /* eslint-disable no-useless-escape */
 import * as React from "react";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import {
-  Box,
-  Button,
-  Chip,
-  Grid,
-  Switch,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Chip, Grid, Switch, TextField } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -273,30 +265,33 @@ export default function ActivationKey() {
       {loading && <Loader />}
       <Grid container rowSpacing={2} columnSpacing={2}>
         <Grid item xs={12}>
-          <Box className="mt-2 flex justify-end gap-2">
-            <TextField label="Search" id="outlined-size-small" size="small" />
-            <FormControl sx={{ minWidth: 120 }} size="small">
-              <Select value={id} onChange={handleChange}>
-                <MenuItem value={"all"}>All</MenuItem>
-                <MenuItem value={"waiting"}>Waiting</MenuItem>
-                <MenuItem value={"pending"}>Pending</MenuItem>
-                <MenuItem value={"verified"}>Verified</MenuItem>
-              </Select>
-            </FormControl>
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={handleClickOpen}
-            >
-              Activation Key
-            </Button>
+          <Box className="mt-2 flex justify-between">
+            <Box>
+              <h6>
+                <strong>All Users List</strong>
+              </h6>
+            </Box>
+            <Box className="mt-2 flex justify-end gap-2">
+              <TextField label="Search" id="outlined-size-small" size="small" />
+              <FormControl sx={{ minWidth: 120 }} size="small">
+                <Select value={id} onChange={handleChange}>
+                  <MenuItem value={"all"}>All</MenuItem>
+                  <MenuItem value={"waiting"}>Waiting</MenuItem>
+                  <MenuItem value={"pending"}>Pending</MenuItem>
+                  <MenuItem value={"verified"}>Verified</MenuItem>
+                </Select>
+              </FormControl>
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={handleClickOpen}
+              >
+                Activation Key
+              </Button>
+            </Box>
           </Box>
         </Grid>
         <Grid item xs={12} className="mt-1">
-          <Typography variant="h6" className="text-sm">
-            Activation Key List
-          </Typography>
-
           <Box>
             <DataGrid
               style={{

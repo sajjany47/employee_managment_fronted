@@ -1,4 +1,4 @@
-import { Button, Card, Chip, Grid } from "@mui/material";
+import { Box, Button, Card, Chip, Grid } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -255,128 +255,140 @@ const AttendanceDetail = () => {
   return (
     <>
       {loading && <Loader />}
-      <div className="flex justify-between">
-        <h6>
-          <strong>Attendance Details</strong>
-        </h6>
-        <div className="flex gap-1">
-          <LocalizationProvider dateAdapter={AdapterMoment}>
-            <DemoContainer components={["DatePicker"]}>
-              <DatePicker
-                sx={{ width: "50% " }}
-                label="Select Year"
-                value={year}
-                slotProps={{ textField: { size: "small", fullWidth: false } }}
-                views={["year"]}
-                onChange={handleChange}
-              />
-            </DemoContainer>
-          </LocalizationProvider>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleClickOpen}
-          >
-            Apply Leave
-          </Button>
-        </div>
-        {/* <Button variant="contained" onClick={handleClickOpen}>
-          Apply Leave
-        </Button> */}
-      </div>
 
-      <div className="max-w-screen-xl mx-auto px-4 md:px-8">
-        <ul className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          <li className="border rounded-lg">
-            <div className="flex items-start justify-center p-4">
-              <div className="space-y-2 text-center">
-                <LanguageIcon />
-                <h4 className="text-gray-800 font-semibold ">
-                  Total Leave Alloted
-                </h4>
-                <p className="text-gray-600 text-sm">
-                  {Object.keys(leaveListData).length > 0
-                    ? leaveListData?.leaveDetail?.totalLeave
-                    : 0}
-                </p>
-              </div>
-            </div>
-          </li>
-          <li className="border rounded-lg">
-            <div className="flex items-start justify-center p-4">
-              <div className="space-y-2 text-center">
-                <NoEncryptionIcon />
+      <Grid container rowSpacing={2} columnSpacing={2}>
+        <Grid item xs={12}>
+          <Box className="mt-2 flex justify-between">
+            <Box>
+              <h6>
+                <strong>Attendance Details</strong>
+              </h6>
+            </Box>
+            <Box className="mt-2 flex justify-end gap-2">
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <DemoContainer
+                  components={["DatePicker"]}
+                  sx={{ marginTop: -1 }}
+                >
+                  <DatePicker
+                    label="Select Year"
+                    value={year}
+                    slotProps={{
+                      textField: { size: "small", fullWidth: false },
+                    }}
+                    views={["year"]}
+                    onChange={handleChange}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
 
-                <h4 className="text-gray-800 font-semibold">
-                  Total Leave Used
-                </h4>
-                <p className="text-gray-600 text-sm">
-                  {Object.keys(leaveListData).length > 0
-                    ? leaveListData?.leaveDetail?.totalLeave -
-                      leaveListData?.leaveDetail?.totalLeaveLeft
-                    : 0}
-                </p>
-              </div>
-            </div>
-          </li>
-          <li className="border rounded-lg">
-            <div className="flex items-start justify-center p-4">
-              <div className="space-y-2 text-center">
-                <ContentPasteIcon />
-                <h4 className="text-gray-800 font-semibold">
-                  Total Leave Left
-                </h4>
-                <p className="text-gray-600 text-sm">
-                  {Object.keys(leaveListData).length > 0
-                    ? leaveListData?.leaveDetail?.totalLeaveLeft
-                    : 0}
-                </p>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </div>
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={handleClickOpen}
+              >
+                Apply Leave
+              </Button>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12}>
+          <div className="max-w-screen-xl mx-auto px-4 md:px-8">
+            <ul className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              <li className="border rounded-lg">
+                <div className="flex items-start justify-center p-4">
+                  <div className="space-y-2 text-center">
+                    <LanguageIcon />
+                    <h4 className="text-gray-800 font-semibold ">
+                      Total Leave Alloted
+                    </h4>
+                    <p className="text-gray-600 text-sm">
+                      {Object.keys(leaveListData).length > 0
+                        ? leaveListData?.leaveDetail?.totalLeave
+                        : 0}
+                    </p>
+                  </div>
+                </div>
+              </li>
+              <li className="border rounded-lg">
+                <div className="flex items-start justify-center p-4">
+                  <div className="space-y-2 text-center">
+                    <NoEncryptionIcon />
 
-      <div className="mt-10">
-        <DataGrid
-          style={{
-            height: leaveUseListData.length !== 0 ? "100%" : 200,
-            width: "100%",
-          }}
-          rows={leaveUseListData}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: ConfigData.pageSize,
-              },
-            },
-          }}
-          getRowId={(row) => row._id}
-          pageSizeOptions={ConfigData.pageRow}
-          localeText={{ noRowsLabel: "No Data Available!!!" }}
-          // checkboxSelection
-          // disableRowSelectionOnClick
-        />
-      </div>
-
-      <div className="mt-5 flex gap-2">
-        <Card sx={{ minWidth: 200 }}>TotalTime:</Card>
-        <Button
-          variant="contained"
-          disabled={dateCheckData.startDisabled === true ? true : false}
-          onClick={handleStartTime}
-        >
-          Start Time
-        </Button>
-        <Button
-          variant="contained"
-          disabled={dateCheckData.endDisabled === true ? true : false}
-          onClick={handleEndTime}
-        >
-          End Time
-        </Button>
-      </div>
+                    <h4 className="text-gray-800 font-semibold">
+                      Total Leave Used
+                    </h4>
+                    <p className="text-gray-600 text-sm">
+                      {Object.keys(leaveListData).length > 0
+                        ? leaveListData?.leaveDetail?.totalLeave -
+                          leaveListData?.leaveDetail?.totalLeaveLeft
+                        : 0}
+                    </p>
+                  </div>
+                </div>
+              </li>
+              <li className="border rounded-lg">
+                <div className="flex items-start justify-center p-4">
+                  <div className="space-y-2 text-center">
+                    <ContentPasteIcon />
+                    <h4 className="text-gray-800 font-semibold">
+                      Total Leave Left
+                    </h4>
+                    <p className="text-gray-600 text-sm">
+                      {Object.keys(leaveListData).length > 0
+                        ? leaveListData?.leaveDetail?.totalLeaveLeft
+                        : 0}
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </Grid>
+        <Grid item xs={12}>
+          <div className="mt-10">
+            <DataGrid
+              style={{
+                height: leaveUseListData.length !== 0 ? "100%" : 200,
+                width: "100%",
+              }}
+              rows={leaveUseListData}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: ConfigData.pageSize,
+                  },
+                },
+              }}
+              getRowId={(row) => row._id}
+              pageSizeOptions={ConfigData.pageRow}
+              localeText={{ noRowsLabel: "No Data Available!!!" }}
+              // checkboxSelection
+              // disableRowSelectionOnClick
+            />
+          </div>
+        </Grid>
+        <Grid item xs={12}>
+          <div className="mt-5 flex gap-2">
+            <Card sx={{ minWidth: 200 }}>TotalTime:</Card>
+            <Button
+              variant="contained"
+              disabled={dateCheckData.startDisabled === true ? true : false}
+              onClick={handleStartTime}
+            >
+              Start Time
+            </Button>
+            <Button
+              variant="contained"
+              disabled={dateCheckData.endDisabled === true ? true : false}
+              onClick={handleEndTime}
+            >
+              End Time
+            </Button>
+          </div>
+        </Grid>
+      </Grid>
 
       <Dialog
         fullScreen={fullScreen}

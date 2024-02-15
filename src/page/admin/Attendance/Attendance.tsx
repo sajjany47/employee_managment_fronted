@@ -1,11 +1,11 @@
 import {
+  Box,
   Button,
   Chip,
   Dialog,
   DialogContent,
   DialogTitle,
   Grid,
-  TextField,
 } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
@@ -37,6 +37,7 @@ const Attendance = () => {
 
   useEffect(() => {
     allUserLeave(year);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const allUserLeave = (year: any) => {
@@ -87,13 +88,13 @@ const Attendance = () => {
     {
       field: "user_id",
       headerName: "UserName",
-      width: 150,
+      width: 110,
       renderCell: (value: any) => <span>{value.row.user_id}</span>,
     },
     {
       field: "totalLeaveLeft",
       headerName: "Leave Left",
-      width: 150,
+      width: 100,
       renderCell: (value: any) => (
         <span>{value.row.leaveDetail.totalLeaveLeft}</span>
       ),
@@ -101,7 +102,7 @@ const Attendance = () => {
     {
       field: "startDay",
       headerName: "Leave Start Date",
-      width: 200,
+      width: 150,
       renderCell: (value: any) =>
         moment(value.row.leaveDetail.leaveUseDetail.startDay).format(
           "Do MMM, YYYY"
@@ -110,7 +111,7 @@ const Attendance = () => {
     {
       field: "endDay",
       headerName: "Leave Start Date",
-      width: 200,
+      width: 150,
       renderCell: (value: any) =>
         moment(value.row.leaveDetail.leaveUseDetail.endDay).format(
           "Do MMM, YYYY"
@@ -119,7 +120,7 @@ const Attendance = () => {
     {
       field: "reason",
       headerName: "Reason",
-      width: 200,
+      width: 150,
       renderCell: (value: any) => (
         <span>{value.row.leaveDetail.leaveUseDetail.reason}</span>
       ),
@@ -127,7 +128,7 @@ const Attendance = () => {
     {
       field: "totalDays",
       headerName: "Total Days",
-      width: 150,
+      width: 100,
       renderCell: (value: any) => (
         <span>{value.row.leaveDetail.leaveUseDetail.totalDays}</span>
       ),
@@ -135,7 +136,7 @@ const Attendance = () => {
     {
       field: "leaveStatus",
       headerName: "Leave Status",
-      width: 100,
+      width: 120,
       renderCell: (value: any) =>
         customRegistrationStatus(
           value.row.leaveDetail.leaveUseDetail.leaveStatus
@@ -144,7 +145,7 @@ const Attendance = () => {
     {
       field: "approvedBy",
       headerName: "ApprovedBy ",
-      width: 150,
+      width: 120,
       renderCell: (value: any) => (
         <span>{value.row.leaveDetail.leaveUseDetail.approvedBy}</span>
       ),
@@ -160,7 +161,7 @@ const Attendance = () => {
               color="primary"
               style={{
                 cursor: "pointer",
-                fontSize: "30px",
+                // fontSize: "30px",
                 marginRight: "5px",
               }}
               onClick={() => {
@@ -174,7 +175,7 @@ const Attendance = () => {
             color="secondary"
             style={{
               cursor: "pointer",
-              fontSize: "30px",
+              // fontSize: "30px",
             }}
             onClick={() => {
               navigate("/admin/attendance/details", {
@@ -232,50 +233,51 @@ const Attendance = () => {
   return (
     <>
       {loading && <Loader />}
-      <div className="flex justify-between">
-        <div>
-          <h6>
-            <strong>Attendance Details</strong>
-          </h6>
-        </div>
-        <div className="flex gap-2">
-          <TextField
-            label="Search"
-            id="outlined-size-small"
-            size="small"
-            // className="w-full"
-          />
-          <LocalizationProvider dateAdapter={AdapterMoment}>
-            <DemoContainer components={["DatePicker"]}>
-              <DatePicker
-                sx={{ width: "50% " }}
-                label="Select Year"
-                value={year}
-                slotProps={{ textField: { size: "small", fullWidth: false } }}
-                views={["year"]}
-                onChange={handleChange}
-              />
-            </DemoContainer>
-          </LocalizationProvider>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => navigate("/admin/holiday-list")}
-          >
-            Holiday List
-          </Button>
 
-          <Button
-            variant="contained"
-            // startIcon={<AddIcon />}
-            onClick={handleClick}
-          >
-            My Attendance
-          </Button>
-        </div>
-      </div>
-
-      <Grid container rowSpacing={2} columnSpacing={2} marginTop={5}>
+      <Grid container rowSpacing={2} columnSpacing={2}>
+        <Grid item xs={12}>
+          <Box className="mt-2 flex justify-between">
+            <Box>
+              {" "}
+              <h6>
+                <strong> User Pending Leave Details</strong>
+              </h6>
+            </Box>
+            <Box className="mt-2 flex justify-end gap-2">
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <DemoContainer
+                  components={["DatePicker"]}
+                  sx={{ marginTop: -1 }}
+                >
+                  <DatePicker
+                    // sx={{ width: "50% " }}
+                    label="Select Year"
+                    value={year}
+                    slotProps={{
+                      textField: { size: "small", fullWidth: false },
+                    }}
+                    views={["year"]}
+                    onChange={handleChange}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={() => navigate("/admin/holiday-list")}
+              >
+                Holiday List
+              </Button>
+              <Button
+                variant="contained"
+                // startIcon={<AddIcon />}
+                onClick={handleClick}
+              >
+                My Attendance
+              </Button>
+            </Box>
+          </Box>
+        </Grid>
         <Grid item xs={12} sm={12} md={12}>
           <DataGrid
             style={{
@@ -299,6 +301,7 @@ const Attendance = () => {
           />
         </Grid>
       </Grid>
+
       <Dialog
         // fullScreen={fullScreen}
         open={open}

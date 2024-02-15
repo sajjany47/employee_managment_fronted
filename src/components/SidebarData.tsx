@@ -89,7 +89,7 @@ const SidebarData = {
     },
     {
       path: "/admin/leave",
-      title: "Leave",
+      title: "Leave Alloted",
       icon: <RememberMeIcon />,
     },
     {
