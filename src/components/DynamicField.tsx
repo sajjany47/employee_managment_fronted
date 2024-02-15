@@ -22,7 +22,7 @@ export const InputField = (props: any) => {
         size="medium"
         {...field}
         {...props}
-        value={field.value !== null ? field.value : ""}
+        value={field.value !== undefined ? field.value : ""}
         id={field.name}
         variant="outlined"
         className="w-full"
@@ -84,7 +84,7 @@ export const DateField = (props: any) => {
           <DatePicker
             label={props.label}
             // views={["year", "month", "day"]}
-            value={field.value !== null ? moment.utc(field.value) : ""}
+            value={field.value !== undefined ? moment.utc(field.value) : ""}
             views={props.views}
             onChange={(e: any) => setFieldValue(field.name, moment(e))}
             sx={{ width: "100%" }}

@@ -192,14 +192,14 @@ export default function ActivationKey() {
         <>
           <EditNoteIcon
             color="primary"
+            style={{ cursor: "pointer" }}
             onClick={() => {
-              navigate(`/admin/user-update`, {
-                state: { data: value.row },
-              });
+              navigate(`/admin/user-update/${value.row._id}`);
             }}
           />
           <VisibilityIcon
             color="secondary"
+            style={{ cursor: "pointer" }}
             onClick={() => {
               navigate("/admin/user-verified/", { state: { data: value.row } });
             }}

@@ -4,14 +4,14 @@ import Layout from "./page/user/Layout";
 import { SnackbarProvider } from "notistack";
 // import Copyright from "./components/Copyright";
 import ActivationKey from "./page/admin/ActivationKey/ActivationKey";
-import UserUpdate from "./page/admin/ActivationKey/UserUpdate";
+// import UserUpdate from "./page/admin/ActivationKey/UserUpdate";
 import UserVerified from "./page/admin/ActivationKey/UserVerified";
 import Employee from "./page/admin/Emloyee/Employee";
 import Attendance from "./page/admin/Attendance/Attendance";
 import AttendanceDetail from "./page/admin/Attendance/AttendanceDetail";
 import LeaveList from "./page/admin/leave/LeaveList";
 import HolidayList from "./page/admin/Attendance/HolidayList";
-import UserUpdat from "./page/admin/ActivationKey/UserUpdat";
+import UserUpdate from "./page/admin/ActivationKey/UserUpdate";
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="/admin/activation-key" element={<ActivationKey />} />
-            <Route path="/admin/user-update" element={<UserUpdat />} />
+            <Route path="/admin/user-update/:id" element={<UserUpdate />} />
             <Route path="/admin/user-verified" element={<UserVerified />} />
             <Route path="/admin/employee" element={<Employee />} />
             <Route path="/admin/attendance" element={<Attendance />} />
