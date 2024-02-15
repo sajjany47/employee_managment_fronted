@@ -19,7 +19,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route path="/admin/activation-key" element={<ActivationKey />} />
+            <Route path="/admin/employee-list" element={<ActivationKey />} />
             <Route path="/admin/user-update/:id" element={<UserUpdate />} />
             <Route path="/admin/user-verified" element={<UserVerified />} />
             <Route path="/admin/employee" element={<Employee />} />

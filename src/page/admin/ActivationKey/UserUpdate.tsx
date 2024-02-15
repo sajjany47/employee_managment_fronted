@@ -15,16 +15,18 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
 import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
 
 const UserUpdate = () => {
   const activationService = new ActivationService();
-
+  const navigate = useNavigate();
   const userType = useSelector((state: any) => state.auth.auth.user);
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState<any>({});
   const [countryData, setCountryData] = useState([]);
   const [stateData, setStateData] = useState([]);
   useEffect(() => {
+    setLoading(true);
     Promise.all([
       activationService.singleUser("653f76e4f753e9dab03ebf11"),
       getAllCountryList(),
@@ -35,7 +37,8 @@ const UserUpdate = () => {
       })
       .catch((err) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
-      );
+      )
+      .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -613,7 +616,7 @@ const UserUpdate = () => {
               }}
             >
               <Button
-                // onClick={handleClose}
+                onClick={() => navigate("/admin/employee-list")}
                 variant="contained"
                 sx={{
                   backgroundColor: "red",
