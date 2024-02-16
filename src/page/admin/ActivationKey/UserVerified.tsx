@@ -54,7 +54,7 @@ const UserVerified = () => {
                           approvedBy: user.username,
                           registrationStatus: "verified",
                         });
-                        navigate("/admin/activation-key");
+                        navigate("/admin/employee-list");
                       }}
                     />
 
