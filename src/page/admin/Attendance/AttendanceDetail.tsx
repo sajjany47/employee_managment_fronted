@@ -24,14 +24,21 @@ const AttendanceDetail = () => {
   const [loading, setLoading] = useState(false);
   const [month, setMonth] = useState(moment.utc(new Date()));
   const [dateCheckData, setDateCheckData] = useState<any>({});
-  const [showTotalTime, setShowTotalTime] = useState(0);
-  // const [startTime, setStartTime] = useState<any>("");
+
+  const [showTime, setShowTime] = useState<any>("");
 
   useEffect(() => {
     attendanceDateChecker();
 
+    setShowTime(
+      dateCheckData.endTime === null && dateCheckData.startTime === null
+        ? 0
+        : moment(
+            dateCheckData.endTime === null ? new Date() : dateCheckData.endTime
+          ).diff(moment(dateCheckData.startTime), "minutes")
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showTotalTime]);
+  }, [showTime]);
 
   const attendanceDateChecker = () => {
     setLoading(true);
@@ -190,7 +197,7 @@ const AttendanceDetail = () => {
             <div className="space-y-2 text-center">
               <WatchLaterIcon />
               <h4 className="text-gray-800 font-semibold ">Today Total Time</h4>
-              <p className="text-gray-600 text-sm">{showTotalTime}</p>
+              <p className="text-gray-600 text-sm">{showTime}</p>
             </div>
           </div>
 
