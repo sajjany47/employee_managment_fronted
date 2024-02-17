@@ -1,4 +1,4 @@
-import { Box, Button, Card, Chip, Grid } from "@mui/material";
+import { Box, Button, Chip, Divider, Grid } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -23,6 +23,7 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import LanguageIcon from "@mui/icons-material/Language";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import NoEncryptionIcon from "@mui/icons-material/NoEncryption";
+import WatchLaterIcon from "@mui/icons-material/WatchLater";
 
 const AttendanceDetail = () => {
   const attendanceService = new AttendanceService();
@@ -34,19 +35,25 @@ const AttendanceDetail = () => {
   const [leaveUseListData, setLeaveUseListData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [year, setYear] = useState(moment.utc(new Date()));
+  const [month, setMonth] = useState(moment.utc(new Date()));
 
   const [dateCheckData, setDateCheckData] = useState<any>({});
+  const [showTotalTime, setShowTotalTime] = useState(0);
   // const [startTime, setStartTime] = useState<any>("");
 
   useEffect(() => {
     applyLeaveList(user.username, moment(year).format("YYYY"));
     attendanceDateChecker();
-    // setStartTime(
-    //   moment(new Date()).diff(moment(dateCheckData.startTime), "minutes")
-    // );
+    setShowTotalTime(
+      dateCheckData.endTime === null && dateCheckData.startTime === null
+        ? 0
+        : moment(
+            dateCheckData.endTime === null ? new Date() : dateCheckData.endTime
+          ).diff(moment(dateCheckData.startTime), "seconds")
+    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [showTotalTime]);
 
   const attendanceDateChecker = () => {
     setLoading(true);
@@ -54,6 +61,9 @@ const AttendanceDetail = () => {
       .attendanceDateCheck({ username: user.username, checkDate: new Date() })
       .then((res) => {
         setDateCheckData(res.data);
+        setShowTotalTime(
+          res.data?.totalTime === null ? 0 : res.data?.totalTime
+        );
       })
       .catch((err: any) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
@@ -166,6 +176,44 @@ const AttendanceDetail = () => {
     //   ),
     // },
   ];
+
+  const timeColumns: GridColDef[] = [
+    {
+      field: "Username",
+      headerName: "Username",
+      width: 150,
+      renderCell: (value: any) => <span>{value.value}</span>,
+    },
+    {
+      field: "date",
+      headerName: "Date",
+      width: 150,
+      renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
+    },
+    {
+      field: "startTime",
+      headerName: "Clock In",
+      width: 150,
+      // renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
+    },
+    {
+      field: "endTime",
+      headerName: "Clock Out",
+      width: 200,
+      // renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
+    },
+    {
+      field: "totalTime",
+      headerName: "Total Time",
+      width: 150,
+      // renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
+    },
+    {
+      field: "updatedBy",
+      headerName: "Updated By",
+      width: 150,
+    },
+  ];
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -206,8 +254,14 @@ const AttendanceDetail = () => {
     applyLeaveList(user.username, formatDate);
   };
 
+  const handleMonthChange = (value: any) => {
+    const formatDate: any = moment(value).format("MM-YYYY");
+    setMonth(formatDate);
+  };
+
   const handleStartTime = () => {
     setLoading(true);
+
     const reqData = {
       startTime: new Date(),
       username: user.username,
@@ -293,100 +347,168 @@ const AttendanceDetail = () => {
           </Box>
         </Grid>
         <Grid item xs={12}>
-          <div className="max-w-screen-xl mx-auto px-4 md:px-8">
-            <ul className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              <li className="border rounded-lg">
-                <div className="flex items-start justify-center p-4">
-                  <div className="space-y-2 text-center">
-                    <LanguageIcon />
-                    <h4 className="text-gray-800 font-semibold ">
-                      Total Leave Alloted
-                    </h4>
-                    <p className="text-gray-600 text-sm">
-                      {Object.keys(leaveListData).length > 0
-                        ? leaveListData?.leaveDetail?.totalLeave
-                        : 0}
-                    </p>
-                  </div>
-                </div>
-              </li>
-              <li className="border rounded-lg">
-                <div className="flex items-start justify-center p-4">
-                  <div className="space-y-2 text-center">
-                    <NoEncryptionIcon />
+          <Grid container rowSpacing={2} columnSpacing={2}>
+            <Grid item xs={12} sm={12} md={12}>
+              <Divider sx={{ margin: "20px" }}>
+                <strong>Leave Details</strong>
+              </Divider>
+            </Grid>
+            <Grid item xs={12}>
+              <div className="max-w-screen-xl mx-auto px-4 md:px-8">
+                <ul className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                  <li className="border rounded-lg">
+                    <div className="flex items-start justify-center p-4">
+                      <div className="space-y-2 text-center">
+                        <LanguageIcon />
+                        <h4 className="text-gray-800 font-semibold ">
+                          Total Leave Alloted
+                        </h4>
+                        <p className="text-gray-600 text-sm">
+                          {Object.keys(leaveListData).length > 0
+                            ? leaveListData?.leaveDetail?.totalLeave
+                            : 0}
+                        </p>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="border rounded-lg">
+                    <div className="flex items-start justify-center p-4">
+                      <div className="space-y-2 text-center">
+                        <NoEncryptionIcon />
 
-                    <h4 className="text-gray-800 font-semibold">
-                      Total Leave Used
-                    </h4>
-                    <p className="text-gray-600 text-sm">
-                      {Object.keys(leaveListData).length > 0
-                        ? leaveListData?.leaveDetail?.totalLeave -
-                          leaveListData?.leaveDetail?.totalLeaveLeft
-                        : 0}
-                    </p>
-                  </div>
-                </div>
-              </li>
-              <li className="border rounded-lg">
-                <div className="flex items-start justify-center p-4">
-                  <div className="space-y-2 text-center">
-                    <ContentPasteIcon />
-                    <h4 className="text-gray-800 font-semibold">
-                      Total Leave Left
-                    </h4>
-                    <p className="text-gray-600 text-sm">
-                      {Object.keys(leaveListData).length > 0
-                        ? leaveListData?.leaveDetail?.totalLeaveLeft
-                        : 0}
-                    </p>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
+                        <h4 className="text-gray-800 font-semibold">
+                          Total Leave Used
+                        </h4>
+                        <p className="text-gray-600 text-sm">
+                          {Object.keys(leaveListData).length > 0
+                            ? leaveListData?.leaveDetail?.totalLeave -
+                              leaveListData?.leaveDetail?.totalLeaveLeft
+                            : 0}
+                        </p>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="border rounded-lg">
+                    <div className="flex items-start justify-center p-4">
+                      <div className="space-y-2 text-center">
+                        <ContentPasteIcon />
+                        <h4 className="text-gray-800 font-semibold">
+                          Total Leave Left
+                        </h4>
+                        <p className="text-gray-600 text-sm">
+                          {Object.keys(leaveListData).length > 0
+                            ? leaveListData?.leaveDetail?.totalLeaveLeft
+                            : 0}
+                        </p>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </Grid>
+            <Grid item xs={12}>
+              <div className="mt-10">
+                <DataGrid
+                  style={{
+                    height: leaveUseListData.length !== 0 ? "100%" : 200,
+                    width: "100%",
+                  }}
+                  rows={leaveUseListData}
+                  columns={columns}
+                  initialState={{
+                    pagination: {
+                      paginationModel: {
+                        pageSize: ConfigData.pageSize,
+                      },
+                    },
+                  }}
+                  getRowId={(row) => row._id}
+                  pageSizeOptions={ConfigData.pageRow}
+                  localeText={{ noRowsLabel: "No Data Available!!!" }}
+                  // checkboxSelection
+                  // disableRowSelectionOnClick
+                />
+              </div>
+            </Grid>
+          </Grid>
         </Grid>
+
         <Grid item xs={12}>
-          <div className="mt-10">
-            <DataGrid
-              style={{
-                height: leaveUseListData.length !== 0 ? "100%" : 200,
-                width: "100%",
-              }}
-              rows={leaveUseListData}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: ConfigData.pageSize,
+          <Grid container rowSpacing={2} columnSpacing={2}>
+            <Grid item xs={12} sm={12} md={12}>
+              <Divider sx={{ margin: "20px" }}>
+                <strong>Time Details</strong>
+              </Divider>
+            </Grid>
+            <Grid item xs={12} sm={12} md={12}>
+              <Box className="mt-2 flex  gap-2">
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                  <DemoContainer
+                    components={["DatePicker"]}
+                    sx={{ marginTop: -1 }}
+                  >
+                    <DatePicker
+                      label="Select Year"
+                      value={month}
+                      slotProps={{
+                        textField: { size: "small", fullWidth: false },
+                      }}
+                      views={["month", "year"]}
+                      onChange={handleMonthChange}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={12} md={8}>
+              <DataGrid
+                style={{
+                  height: leaveUseListData.length !== 0 ? "100%" : 200,
+                  width: "100%",
+                }}
+                rows={leaveUseListData}
+                columns={timeColumns}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: ConfigData.pageSize,
+                    },
                   },
-                },
-              }}
-              getRowId={(row) => row._id}
-              pageSizeOptions={ConfigData.pageRow}
-              localeText={{ noRowsLabel: "No Data Available!!!" }}
-              // checkboxSelection
-              // disableRowSelectionOnClick
-            />
-          </div>
-        </Grid>
-        <Grid item xs={12}>
-          <div className="mt-5 flex gap-2">
-            <Card sx={{ minWidth: 200 }}>TotalTime:</Card>
-            <Button
-              variant="contained"
-              disabled={dateCheckData.startDisabled === true ? true : false}
-              onClick={handleStartTime}
-            >
-              Start Time
-            </Button>
-            <Button
-              variant="contained"
-              disabled={dateCheckData.endDisabled === true ? true : false}
-              onClick={handleEndTime}
-            >
-              End Time
-            </Button>
-          </div>
+                }}
+                getRowId={(row) => row._id}
+                pageSizeOptions={ConfigData.pageRow}
+                localeText={{ noRowsLabel: "No Data Available!!!" }}
+                // checkboxSelection
+                // disableRowSelectionOnClick
+              />
+            </Grid>
+            <Grid item xs={12} sm={12} md={4}>
+              <div className="flex items-start justify-center p-4 ">
+                <div className="space-y-2 text-center">
+                  <WatchLaterIcon />
+                  <h4 className="text-gray-800 font-semibold ">
+                    Today Total Time
+                  </h4>
+                  <p className="text-gray-600 text-sm">{showTotalTime}</p>
+                </div>
+              </div>
+
+              <div className="mt-6 flex flex-wrap gap-4 justify-center">
+                <Chip
+                  color="success"
+                  label={"Clock In"}
+                  disabled={dateCheckData.startDisabled === true ? true : false}
+                  onClick={handleStartTime}
+                />
+                <Chip
+                  color="warning"
+                  label={"Clock Out"}
+                  disabled={dateCheckData.endDisabled === true ? true : false}
+                  onClick={handleEndTime}
+                />
+              </div>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
 
