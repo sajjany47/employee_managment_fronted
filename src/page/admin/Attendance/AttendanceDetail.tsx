@@ -20,11 +20,8 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 const AttendanceDetail = () => {
   const navigation = useNavigate();
   const attendanceService = new AttendanceService();
-
   const user = useSelector((state: any) => state.auth.auth.user);
-
   const [loading, setLoading] = useState(false);
-
   const [month, setMonth] = useState(moment.utc(new Date()));
   const [dateCheckData, setDateCheckData] = useState<any>({});
   const [showTotalTime, setShowTotalTime] = useState(0);
@@ -32,13 +29,6 @@ const AttendanceDetail = () => {
 
   useEffect(() => {
     attendanceDateChecker();
-    setShowTotalTime(
-      dateCheckData.endTime === null && dateCheckData.startTime === null
-        ? 0
-        : moment(
-            dateCheckData.endTime === null ? new Date() : dateCheckData.endTime
-          ).diff(moment(dateCheckData.startTime), "seconds")
-    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showTotalTime]);
@@ -49,9 +39,6 @@ const AttendanceDetail = () => {
       .attendanceDateCheck({ username: user.username, checkDate: new Date() })
       .then((res) => {
         setDateCheckData(res.data);
-        setShowTotalTime(
-          res.data?.totalTime === null ? 0 : res.data?.totalTime
-        );
       })
       .catch((err: any) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
