@@ -31,12 +31,16 @@ const Attendance = () => {
   const user = useSelector((state: any) => state.auth.auth.user);
   const [allUserLeaveList, setAllUserLeaveList] = useState([]);
   const [open, setOpen] = useState(false);
+  const [timeModal, setTimeModel] = useState(false);
+  const [selectTime, setSelectTime] = useState<any>({});
   const [year, setYear] = useState(moment.utc(new Date()));
   const [loading, setLoading] = useState(false);
   const [selectLeave, setSelectLeave] = useState<any>({});
+  const [invalidAttendanceData, setInvalidAttendanceData] = useState([]);
 
   useEffect(() => {
     allUserLeave(year);
+    invalidAttendance();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -45,6 +49,18 @@ const Attendance = () => {
       .allUserLeaveList(moment(year).format("YYYY"))
       .then((res) => {
         setAllUserLeaveList(res.data);
+      })
+      .catch((err: any) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      )
+      .finally(() => setLoading(false));
+  };
+
+  const invalidAttendance = () => {
+    attendanceService
+      .userInvalidAttendanceList()
+      .then((res) => {
+        setInvalidAttendanceData(res.data);
       })
       .catch((err: any) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
@@ -195,6 +211,12 @@ const Attendance = () => {
     setLoading(false);
     setSelectLeave({});
   };
+
+  const handleTimeClose = () => {
+    setTimeModel(false);
+    setLoading(false);
+    setSelectTime({});
+  };
   const handleChange = (value: any) => {
     setAllUserLeaveList([]);
     setYear(moment.utc(value));
@@ -207,6 +229,8 @@ const Attendance = () => {
         ? selectLeave.leaveDetail.leaveUseDetail.leaveStatus
         : "",
   };
+
+  const initialValueTime = {};
   const handelStatusChanges = (values: any) => {
     setLoading(true);
     const requestBody = {
@@ -230,6 +254,98 @@ const Attendance = () => {
       .finally(() => allUserLeave(year));
   };
 
+  const handelinvaliTimeChanges = (values: any) => {
+    setLoading(true);
+    const requestBody = {
+      id: selectTime.timeSchedule._id,
+      startTime: values.startTime,
+      updatedBy: user.username,
+      endTime: values.endTime,
+      totalTime: moment(new Date(values.endTime)).diff(
+        moment(new Date(values.startTime)),
+        "minutes"
+      ),
+    };
+    attendanceService
+      .invalidAttendanceChange(requestBody)
+      .then((res) => {
+        enqueueSnackbar(res.message, { variant: "success" });
+        handleTimeClose();
+      })
+      .catch((err: any) => {
+        enqueueSnackbar(err.response.data.message, { variant: "error" });
+        setLoading(false);
+      })
+      .finally(() => invalidAttendance());
+  };
+
+  const timeColumns: GridColDef[] = [
+    {
+      field: "username",
+      headerName: "Username",
+      width: 150,
+      renderCell: (value: any) => <span>{value.value}</span>,
+    },
+    {
+      field: "date",
+      headerName: "Date",
+      width: 150,
+      renderCell: (value: any) =>
+        moment(value.row.timeSchedule.date).format("Do MMM, YYYY"),
+    },
+    {
+      field: "startTime",
+      headerName: "Clock In",
+      width: 150,
+      renderCell: (value: any) =>
+        moment(value.row.timeSchedule.startTime).format("HH:mm:ss"),
+    },
+    {
+      field: "endTime",
+      headerName: "Clock Out",
+      width: 200,
+      renderCell: (value: any) =>
+        moment(value.row.timeSchedule.endTime).format("HH:mm:ss"),
+    },
+    {
+      field: "totalTime",
+      headerName: "Total Time",
+      width: 150,
+      renderCell: (value: any) => (
+        <span>{value.row.timeSchedule.totalTime}</span>
+      ),
+    },
+    {
+      field: "updatedBy",
+      headerName: "Updated By",
+      width: 150,
+      renderCell: (value: any) => (
+        <span>{value.row.timeSchedule?.updatedBy}</span>
+      ),
+    },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 120,
+      renderCell: (value: any) => (
+        <>
+          <EditNoteIcon
+            color="primary"
+            style={{
+              cursor: "pointer",
+              // fontSize: "30px",
+              marginRight: "5px",
+            }}
+            onClick={() => {
+              setSelectTime(value.row);
+              setTimeModel(true);
+            }}
+          />
+        </>
+      ),
+    },
+  ];
+
   return (
     <>
       {loading && <Loader />}
@@ -237,7 +353,7 @@ const Attendance = () => {
       <Grid container rowSpacing={2} columnSpacing={2}>
         <Grid item xs={12}>
           <Box className="mt-2 flex justify-between">
-            <Box>
+            <Box className="mt-2">
               {" "}
               <h6>
                 <strong> User Pending Leave Details</strong>
@@ -300,10 +416,36 @@ const Attendance = () => {
             // disableRowSelectionOnClick
           />
         </Grid>
+        <Grid item xs={12} sm={12} md={12} marginTop={5}>
+          <h6>
+            <strong> User Invalid Attendance Details</strong>
+          </h6>
+        </Grid>
+        <Grid item xs={12} sm={12} md={12}>
+          <DataGrid
+            style={{
+              height: invalidAttendanceData.length !== 0 ? "100%" : 200,
+              width: "100%",
+            }}
+            rows={invalidAttendanceData}
+            columns={timeColumns}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: ConfigData.pageSize,
+                },
+              },
+            }}
+            getRowId={(row) => row.timeSchedule._id}
+            pageSizeOptions={ConfigData.pageRow}
+            localeText={{ noRowsLabel: "No Data Available!!!" }}
+            // checkboxSelection
+            // disableRowSelectionOnClick
+          />
+        </Grid>
       </Grid>
 
       <Dialog
-        // fullScreen={fullScreen}
         open={open}
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
@@ -313,6 +455,69 @@ const Attendance = () => {
         </DialogTitle>
         <DialogContent>
           <Formik initialValues={initialValue} onSubmit={handelStatusChanges}>
+            {({ handleSubmit }) => (
+              <Form onSubmit={handleSubmit} className="mt-5">
+                <Grid
+                  container
+                  spacing={{ xs: 2, md: 2 }}
+                  columns={{ xs: 4, sm: 8, md: 12 }}
+                >
+                  <Grid item xs={2} sm={4} md={12}>
+                    <SelectField
+                      name="statusChange"
+                      label="Status"
+                      options={ConfigData.leaveStatus}
+                    />
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={12}
+                    md={12}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "end",
+                      gap: "5px",
+                    }}
+                  >
+                    <Button
+                      onClick={handleClose}
+                      variant="contained"
+                      sx={{
+                        backgroundColor: "red",
+                        ":hover": { backgroundColor: "red" },
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      // onClick={handleGenerateKey}
+                      variant="contained"
+                      type="submit"
+                    >
+                      Submit
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Form>
+            )}
+          </Formik>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={timeModal}
+        onClose={handleTimeClose}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title">
+          <strong>Invalid Attendance Change</strong>
+        </DialogTitle>
+        <DialogContent>
+          <Formik
+            initialValues={initialValueTime}
+            onSubmit={handelinvaliTimeChanges}
+          >
             {({ handleSubmit }) => (
               <Form onSubmit={handleSubmit} className="mt-5">
                 <Grid

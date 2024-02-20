@@ -263,10 +263,10 @@ const AttendanceDetail = () => {
           sx={{ marginTop: 10, marginBottom: 10 }}
         >
           <DataGrid
-            // style={{
-            //   height: leaveUseListData.length !== 0 ? "100%" : 200,
-            //   width: "100%",
-            // }}
+            style={{
+              height: userAttendanceData.length !== 0 ? "100%" : 200,
+              width: "100%",
+            }}
             rows={userAttendanceData}
             columns={timeColumns}
             initialState={{
