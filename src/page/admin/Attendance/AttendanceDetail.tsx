@@ -55,7 +55,7 @@ const AttendanceDetail = () => {
         setLoading(false);
       });
   };
-  console.log(showTime);
+
   function calculateTotalTime(startTime: any, endTime: any) {
     const endTimeData: any = new Date(endTime);
     const startTimeData: any = new Date(startTime);
