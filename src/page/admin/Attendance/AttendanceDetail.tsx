@@ -39,7 +39,7 @@ const AttendanceDetail = () => {
       .attendanceDateCheck({ username: user.username, checkDate: new Date() })
       .then((res) => {
         setDateCheckData(res.data);
-        const timer = setInterval(() => {
+        setInterval(() => {
           setShowTime(
             calculateTotalTime(
               res.data.startTime === null ? new Date() : res.data.startTime,
@@ -47,8 +47,6 @@ const AttendanceDetail = () => {
             )
           );
         }, 1);
-
-        return () => clearInterval(timer);
       })
       .catch((err: any) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
@@ -57,7 +55,7 @@ const AttendanceDetail = () => {
         setLoading(false);
       });
   };
-
+  console.log(showTime);
   function calculateTotalTime(startTime: any, endTime: any) {
     const endTimeData: any = new Date(endTime);
     const startTimeData: any = new Date(startTime);
