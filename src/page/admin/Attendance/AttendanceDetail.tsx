@@ -108,6 +108,9 @@ const AttendanceDetail = () => {
       field: "updatedBy",
       headerName: "Updated By",
       width: 150,
+      renderCell: (value: any) => (
+        <span>{value.row.timeSchedule?.updatedBy}</span>
+      ),
     },
   ];
 
