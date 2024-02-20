@@ -25,35 +25,11 @@ const AttendanceDetail = () => {
   const [month, setMonth] = useState(moment.utc(new Date()));
   const [dateCheckData, setDateCheckData] = useState<any>({});
 
-  const [showTime, setShowTime] = useState<any>(
-    calculateTotalTime(
-      dateCheckData.startTime === null ? new Date() : dateCheckData.startTime,
-      dateCheckData.endTime === null ? new Date() : dateCheckData.endTime
-    )
-  );
+  const [showTime, setShowTime] = useState<any>(null);
 
   useEffect(() => {
     attendanceDateChecker();
 
-    const timer = setInterval(() => {
-      setShowTime(
-        calculateTotalTime(
-          dateCheckData.startTime === null
-            ? new Date()
-            : dateCheckData.startTime,
-          dateCheckData.endTime === null ? new Date() : dateCheckData.endTime
-        )
-      );
-    }, 1000);
-
-    return () => clearInterval(timer);
-    // setShowTime(
-    //   dateCheckData.endTime === null && dateCheckData.startTime === null
-    //     ? 0
-    //     : moment(
-    //         dateCheckData.endTime === null ? new Date() : dateCheckData.endTime
-    //       ).diff(moment(dateCheckData.startTime), "minutes")
-    // );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -63,10 +39,16 @@ const AttendanceDetail = () => {
       .attendanceDateCheck({ username: user.username, checkDate: new Date() })
       .then((res) => {
         setDateCheckData(res.data);
-        calculateTotalTime(
-          res.data.startTime === null ? new Date() : res.data.startTime,
-          res.data.endTime === null ? new Date() : res.data.endTime
-        );
+        const timer = setInterval(() => {
+          setShowTime(
+            calculateTotalTime(
+              res.data.startTime === null ? new Date() : res.data.startTime,
+              res.data.endTime === null ? new Date() : res.data.endTime
+            )
+          );
+        }, 1);
+
+        return () => clearInterval(timer);
       })
       .catch((err: any) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
@@ -77,18 +59,10 @@ const AttendanceDetail = () => {
   };
 
   function calculateTotalTime(startTime: any, endTime: any) {
-    // const timeDetails =
-    //   dateCheckData.endTime === null && dateCheckData.startTime === null
-    //     ? 0
-    //     : moment(
-    //         dateCheckData.endTime === null ? new Date() : dateCheckData.endTime
-    //       ).diff(moment(dateCheckData.startTime), "seconds");
-
     const endTimeData: any = new Date(endTime);
     const startTimeData: any = new Date(startTime);
 
-    // const timeDif = moment(endTimeData).diff(moment(startTimeData), "seconds");
-    const timeDif = endTimeData - startTimeData;
+    const timeDif = moment(endTimeData).diff(moment(startTimeData), "minutes");
 
     return timeDif;
   }
@@ -164,7 +138,7 @@ const AttendanceDetail = () => {
       endTime: new Date(),
       username: user.username,
       totalTime: moment(new Date()).diff(
-        moment(dateCheckData.startTime),
+        moment(new Date(dateCheckData.startTime)),
         "minutes"
       ),
       date: dateCheckData.date,
