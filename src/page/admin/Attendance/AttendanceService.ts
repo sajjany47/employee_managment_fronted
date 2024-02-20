@@ -122,4 +122,19 @@ export class AttendanceService {
       throw err;
     }
   };
+  userAttendanceList = async (payload: any) => {
+    try {
+      const response = await axios.post(
+        `${apiPath}/user-attendance/details`,
+        payload,
+        {
+          headers: this.headers,
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
 }

@@ -24,11 +24,14 @@ const AttendanceDetail = () => {
   const [loading, setLoading] = useState(false);
   const [month, setMonth] = useState(moment.utc(new Date()));
   const [dateCheckData, setDateCheckData] = useState<any>({});
-
   const [showTime, setShowTime] = useState<any>(null);
+  const [userAttendanceData, setUserAttendanceData] = useState<any>([]);
 
   useEffect(() => {
-    attendanceDateChecker();
+    Promise.all([
+      attendanceDateChecker(),
+      userAttendance({ username: user.username, date: month }),
+    ]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -67,7 +70,7 @@ const AttendanceDetail = () => {
 
   const timeColumns: GridColDef[] = [
     {
-      field: "Username",
+      field: "username",
       headerName: "Username",
       width: 150,
       renderCell: (value: any) => <span>{value.value}</span>,
@@ -76,25 +79,30 @@ const AttendanceDetail = () => {
       field: "date",
       headerName: "Date",
       width: 150,
-      renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
+      renderCell: (value: any) =>
+        moment(value.row.timeSchedule.date).format("Do MMM, YYYY"),
     },
     {
       field: "startTime",
       headerName: "Clock In",
       width: 150,
-      // renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
+      renderCell: (value: any) =>
+        moment(value.row.timeSchedule.startTime).format("HH:mm:ss"),
     },
     {
       field: "endTime",
       headerName: "Clock Out",
       width: 200,
-      // renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
+      renderCell: (value: any) =>
+        moment(value.row.timeSchedule.endTime).format("HH:mm:ss"),
     },
     {
       field: "totalTime",
       headerName: "Total Time",
       width: 150,
-      // renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
+      renderCell: (value: any) => (
+        <span>{value.row.timeSchedule.totalTime}</span>
+      ),
     },
     {
       field: "updatedBy",
@@ -106,6 +114,21 @@ const AttendanceDetail = () => {
   const handleMonthChange = (value: any) => {
     const formatDate: any = moment(value).format("MM-YYYY");
     setMonth(formatDate);
+    userAttendance({ username: user.username, date: value });
+  };
+
+  const userAttendance = (data: any) => {
+    attendanceService
+      .userAttendanceList(data)
+      .then((res) => {
+        setUserAttendanceData(res.data);
+      })
+      .catch((err: any) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      )
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleStartTime = () => {
@@ -127,6 +150,7 @@ const AttendanceDetail = () => {
       .finally(() => {
         setLoading(false);
         attendanceDateChecker();
+        userAttendance({ username: user.username, date: month });
       });
   };
 
@@ -153,6 +177,7 @@ const AttendanceDetail = () => {
       .finally(() => {
         setLoading(false);
         attendanceDateChecker();
+        userAttendance({ username: user.username, date: month });
       });
   };
   return (
@@ -239,7 +264,7 @@ const AttendanceDetail = () => {
             //   height: leaveUseListData.length !== 0 ? "100%" : 200,
             //   width: "100%",
             // }}
-            rows={[]}
+            rows={userAttendanceData}
             columns={timeColumns}
             initialState={{
               pagination: {
@@ -248,7 +273,7 @@ const AttendanceDetail = () => {
                 },
               },
             }}
-            getRowId={(row) => row._id}
+            getRowId={(row) => row.timeSchedule._id}
             pageSizeOptions={ConfigData.pageRow}
             localeText={{ noRowsLabel: "No Data Available!!!" }}
             // checkboxSelection
