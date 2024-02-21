@@ -7,7 +7,7 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import MessageIcon from "@mui/icons-material/Message";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
-import KeyIcon from "@mui/icons-material/Key";
+// import KeyIcon from "@mui/icons-material/Key";
 
 const SidebarData = {
   employee: [
@@ -67,15 +67,15 @@ const SidebarData = {
       icon: <DashboardCustomizeIcon />,
     },
     {
-      path: "/admin/activation-key",
-      title: "Activation Key",
-      icon: <KeyIcon />,
-    },
-    {
-      path: "/admin/employee",
+      path: "/admin/employee-list",
       title: "Employee",
       icon: <SupervisorAccountIcon />,
     },
+    // {
+    //   path: "/admin/employee",
+    //   title: "Employee",
+    //   icon: <SupervisorAccountIcon />,
+    // },
     {
       path: "/admin/attendance",
       title: "Attendance",
@@ -89,7 +89,7 @@ const SidebarData = {
     },
     {
       path: "/admin/leave",
-      title: "Leave",
+      title: "Leave Alloted",
       icon: <RememberMeIcon />,
     },
     {

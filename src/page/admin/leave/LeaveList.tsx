@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Dialog,
   DialogContent,
@@ -207,52 +208,63 @@ const LeaveList = () => {
   return (
     <>
       {loading && <Loader />}
-      <div className="flex justify-between">
-        <h6>
-          <strong>Leave Details</strong>
-        </h6>
-        <div className="flex gap-1">
-          <LocalizationProvider dateAdapter={AdapterMoment}>
-            <DemoContainer components={["DatePicker"]}>
-              <DatePicker
-                sx={{ width: "50% " }}
-                label="Select Year"
-                value={id}
-                slotProps={{ textField: { size: "small", fullWidth: false } }}
-                views={["year"]}
-                onChange={handleChange}
-              />
-            </DemoContainer>
-          </LocalizationProvider>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleClickOpen}
-          >
-            Leave Alloted
-          </Button>
-        </div>
-      </div>
-      <div className="mt-10">
-        <DataGrid
-          style={{
-            height: leaveListData.length !== 0 ? "100%" : 200,
-            width: "100%",
-          }}
-          rows={leaveListData}
-          columns={columns}
-          getRowId={(row) => row._id}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: ConfigData.pageSize,
+      <Grid container rowSpacing={2} columnSpacing={2}>
+        <Grid item xs={12}>
+          <Box className="mt-2 flex justify-between">
+            <Box>
+              <h6>
+                <strong>Leave Alloted Details</strong>
+              </h6>
+            </Box>
+            <Box className="mt-2 flex justify-end gap-2">
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <DemoContainer
+                  components={["DatePicker"]}
+                  sx={{ marginTop: -1 }}
+                >
+                  <DatePicker
+                    // sx={{ width: "50% " }}
+                    label="Select Year"
+                    value={id}
+                    slotProps={{
+                      textField: { size: "small", fullWidth: false },
+                    }}
+                    views={["year"]}
+                    onChange={handleChange}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={handleClickOpen}
+              >
+                Leave Alloted
+              </Button>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12}>
+          <DataGrid
+            style={{
+              height: leaveListData.length !== 0 ? "100%" : 200,
+              width: "100%",
+            }}
+            rows={leaveListData}
+            columns={columns}
+            getRowId={(row) => row._id}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: ConfigData.pageSize,
+                },
               },
-            },
-          }}
-          pageSizeOptions={ConfigData.pageRow}
-          localeText={{ noRowsLabel: "No Data Available!!!" }}
-        />
-      </div>
+            }}
+            pageSizeOptions={ConfigData.pageRow}
+            localeText={{ noRowsLabel: "No Data Available!!!" }}
+          />
+        </Grid>
+      </Grid>
 
       <Dialog
         open={open}

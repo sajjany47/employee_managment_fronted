@@ -1,15 +1,7 @@
 /* eslint-disable no-useless-escape */
 import * as React from "react";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import {
-  Box,
-  Button,
-  Chip,
-  Grid,
-  Switch,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Chip, Grid, Switch, TextField } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -143,12 +135,12 @@ export default function ActivationKey() {
         <span style={{ textTransform: "capitalize" }}>{value.value}</span>
       ),
     },
-    { field: "mobile", headerName: "Number", width: 130 },
-    { field: "activationCode", headerName: "Activation Code", width: 190 },
+    { field: "mobile", headerName: "Number", width: 120 },
+    // { field: "activationCode", headerName: "Activation Code", width: 190 },
     {
       field: "role",
       headerName: "Role",
-      width: 100,
+      width: 120,
       renderCell: (value: any) => (
         <span style={{ textTransform: "capitalize" }}>{value.value}</span>
       ),
@@ -156,15 +148,16 @@ export default function ActivationKey() {
     {
       field: "registrationStatus",
       headerName: "Status",
-      width: 110,
+      width: 120,
+
       renderCell: (value: any) => customRegistrationStatus(value.value),
-      align: "center",
+
       // valueGetter: (value) => customRegistrationStatus(value.value),
     },
     {
       field: "activeStatus",
       headerName: "IsActive",
-      width: 80,
+      width: 120,
       renderCell: (value: any) => (
         <Switch
           checked={value.value}
@@ -172,32 +165,33 @@ export default function ActivationKey() {
         />
       ),
     },
-    { field: "createdBy", headerName: "CreatedBy ", width: 110 },
-    { field: "updatedBy", headerName: "UpdatedBy ", width: 110 },
-    { field: "approvedBy", headerName: "ApprovedBy ", width: 110 },
+    { field: "createdBy", headerName: "CreatedBy ", width: 120 },
+    { field: "updatedBy", headerName: "UpdatedBy ", width: 120 },
+    { field: "approvedBy", headerName: "ApprovedBy ", width: 120 },
     {
       field: "createdAt",
       headerName: "CreatedAt",
-      width: 150,
-      renderCell: (value: any) =>
-        moment(value.value).format("Do MMM, YY HH:mm"),
+      width: 120,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (value: any) => moment(value.value).format("Do MMM,YYYY"),
     },
     {
       field: "action",
       headerName: "Action",
-      width: 90,
+      width: 120,
       renderCell: (value: any) => (
         <>
           <EditNoteIcon
             color="primary"
+            style={{ cursor: "pointer" }}
             onClick={() => {
-              navigate(`/admin/user-update`, {
-                state: { data: value.row },
-              });
+              navigate(`/admin/user-update/${value.row._id}`);
             }}
           />
           <VisibilityIcon
             color="secondary"
+            style={{ cursor: "pointer" }}
             onClick={() => {
               navigate("/admin/user-verified/", { state: { data: value.row } });
             }}
@@ -271,30 +265,33 @@ export default function ActivationKey() {
       {loading && <Loader />}
       <Grid container rowSpacing={2} columnSpacing={2}>
         <Grid item xs={12}>
-          <Box className="mt-2 flex justify-end gap-2">
-            <TextField label="Search" id="outlined-size-small" size="small" />
-            <FormControl sx={{ minWidth: 120 }} size="small">
-              <Select value={id} onChange={handleChange}>
-                <MenuItem value={"all"}>All</MenuItem>
-                <MenuItem value={"waiting"}>Waiting</MenuItem>
-                <MenuItem value={"pending"}>Pending</MenuItem>
-                <MenuItem value={"verified"}>Verified</MenuItem>
-              </Select>
-            </FormControl>
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={handleClickOpen}
-            >
-              Activation Key
-            </Button>
+          <Box className="mt-2 flex justify-between">
+            <Box>
+              <h6>
+                <strong>All Users List</strong>
+              </h6>
+            </Box>
+            <Box className="mt-2 flex justify-end gap-2">
+              <TextField label="Search" id="outlined-size-small" size="small" />
+              <FormControl sx={{ minWidth: 120 }} size="small">
+                <Select value={id} onChange={handleChange}>
+                  <MenuItem value={"all"}>All</MenuItem>
+                  <MenuItem value={"waiting"}>Waiting</MenuItem>
+                  <MenuItem value={"pending"}>Pending</MenuItem>
+                  <MenuItem value={"verified"}>Verified</MenuItem>
+                </Select>
+              </FormControl>
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={handleClickOpen}
+              >
+                Activation Key
+              </Button>
+            </Box>
           </Box>
         </Grid>
         <Grid item xs={12} className="mt-1">
-          <Typography variant="h6" className="text-sm">
-            Activation Key List
-          </Typography>
-
           <Box>
             <DataGrid
               style={{

@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Dialog,
   DialogContent,
@@ -117,102 +118,114 @@ const HolidayList = () => {
   return (
     <>
       {loading && <Loader />}
-      <div className="flex justify-between">
-        <h6>
-          <strong>Holiday List</strong>
-        </h6>
-        <div className="flex justify-between gap-1">
-          <LocalizationProvider dateAdapter={AdapterMoment}>
-            <DemoContainer components={["DatePicker"]}>
-              <DatePicker
-                sx={{ width: "50% " }}
-                label="Select Year"
-                value={id}
-                slotProps={{ textField: { size: "small", fullWidth: false } }}
-                views={["year"]}
-                // onChange={(newValue) => setId(moment.utc(newValue))}
-                onChange={handleChange}
-              />
-            </DemoContainer>
-          </LocalizationProvider>
 
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            sx={{ minWidth: 140 }}
-            onClick={handleClickOpen}
-          >
-            Add
-          </Button>
-        </div>
-      </div>
+      <Grid container rowSpacing={2} columnSpacing={2}>
+        <Grid item xs={12}>
+          <Box className="mt-2 flex justify-between">
+            <Box>
+              <h6>
+                <strong>Holiday List</strong>
+              </h6>
+            </Box>
+            <Box className="mt-2 flex justify-end gap-2">
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <DemoContainer
+                  components={["DatePicker"]}
+                  sx={{ marginTop: -1 }}
+                >
+                  <DatePicker
+                    // sx={{ width: "50% " }}
+                    label="Select Year"
+                    value={id}
+                    slotProps={{
+                      textField: { size: "small", fullWidth: false },
+                    }}
+                    views={["year"]}
+                    // onChange={(newValue) => setId(moment.utc(newValue))}
+                    onChange={handleChange}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
 
-      {/* <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-5"> */}
-      {holidayListData.length > 0 ? (
-        holidayListData?.map((item: any, index: any) => {
-          return (
-            <Fragment key={index}>
-              <div className=" bg-white rounded-xl shadow-md overflow-hidden  m-3">
-                <div className="flex justify-between">
-                  <div className="p-4 flex items-center">
-                    <div
-                      className={`pr-4 ${
-                        new Date(item.holidayList.holidayDate) > new Date()
-                          ? "bg-blue-500"
-                          : "bg-blue-200"
-                      } p-2 rounded-lg text-center`}
-                    >
-                      <p className="text-4xl font-bold text-white">
-                        {moment(item.holidayList.holidayDate).format("DD")}
-                      </p>
-                      <p className="text-sm text-white">
-                        {" "}
-                        {moment(item.holidayList.holidayDate).format(
-                          "MMMM, YYYY"
-                        )}
-                      </p>
-                    </div>
-                    <div className="ml-4">
-                      <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
-                        {item.holidayList.reason}
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                sx={{ minWidth: 140 }}
+                onClick={handleClickOpen}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12}>
+          {holidayListData.length > 0 ? (
+            holidayListData?.map((item: any, index: any) => {
+              return (
+                <Fragment key={index}>
+                  <div className="bg-white rounded-xl shadow-md overflow-hidden  m-3">
+                    <div className="flex justify-between">
+                      <div className="p-4 flex items-center">
+                        <div
+                          className={`pr-4 ${
+                            new Date(item.holidayList.holidayDate) > new Date()
+                              ? "bg-blue-500"
+                              : "bg-blue-200"
+                          } p-2 rounded-lg text-center`}
+                        >
+                          <p className="text-4xl font-bold text-white">
+                            {moment(item.holidayList.holidayDate).format("DD")}
+                          </p>
+                          <p className="text-sm text-white">
+                            {" "}
+                            {moment(item.holidayList.holidayDate).format(
+                              "MMMM, YYYY"
+                            )}
+                          </p>
+                        </div>
+                        <div className="ml-4">
+                          <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+                            {item.holidayList.reason}
+                          </div>
+                          <p className="mt-2 text-gray-500">
+                            {moment(item.holidayList.holidayDate).format(
+                              "dddd"
+                            )}
+                          </p>
+                        </div>
                       </div>
-                      <p className="mt-2 text-gray-500">
-                        {moment(item.holidayList.holidayDate).format("dddd")}
-                      </p>
+                      <div className="p-4 flex items-center">
+                        {" "}
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() => handelDeleteHoliday(item)}
+                          sx={{
+                            ":hover": {
+                              backgroundColor: "whitesmoke",
+                            },
+                          }}
+                        >
+                          <DeleteIcon
+                            sx={{
+                              fontSize: "30px",
+                              margin: "auto",
+                              color: "red",
+                            }}
+                          />
+                        </IconButton>
+                      </div>
                     </div>
                   </div>
-                  <div className="p-4 flex items-center">
-                    {" "}
-                    <IconButton
-                      aria-label="delete"
-                      onClick={() => handelDeleteHoliday(item)}
-                      sx={{
-                        ":hover": {
-                          backgroundColor: "whitesmoke",
-                        },
-                      }}
-                    >
-                      <DeleteIcon
-                        sx={{
-                          fontSize: "30px",
-                          margin: "auto",
-                          color: "red",
-                        }}
-                      />
-                    </IconButton>
-                  </div>
-                </div>
-              </div>
-            </Fragment>
-          );
-        })
-      ) : (
-        <div className=" mt-20 ">
-          <h4 className="text-center"> No Data Avliable</h4>
-        </div>
-      )}
-
-      {/* </div> */}
+                </Fragment>
+              );
+            })
+          ) : (
+            <div className=" mt-20 ">
+              <h4 className="text-center"> No Data Avliable</h4>
+            </div>
+          )}
+        </Grid>
+      </Grid>
 
       <Dialog
         fullScreen={fullScreen}

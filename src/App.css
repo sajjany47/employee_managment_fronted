@@ -18,3 +18,7 @@
   z-index: 9999999;
   backdrop-filter: blur(3px);
 }
+.MuiGrid-root {
+  background-color: white;
+  padding-right: 10px;
+}
