@@ -22,7 +22,11 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AttendanceService } from "./AttendanceService";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
-import { SelectField } from "../../../components/DynamicField";
+import {
+  DateField,
+  SelectField,
+  TimeField,
+} from "../../../components/DynamicField";
 import { useSelector } from "react-redux";
 
 const Attendance = () => {
@@ -230,7 +234,20 @@ const Attendance = () => {
         : "",
   };
 
-  const initialValueTime = {};
+  const initialValueTime = {
+    startTime:
+      selectTime?.timeSchedule?.startTime !== null
+        ? moment.utc(selectTime?.timeSchedule?.startTime)
+        : "",
+    endTime:
+      selectTime?.timeSchedule?.endTime !== null
+        ? moment.utc(selectTime?.timeSchedule?.endTime)
+        : "",
+    date:
+      selectTime?.timeSchedule?.date !== null
+        ? moment.utc(selectTime?.timeSchedule?.date)
+        : "",
+  };
   const handelStatusChanges = (values: any) => {
     setLoading(true);
     const requestBody = {
@@ -266,6 +283,7 @@ const Attendance = () => {
         "minutes"
       ),
     };
+
     attendanceService
       .invalidAttendanceChange(requestBody)
       .then((res) => {
@@ -305,6 +323,7 @@ const Attendance = () => {
       headerName: "Clock Out",
       width: 200,
       renderCell: (value: any) =>
+        value.row.timeSchedule.endTime &&
         moment(value.row.timeSchedule.endTime).format("HH:mm:ss"),
     },
     {
@@ -526,12 +545,20 @@ const Attendance = () => {
                   columns={{ xs: 4, sm: 8, md: 12 }}
                 >
                   <Grid item xs={2} sm={4} md={12}>
-                    <SelectField
-                      name="statusChange"
-                      label="Status"
-                      options={ConfigData.leaveStatus}
+                    <DateField
+                      name="date"
+                      label="Date"
+                      views={["year", "month", "day"]}
+                      disabled
                     />
                   </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <TimeField name="startTime" label="Start Time" />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <TimeField name="endTime" label="End Time" />
+                  </Grid>
+
                   <Grid
                     item
                     xs={12}

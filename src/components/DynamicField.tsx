@@ -11,6 +11,7 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from "moment";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 
 export const InputField = (props: any) => {
   const [field, meta] = useField(props);
@@ -84,6 +85,8 @@ export const DateField = (props: any) => {
           <DatePicker
             label={props.label}
             // views={["year", "month", "day"]}
+            {...field}
+            {...props}
             value={field.value !== undefined ? moment.utc(field.value) : ""}
             views={props.views}
             onChange={(e: any) => setFieldValue(field.name, moment(e))}
@@ -101,26 +104,24 @@ export const DateField = (props: any) => {
           />
         </DemoContainer>
       </LocalizationProvider>
-
-      {/* {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null} */}
     </>
   );
 };
 
-export const OnChangeDateField = (props: any) => {
+export const TimeField = (props: any) => {
   const [field, meta] = useField(props);
-
+  const { setFieldValue } = useFormikContext();
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterMoment}>
-        <DemoContainer components={["DatePicker"]} sx={{ paddingTop: 1 }}>
-          <DatePicker
-            label={props.label}
-            // views={["year", "month", "day"]}
-            views={props.views}
+        <DemoContainer components={["TimePicker"]}>
+          <TimePicker
+            // label="Controlled picker"
             sx={{ width: "100%" }}
+            {...field}
+            {...props}
+            value={field.value !== undefined ? moment.utc(field.value) : ""}
+            onChange={(e: any) => setFieldValue(field.name, moment(e))}
             slotProps={{
               textField: {
                 size: "medium",
@@ -134,10 +135,6 @@ export const OnChangeDateField = (props: any) => {
           />
         </DemoContainer>
       </LocalizationProvider>
-
-      {/* {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null} */}
     </>
   );
 };
