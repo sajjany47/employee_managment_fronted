@@ -120,7 +120,7 @@ export const TimeField = (props: any) => {
             sx={{ width: "100%" }}
             {...field}
             {...props}
-            value={field.value !== undefined ? moment.utc(field.value) : ""}
+            value={field.value !== undefined ? moment(field.value) : ""}
             onChange={(e: any) => setFieldValue(field.name, moment(e))}
             slotProps={{
               textField: {

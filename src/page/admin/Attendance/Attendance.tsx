@@ -237,15 +237,15 @@ const Attendance = () => {
   const initialValueTime = {
     startTime:
       selectTime?.timeSchedule?.startTime !== null
-        ? moment.utc(selectTime?.timeSchedule?.startTime)
+        ? selectTime?.timeSchedule?.startTime
         : "",
     endTime:
       selectTime?.timeSchedule?.endTime !== null
-        ? moment.utc(selectTime?.timeSchedule?.endTime)
+        ? selectTime?.timeSchedule?.endTime
         : "",
     date:
       selectTime?.timeSchedule?.date !== null
-        ? moment.utc(selectTime?.timeSchedule?.date)
+        ? selectTime?.timeSchedule?.date
         : "",
   };
   const handelStatusChanges = (values: any) => {
@@ -272,16 +272,26 @@ const Attendance = () => {
   };
 
   const handelinvaliTimeChanges = (values: any) => {
-    setLoading(true);
+    // setLoading(true);
+    const modifyStartTime = moment(values.startTime).format("HH:mm");
+    const modifyEndTime = moment(values.endTime).format("HH:mm");
+
+    const startDate = moment(
+      `${selectTime?.timeSchedule?.date} ${modifyStartTime}`,
+      "YYYY-MM-DD HH:mm"
+    );
+
+    const endDate = moment(
+      `${selectTime?.timeSchedule?.date} ${modifyEndTime}`,
+      "YYYY-MM-DD HH:mm"
+    );
     const requestBody = {
       id: selectTime.timeSchedule._id,
-      startTime: values.startTime,
+      startTime: startDate,
       updatedBy: user.username,
-      endTime: values.endTime,
-      totalTime: moment(new Date(values.endTime)).diff(
-        moment(new Date(values.startTime)),
-        "minutes"
-      ),
+      endTime: endDate,
+
+      totalTime: moment.duration(endDate.diff(startDate)).asMinutes(),
     };
 
     attendanceService
@@ -552,6 +562,7 @@ const Attendance = () => {
                       disabled
                     />
                   </Grid>
+
                   <Grid item xs={2} sm={4} md={6}>
                     <TimeField name="startTime" label="Start Time" />
                   </Grid>
