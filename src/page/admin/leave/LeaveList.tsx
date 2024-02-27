@@ -22,6 +22,7 @@ import moment from "moment";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { ConfigData } from "../../../shared/ConfigData";
 import { useSelector } from "react-redux";
+import * as Yup from "yup";
 
 const LeaveList = () => {
   const leaveService = new LeaveService();
@@ -33,6 +34,12 @@ const LeaveList = () => {
   const [loading, setLoading] = useState(false);
   const [modalStatus, setModalStatus] = useState("add");
   const [editData, setEditData] = useState<any>({});
+
+  const validationSchema = Yup.object().shape({
+    leaveYear: Yup.string().required("Year is required"),
+    user_id: Yup.string().required("Username is required"),
+    leaveAlloted: Yup.string().required("Total leave number is required"),
+  });
 
   useEffect(() => {
     leaveListApi(id);
@@ -279,7 +286,11 @@ const LeaveList = () => {
           </strong>
         </DialogTitle>
         <DialogContent>
-          <Formik initialValues={initialValue} onSubmit={submitLeave}>
+          <Formik
+            initialValues={initialValue}
+            onSubmit={submitLeave}
+            validationSchema={validationSchema}
+          >
             {({ handleSubmit, setFieldValue, values, errors, touched }) => (
               <Form onSubmit={handleSubmit}>
                 <Grid

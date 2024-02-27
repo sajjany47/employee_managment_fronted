@@ -23,17 +23,32 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import LanguageIcon from "@mui/icons-material/Language";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import NoEncryptionIcon from "@mui/icons-material/NoEncryption";
+import * as Yup from "yup";
 
 const LeaveApply = () => {
   const attendanceService = new AttendanceService();
   const user = useSelector((state: any) => state.auth.auth.user);
-
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [year, setYear] = useState(moment.utc(new Date()));
   const [leaveUseListData, setLeaveUseListData] = useState<any>([]);
   const [leaveListData, setLeaveListData] = useState<any>({});
 
+  const leaveSchema = Yup.object().shape({
+    startDay: Yup.string().required("Start Day is required"),
+    endDay: Yup.string()
+      .required("End Day is requird")
+      .when("startDay", (startDay: any, schema) => {
+        return schema.test({
+          test: (date: any) => {
+            if (!date) return true;
+            return date > startDay;
+          },
+          message: "Start date not greater than  end date",
+        });
+      }),
+    reason: Yup.string().required("Reason is required"),
+  });
   useEffect(() => {
     applyLeaveList(user.username, moment(year).format("YYYY"));
 
@@ -302,7 +317,11 @@ const LeaveApply = () => {
           <strong>Apply Leave</strong>
         </DialogTitle>
         <DialogContent>
-          <Formik initialValues={initialValue} onSubmit={submitLeave}>
+          <Formik
+            initialValues={initialValue}
+            onSubmit={submitLeave}
+            validationSchema={leaveSchema}
+          >
             {({ handleSubmit }) => (
               <Form onSubmit={handleSubmit}>
                 <Grid
