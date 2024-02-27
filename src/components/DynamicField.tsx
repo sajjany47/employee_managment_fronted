@@ -54,7 +54,7 @@ export const SelectField = (props: any) => {
           labelId="demo-simple-select-label"
           {...field}
           {...props}
-          value={field.value !== undefined ? field.value : ""}
+          value={field?.value !== undefined ? field.value : ""}
           className="w-full"
           // helperText={meta.touched ? meta.error : ""}
           error={meta.touched && Boolean(meta.error)}

@@ -14,11 +14,12 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { EmployeeServices } from "./EmployeeServices";
 
 const UserUpdate = () => {
   const employeeServices = new EmployeeServices();
+  const id = useParams();
   const navigate = useNavigate();
   const userType = useSelector((state: any) => state.auth.auth.user);
   const [loading, setLoading] = useState(false);
@@ -27,13 +28,10 @@ const UserUpdate = () => {
   const [stateData, setStateData] = useState([]);
   useEffect(() => {
     setLoading(true);
-    Promise.all([
-      employeeServices.singleUser("653f76e4f753e9dab03ebf11"),
-      getAllCountryList(),
-    ])
+    Promise.all([getAllCountryList(), employeeServices.singleUser(id.id)])
       .then((res) => {
-        setUserData(res[0].data);
-        getAllStateByCountry(res[0].data.country);
+        setUserData(res[1].data);
+        res[1].data.country && getAllStateByCountry(res[1].data.country);
       })
       .catch((err) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
@@ -300,7 +298,6 @@ const UserUpdate = () => {
                 <InputField name="address" label="Address" />
               </Grid>
               <Grid item xs={12} sm={4} md={3}>
-                {/* <InputField name="country" label="Country" /> */}
                 <SelectField
                   name="country"
                   label="Country"
