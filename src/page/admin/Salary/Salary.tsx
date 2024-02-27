@@ -1,14 +1,48 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Loader from "../../../components/Loader";
 import { Box, Button, Grid, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { ConfigData } from "../../../shared/ConfigData";
 import moment from "moment";
+import { SalaryServices } from "./SalaryService";
+import { useSnackbar } from "notistack";
 
 const Salary = () => {
+  const salaryService = new SalaryServices();
+  const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
   const [salaryDetailList, setSalaryDetailList] = useState([]);
+  const [pendingUserList, setPendingUserList] = useState([]);
+
+  useEffect(() => {
+    Promise.all([salaryList(), userList()]);
+    salaryList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const salaryList = () => {
+    setLoading(true);
+    salaryService
+      .salaryList()
+      .then((res) => {
+        setSalaryDetailList(res.data);
+      })
+      .catch((err) => enqueueSnackbar(err.message, { variant: "error" }))
+      .finally(() => setLoading(false));
+  };
+
+  const userList = () => {
+    setLoading(true);
+    salaryService
+      .userListSalary()
+      .then((res) => {
+        setPendingUserList(res.data);
+      })
+      .catch((err) => enqueueSnackbar(err.message, { variant: "error" }))
+      .finally(() => setLoading(false));
+  };
+  console.log(pendingUserList);
 
   const columns: GridColDef[] = [
     {
@@ -72,7 +106,7 @@ const Salary = () => {
       <Grid container rowSpacing={2} columnSpacing={2}>
         <Grid item xs={12}>
           <Box className="mt-2 flex justify-between">
-            <Box>
+            <Box className="mt-4">
               <h6>
                 <strong>Salary Alloted User</strong>
               </h6>

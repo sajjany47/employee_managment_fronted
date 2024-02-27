@@ -218,7 +218,7 @@ const LeaveList = () => {
       <Grid container rowSpacing={2} columnSpacing={2}>
         <Grid item xs={12}>
           <Box className="mt-2 flex justify-between">
-            <Box>
+            <Box className="mt-4">
               <h6>
                 <strong>Leave Alloted Details</strong>
               </h6>
