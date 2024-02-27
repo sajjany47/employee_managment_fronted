@@ -5,29 +5,18 @@ import { Box, Button, Chip, Grid, Switch, TextField } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import {
-  Formik,
-  Form,
-  // Field
-} from "formik";
+import { Formik, Form } from "formik";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-// import InputAdornment from "@mui/material/InputAdornment";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useSelector } from "react-redux";
-import { ActivationService } from "./ActivationServices";
 import { useSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
 import AddIcon from "@mui/icons-material/Add";
 import moment from "moment";
 import * as Yup from "yup";
-// import {
-//   // dateField,
-//   inputField,
-//   selectField,
-// } from "../../../components/FieldType";
 import { ConfigData } from "../../../shared/ConfigData";
 import { useNavigate } from "react-router-dom";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -37,10 +26,11 @@ import {
   InputField,
   SelectField,
 } from "../../../components/DynamicField";
+import { EmployeeServices } from "./EmployeeServices";
 
-export default function ActivationKey() {
+export default function EmployeeList() {
   const navigate = useNavigate();
-  const activationService = new ActivationService();
+  const employeeServices = new EmployeeServices();
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -76,7 +66,7 @@ export default function ActivationKey() {
   }, [id]);
 
   const activationList = (id: any) => {
-    activationService
+    employeeServices
       .activationKeyList(id)
       .then((res: any) => {
         setActivationKeyData(
@@ -136,7 +126,6 @@ export default function ActivationKey() {
       ),
     },
     { field: "mobile", headerName: "Number", width: 120 },
-    // { field: "activationCode", headerName: "Activation Code", width: 190 },
     {
       field: "role",
       headerName: "Role",
@@ -151,8 +140,6 @@ export default function ActivationKey() {
       width: 120,
 
       renderCell: (value: any) => customRegistrationStatus(value.value),
-
-      // valueGetter: (value) => customRegistrationStatus(value.value),
     },
     {
       field: "activeStatus",
@@ -209,7 +196,7 @@ export default function ActivationKey() {
       updatedBy: userType.username,
     };
 
-    activationService
+    employeeServices
       .statusChange(payload)
       .then((res) => {
         enqueueSnackbar(res.message, { variant: "success" });
@@ -246,7 +233,7 @@ export default function ActivationKey() {
       dob: moment.utc(value.dob),
     };
 
-    activationService
+    employeeServices
       .generateActivationKey(reqBody)
       .then((res) => {
         setActivationKey(res.activationKey);
@@ -363,17 +350,6 @@ export default function ActivationKey() {
                       <InputField name="mobile" label="Mobile" />
                     </Grid>
                     <Grid item xs={2} sm={4} md={6}>
-                      {/* <Field
-                        type="date"
-                        name="dob"
-                        label="Date Of Birth"
-                        component={inputField}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start"></InputAdornment>
-                          ),
-                        }}
-                      /> */}
                       <DateField
                         name="dob"
                         label="Date Of Birth"
@@ -422,11 +398,7 @@ export default function ActivationKey() {
                       >
                         Cancel
                       </Button>
-                      <Button
-                        // onClick={handleGenerateKey}
-                        variant="contained"
-                        type="submit"
-                      >
+                      <Button variant="contained" type="submit">
                         Submit
                       </Button>
                     </Grid>

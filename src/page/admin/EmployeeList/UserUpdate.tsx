@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { ActivationService } from "./ActivationServices";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
 import { FieldArray, Form, Formik } from "formik";
@@ -16,9 +15,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
+import { EmployeeServices } from "./EmployeeServices";
 
 const UserUpdate = () => {
-  const activationService = new ActivationService();
+  const employeeServices = new EmployeeServices();
   const navigate = useNavigate();
   const userType = useSelector((state: any) => state.auth.auth.user);
   const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ const UserUpdate = () => {
   useEffect(() => {
     setLoading(true);
     Promise.all([
-      activationService.singleUser("653f76e4f753e9dab03ebf11"),
+      employeeServices.singleUser("653f76e4f753e9dab03ebf11"),
       getAllCountryList(),
     ])
       .then((res) => {
@@ -43,7 +43,7 @@ const UserUpdate = () => {
   }, []);
 
   const getAllCountryList = () => {
-    activationService
+    employeeServices
       .getAllCountry()
       .then((res) => {
         setCountryData(
@@ -56,7 +56,7 @@ const UserUpdate = () => {
   };
 
   const getAllStateByCountry = (country: any) => {
-    activationService
+    employeeServices
       .getStateByCountry(country)
       .then((res) => {
         setStateData(
@@ -167,7 +167,7 @@ const UserUpdate = () => {
   const handelIFSC = (setFieldValue: any, e: any) => {
     setFieldValue("ifsc", e.target.value);
     if (e.target.value.length > 10) {
-      activationService
+      employeeServices
         .getBankDetails(e.target.value)
         .then((res) => {
           setFieldValue("bankName", res.BANK);
@@ -220,7 +220,7 @@ const UserUpdate = () => {
       reqBody = { ...reqBody, mobile: value.mobile };
     }
 
-    activationService
+    employeeServices
       .userUpdate(reqBody)
       .then((res) => {
         enqueueSnackbar(res.message, { variant: "success" });
