@@ -7,6 +7,7 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import MessageIcon from "@mui/icons-material/Message";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 // import KeyIcon from "@mui/icons-material/Key";
 
 const SidebarData = {
@@ -71,11 +72,11 @@ const SidebarData = {
       title: "Employee",
       icon: <SupervisorAccountIcon />,
     },
-    // {
-    //   path: "/admin/employee",
-    //   title: "Employee",
-    //   icon: <SupervisorAccountIcon />,
-    // },
+    {
+      path: "/admin/salary",
+      title: "Salary",
+      icon: <CurrencyExchangeIcon />,
+    },
     {
       path: "/admin/attendance",
       title: "Attendance",

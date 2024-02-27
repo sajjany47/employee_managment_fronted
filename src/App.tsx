@@ -3,7 +3,6 @@ import "./App.css";
 import Layout from "./page/user/Layout";
 import { SnackbarProvider } from "notistack";
 // import Copyright from "./components/Copyright";
-// import UserUpdate from "./page/admin/ActivationKey/UserUpdate";
 import UserVerified from "./page/admin/EmployeeList/UserVerified";
 import Employee from "./page/admin/Emloyee/Employee";
 import Attendance from "./page/admin/Attendance/Attendance";
@@ -13,6 +12,7 @@ import HolidayList from "./page/admin/Attendance/HolidayList";
 import UserUpdate from "./page/admin/EmployeeList/UserUpdate";
 import LeaveApply from "./page/admin/Attendance/LeaveApply";
 import EmployeeList from "./page/admin/EmployeeList/EmployeeList";
+import Salary from "./page/admin/Salary/Salary";
 
 function App() {
   return (
@@ -32,6 +32,7 @@ function App() {
             <Route path="/user/leave/details" element={<LeaveApply />} />
             <Route path="/admin/leave" element={<LeaveList />} />
             <Route path="/admin/holiday-list" element={<HolidayList />} />
+            <Route path="/admin/salary" element={<Salary />} />
           </Route>
         </Routes>
         {/* <Copyright /> */}
