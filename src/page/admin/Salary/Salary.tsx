@@ -1,19 +1,34 @@
 import { useEffect, useState } from "react";
 import Loader from "../../../components/Loader";
-import { Box, Button, Grid, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  TextField,
+} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { ConfigData } from "../../../shared/ConfigData";
 import moment from "moment";
 import { SalaryServices } from "./SalaryService";
 import { useSnackbar } from "notistack";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import { useNavigate } from "react-router-dom";
+import { Form, Formik } from "formik";
+import { InputField } from "../../../components/DynamicField";
 
 const Salary = () => {
   const salaryService = new SalaryServices();
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
   const [salaryDetailList, setSalaryDetailList] = useState([]);
   const [pendingUserList, setPendingUserList] = useState([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     Promise.all([salaryList(), userList()]);
@@ -46,60 +61,75 @@ const Salary = () => {
 
   const columns: GridColDef[] = [
     {
-      field: "username",
-      headerName: "Username",
-      width: 150,
+      field: "date",
+      headerName: "Date",
+      width: 200,
       renderCell: (value: any) => (
-        <span style={{ textTransform: "capitalize" }}>{value.value}</span>
+        <span>{moment(value.row.currentSalary.date).format("MMM,YYYY")}</span>
       ),
     },
-    { field: "mobile", headerName: "Number", width: 120 },
     {
-      field: "role",
-      headerName: "Role",
-      width: 120,
+      field: "username",
+      headerName: "Username",
+      width: 200,
+      renderCell: (value: any) => <span>{value.value}</span>,
+    },
+    {
+      field: "totalEarning",
+      headerName: "CTC",
+      width: 200,
       renderCell: (value: any) => (
-        <span style={{ textTransform: "capitalize" }}>{value.value}</span>
+        <span>{value.row.currentSalary.totalEarning}</span>
       ),
     },
 
-    { field: "createdBy", headerName: "CreatedBy ", width: 120 },
-    { field: "updatedBy", headerName: "UpdatedBy ", width: 120 },
-    { field: "approvedBy", headerName: "ApprovedBy ", width: 120 },
     {
-      field: "createdAt",
-      headerName: "CreatedAt",
-      width: 120,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (value: any) => moment(value.value).format("Do MMM,YYYY"),
+      field: "updatedBy",
+      headerName: "UpdatedBy ",
+      width: 200,
+      renderCell: (value: any) => (
+        <span>{value.row.currentSalary.updatedBy}</span>
+      ),
     },
-    //   {
-    //     field: "action",
-    //     headerName: "Action",
-    //     width: 120,
-    //     renderCell: (value: any) => (
-    //       <>
-    //         <EditNoteIcon
-    //           color="primary"
-    //           style={{ cursor: "pointer" }}
-    //           onClick={() => {
-    //             navigate(`/admin/user-update/${value.row._id}`);
-    //           }}
-    //         />
-    //         <VisibilityIcon
-    //           color="secondary"
-    //           style={{ cursor: "pointer" }}
-    //           onClick={() => {
-    //             navigate("/admin/user-verified/", {
-    //               state: { data: value.row },
-    //             });
-    //           }}
-    //         />
-    //       </>
-    //     ),
-    //   },
+
+    {
+      field: "action",
+      headerName: "Action",
+      width: 200,
+      renderCell: (value: any) => (
+        <>
+          <EditNoteIcon
+            color="primary"
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              navigate(`/admin/user-update/${value.row._id}`);
+            }}
+          />
+          <VisibilityIcon
+            color="secondary"
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              navigate("/admin/user-verified/", {
+                state: { data: value.row },
+              });
+            }}
+          />
+        </>
+      ),
+    },
   ];
+
+  const handleClose = () => {
+    setOpen(false);
+    userList();
+    salaryList();
+    setPendingUserList([]);
+    setSalaryDetailList([]);
+  };
+
+  const generateSalary = (values: any) => {
+    console.log(values);
+  };
   return (
     <div>
       {loading && <Loader />}
@@ -116,7 +146,7 @@ const Salary = () => {
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
-                //   onClick={handleClickOpen}
+                onClick={() => setOpen(true)}
               >
                 New User
               </Button>
@@ -148,6 +178,89 @@ const Salary = () => {
           </Box>
         </Grid>
       </Grid>
+
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="alert-dialog-title">Add Salary Structure</DialogTitle>
+        <DialogContent>
+          <Formik
+            initialValues={{
+              name: "",
+              username: "",
+              email: "",
+              mobile: "",
+              dob: "",
+              role: "",
+              password: "",
+              position: "",
+            }}
+            // validationSchema={activationKeyValidation}
+            onSubmit={generateSalary}
+          >
+            {() => (
+              <Form className="mt-1">
+                <Grid
+                  container
+                  spacing={{ xs: 2, md: 2 }}
+                  columns={{ xs: 4, sm: 8, md: 12 }}
+                >
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField name="name" label="Name" />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField name="username" label="Username" />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField name="email" label="Email" type="email" />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField name="mobile" label="Mobile" />
+                  </Grid>
+
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField name="position" label="Position" />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField
+                      name="password"
+                      label="Password"
+                      type="password"
+                    />
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={12}
+                    md={12}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "end",
+                      gap: "5px",
+                    }}
+                  >
+                    <Button
+                      onClick={handleClose}
+                      variant="contained"
+                      sx={{
+                        backgroundColor: "red",
+                        ":hover": { backgroundColor: "red" },
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button variant="contained" type="submit">
+                      Submit
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Form>
+            )}
+          </Formik>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
