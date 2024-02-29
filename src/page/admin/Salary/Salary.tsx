@@ -19,7 +19,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import { useNavigate } from "react-router-dom";
 import { Form, Formik } from "formik";
-import { InputField } from "../../../components/DynamicField";
+import { InputField, SelectField } from "../../../components/DynamicField";
 
 const Salary = () => {
   const salaryService = new SalaryServices();
@@ -162,7 +162,7 @@ const Salary = () => {
               }}
               rows={salaryDetailList}
               columns={columns}
-              //   getRowId={(row) => row.username}
+              getRowId={(row) => row._id}
               initialState={{
                 pagination: {
                   paginationModel: {
@@ -188,14 +188,19 @@ const Salary = () => {
         <DialogContent>
           <Formik
             initialValues={{
-              name: "",
               username: "",
-              email: "",
-              mobile: "",
-              dob: "",
-              role: "",
-              password: "",
-              position: "",
+              basicSalary: "",
+              hra: "",
+              travelAllowance: "",
+              MedicalAllowance: "",
+              LeaveTravelAllowance: "",
+              SpecialAllowance: "",
+              providentFund: "",
+              professionalTax: "",
+              incomeTax: "",
+              incrementType: "",
+              incrementValue: "",
+              totalEarning: "",
             }}
             // validationSchema={activationKeyValidation}
             onSubmit={generateSalary}
@@ -208,27 +213,60 @@ const Salary = () => {
                   columns={{ xs: 4, sm: 8, md: 12 }}
                 >
                   <Grid item xs={2} sm={4} md={6}>
-                    <InputField name="name" label="Name" />
-                  </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
                     <InputField name="username" label="Username" />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
-                    <InputField name="email" label="Email" type="email" />
+                    <InputField name="basicSalary" label="Basic Salary" />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
-                    <InputField name="mobile" label="Mobile" />
-                  </Grid>
-
-                  <Grid item xs={2} sm={4} md={6}>
-                    <InputField name="position" label="Position" />
+                    <InputField name="hra" label="House Reantal Allowance" />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
                     <InputField
-                      name="password"
-                      label="Password"
-                      type="password"
+                      name="travelAllowance"
+                      label="Travel Allowance"
                     />
+                  </Grid>
+
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField
+                      name="MedicalAllowance"
+                      label="Medical Allowance"
+                    />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField
+                      name="LeaveTravelAllowance"
+                      label="Leave Travel Allowance"
+                    />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField
+                      name="SpecialAllowance"
+                      label="Special Allowance"
+                    />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField name="providentFund" label="Provident Fund" />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField name="incomeTax" label="Income Tax" />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <SelectField
+                      name="incrementType"
+                      label="Increment Type"
+                      options={[
+                        { label: "Fixed", value: "fixed" },
+                        { label: "Percentage", value: "percentage" },
+                      ]}
+                    />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField name="incrementValue" label="Increment Value" />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField name="totalEarning" label="Total In Hand" />
                   </Grid>
                   <Grid
                     item
