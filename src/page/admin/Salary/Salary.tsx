@@ -37,7 +37,7 @@ const Salary = () => {
 
   useEffect(() => {
     Promise.all([salaryList(), userList()]);
-    salaryList();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -62,7 +62,6 @@ const Salary = () => {
       .catch((err) => enqueueSnackbar(err.message, { variant: "error" }))
       .finally(() => setLoading(false));
   };
-  console.log(pendingUserList);
 
   const columns: GridColDef[] = [
     {
@@ -133,7 +132,14 @@ const Salary = () => {
   };
 
   const generateSalary = (values: any) => {
-    console.log(values);
+    setLoading(true);
+    salaryService
+      .createSalaryStructure(values)
+      .then((res) => {
+        enqueueSnackbar(res.message, { variant: "success" });
+      })
+      .catch((err) => enqueueSnackbar(err.message, { variant: "error" }))
+      .finally(() => setLoading(false));
   };
   return (
     <div>
@@ -243,22 +249,32 @@ const Salary = () => {
                     <DateField
                       name="date"
                       label="Date"
-                      views={["year", "month"]}
+                      views={["year", "month", "day"]}
                     />
-                  </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
-                    <InputField name="username" label="Username" />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
                     <SelectField
-                      name="type"
-                      label="Type"
-                      options={[
-                        { label: "Changes", value: "changes" },
-                        { label: "Appraisal", value: "appraisal" },
-                      ]}
+                      name="username"
+                      label="Username"
+                      options={pendingUserList.map((item: any) => ({
+                        label: `${item.name}(${item.username})`,
+                        value: item.username,
+                      }))}
+                      disabled={actionType === "edit" ? true : false}
                     />
                   </Grid>
+                  {actionType === "edit" && (
+                    <Grid item xs={2} sm={4} md={6}>
+                      <SelectField
+                        name="type"
+                        label="Type"
+                        options={[
+                          { label: "Changes", value: "changes" },
+                          { label: "Appraisal", value: "appraisal" },
+                        ]}
+                      />
+                    </Grid>
+                  )}
 
                   <Grid item xs={2} sm={4} md={6}>
                     <InputField name="basicSalary" label="Basic Salary" />
