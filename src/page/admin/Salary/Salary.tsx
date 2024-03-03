@@ -19,7 +19,11 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import { useNavigate } from "react-router-dom";
 import { Form, Formik } from "formik";
-import { InputField, SelectField } from "../../../components/DynamicField";
+import {
+  DateField,
+  InputField,
+  SelectField,
+} from "../../../components/DynamicField";
 
 const Salary = () => {
   const salaryService = new SalaryServices();
@@ -29,6 +33,7 @@ const Salary = () => {
   const [salaryDetailList, setSalaryDetailList] = useState([]);
   const [pendingUserList, setPendingUserList] = useState([]);
   const [open, setOpen] = useState(false);
+  const [actionType, setActionType] = useState("add");
 
   useEffect(() => {
     Promise.all([salaryList(), userList()]);
@@ -146,7 +151,10 @@ const Salary = () => {
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
-                onClick={() => setOpen(true)}
+                onClick={() => {
+                  setOpen(true);
+                  setActionType("add");
+                }}
               >
                 New User
               </Button>
@@ -187,34 +195,71 @@ const Salary = () => {
         <DialogTitle id="alert-dialog-title">Add Salary Structure</DialogTitle>
         <DialogContent>
           <Formik
-            initialValues={{
-              username: "",
-              basicSalary: "",
-              hra: "",
-              travelAllowance: "",
-              MedicalAllowance: "",
-              LeaveTravelAllowance: "",
-              SpecialAllowance: "",
-              providentFund: "",
-              professionalTax: "",
-              incomeTax: "",
-              incrementType: "",
-              incrementValue: "",
-              totalEarning: "",
-            }}
+            initialValues={
+              actionType === "add"
+                ? {
+                    date: "",
+                    username: "",
+                    basicSalary: "",
+                    hra: "",
+                    travelAllowance: "",
+                    MedicalAllowance: "",
+                    LeaveTravelAllowance: "",
+                    SpecialAllowance: "",
+                    providentFund: "",
+                    professionalTax: "",
+                    incomeTax: "",
+                    totalEarning: "",
+                  }
+                : {
+                    date: "",
+                    username: "",
+                    basicSalary: "",
+                    hra: "",
+                    travelAllowance: "",
+                    MedicalAllowance: "",
+                    LeaveTravelAllowance: "",
+                    SpecialAllowance: "",
+                    providentFund: "",
+                    professionalTax: "",
+                    incomeTax: "",
+                    incrementType: "",
+                    incrementValue: "",
+                    totalEarning: "",
+                    type: "",
+                  }
+            }
             // validationSchema={activationKeyValidation}
             onSubmit={generateSalary}
           >
-            {() => (
-              <Form className="mt-1">
+            {({ handleSubmit, values }) => (
+              <Form className="mt-1" onSubmit={handleSubmit}>
                 <Grid
                   container
                   spacing={{ xs: 2, md: 2 }}
                   columns={{ xs: 4, sm: 8, md: 12 }}
                 >
                   <Grid item xs={2} sm={4} md={6}>
+                    <DateField
+                      name="date"
+                      label="Date"
+                      views={["year", "month"]}
+                    />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
                     <InputField name="username" label="Username" />
                   </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <SelectField
+                      name="type"
+                      label="Type"
+                      options={[
+                        { label: "Changes", value: "changes" },
+                        { label: "Appraisal", value: "appraisal" },
+                      ]}
+                    />
+                  </Grid>
+
                   <Grid item xs={2} sm={4} md={6}>
                     <InputField name="basicSalary" label="Basic Salary" />
                   </Grid>
@@ -252,19 +297,28 @@ const Salary = () => {
                   <Grid item xs={2} sm={4} md={6}>
                     <InputField name="incomeTax" label="Income Tax" />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
-                    <SelectField
-                      name="incrementType"
-                      label="Increment Type"
-                      options={[
-                        { label: "Fixed", value: "fixed" },
-                        { label: "Percentage", value: "percentage" },
-                      ]}
-                    />
-                  </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
-                    <InputField name="incrementValue" label="Increment Value" />
-                  </Grid>
+                  {values.type === "appraisal" && (
+                    <>
+                      {" "}
+                      <Grid item xs={2} sm={4} md={6}>
+                        <SelectField
+                          name="incrementType"
+                          label="Increment Type"
+                          options={[
+                            { label: "Fixed", value: "fixed" },
+                            { label: "Percentage", value: "percentage" },
+                          ]}
+                        />
+                      </Grid>
+                      <Grid item xs={2} sm={4} md={6}>
+                        <InputField
+                          name="incrementValue"
+                          label="Increment Value"
+                        />
+                      </Grid>
+                    </>
+                  )}
+
                   <Grid item xs={2} sm={4} md={6}>
                     <InputField name="totalEarning" label="Total In Hand" />
                   </Grid>
