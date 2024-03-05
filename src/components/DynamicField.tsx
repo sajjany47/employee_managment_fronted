@@ -23,7 +23,7 @@ export const InputField = (props: any) => {
         size="medium"
         {...field}
         {...props}
-        value={field.value !== undefined ? field.value : ""}
+        // value={field.value !== undefined ? field.value : ""}
         id={field.name}
         variant="outlined"
         className="w-full"

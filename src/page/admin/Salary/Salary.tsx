@@ -24,6 +24,7 @@ import {
   InputField,
   SelectField,
 } from "../../../components/DynamicField";
+import { percentage, sumValues } from "../../../shared/UtlityFunction";
 
 const Salary = () => {
   const salaryService = new SalaryServices();
@@ -215,6 +216,7 @@ const Salary = () => {
                     providentFund: "",
                     professionalTax: "",
                     incomeTax: "",
+                    healthInsurance: "",
                     totalEarning: "",
                   }
                 : {
@@ -233,10 +235,12 @@ const Salary = () => {
                     incrementValue: "",
                     totalEarning: "",
                     type: "",
+                    healthInsurance: "",
                   }
             }
             // validationSchema={activationKeyValidation}
             onSubmit={generateSalary}
+            enableReinitialize
           >
             {({ handleSubmit, values }) => (
               <Form className="mt-1" onSubmit={handleSubmit}>
@@ -308,10 +312,22 @@ const Salary = () => {
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
+                    <InputField
+                      name="healthInsurance"
+                      label="Health Insurance"
+                    />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
                     <InputField name="providentFund" label="Provident Fund" />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
                     <InputField name="incomeTax" label="Income Tax" />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField
+                      name="professionalTax"
+                      label="Professional Tax"
+                    />
                   </Grid>
                   {values.type === "appraisal" && (
                     <>
@@ -336,7 +352,108 @@ const Salary = () => {
                   )}
 
                   <Grid item xs={2} sm={4} md={6}>
-                    <InputField name="totalEarning" label="Total In Hand" />
+                    <InputField
+                      name="totalEarning"
+                      value={
+                        actionType === "add"
+                          ? sumValues({
+                              basicSalary: values.basicSalary,
+                              hra: values.hra,
+                              travelAllowance: values.travelAllowance,
+                              MedicalAllowance: values.MedicalAllowance,
+                              LeaveTravelAllowance: values.LeaveTravelAllowance,
+                              SpecialAllowance: values.SpecialAllowance,
+                              providentFund: -values.providentFund,
+                              professionalTax: -values.professionalTax,
+                              incomeTax: -values.incomeTax,
+                              healthInsurance: -values.healthInsurance,
+                            })
+                          : values.type === "changes"
+                          ? sumValues({
+                              basicSalary: values.basicSalary,
+                              hra: values.hra,
+                              travelAllowance: values.travelAllowance,
+                              MedicalAllowance: values.MedicalAllowance,
+                              LeaveTravelAllowance: values.LeaveTravelAllowance,
+                              SpecialAllowance: values.SpecialAllowance,
+                              providentFund: -values.providentFund,
+                              professionalTax: -values.professionalTax,
+                              incomeTax: -values.incomeTax,
+                              healthInsurance: -values.healthInsurance,
+                            })
+                          : values.incrementType === "fixed"
+                          ? sumValues({
+                              basicSalary: values.basicSalary,
+                              hra: values.hra,
+                              travelAllowance: values.travelAllowance,
+                              MedicalAllowance: values.MedicalAllowance,
+                              LeaveTravelAllowance: values.LeaveTravelAllowance,
+                              SpecialAllowance: values.SpecialAllowance,
+                              providentFund: -values.providentFund,
+                              professionalTax: -values.professionalTax,
+                              incomeTax: -values.incomeTax,
+                              healthInsurance: -values.healthInsurance,
+                            })
+                          : sumValues({
+                              basicSalary:
+                                values.basicSalary +
+                                percentage(
+                                  values.incrementValue,
+                                  values.basicSalary
+                                ),
+                              hra:
+                                values.hra +
+                                percentage(values.incrementValue, values.hra),
+                              travelAllowance:
+                                values.travelAllowance +
+                                percentage(
+                                  values.incrementValue,
+                                  values.travelAllowance
+                                ),
+                              MedicalAllowance:
+                                values.MedicalAllowance +
+                                percentage(
+                                  values.incrementValue,
+                                  values.MedicalAllowance
+                                ),
+                              LeaveTravelAllowance:
+                                values.LeaveTravelAllowance +
+                                percentage(
+                                  values.incrementValue,
+                                  values.LeaveTravelAllowance
+                                ),
+                              SpecialAllowance:
+                                values.SpecialAllowance +
+                                percentage(
+                                  values.incrementValue,
+                                  values.SpecialAllowance
+                                ),
+                              providentFund: -(
+                                values.providentFund +
+                                percentage(
+                                  values.incrementValue,
+                                  values.providentFund
+                                )
+                              ),
+                              professionalTax: -values.professionalTax,
+                              incomeTax: -(
+                                values.incomeTax +
+                                percentage(
+                                  values.incrementValue,
+                                  values.incomeTax
+                                )
+                              ),
+                              healthInsurance: -(
+                                values.healthInsurance +
+                                percentage(
+                                  values.incrementValue,
+                                  values.healthInsurance
+                                )
+                              ),
+                            })
+                      }
+                      label="Total In Hand"
+                    />
                   </Grid>
                   <Grid
                     item

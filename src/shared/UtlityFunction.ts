@@ -16,3 +16,10 @@ export function convertNullToString(obj: any) {
 
   return obj;
 }
+
+export const sumValues = (obj: any) =>
+  Object.values(obj).reduce((a: any, b: any) => Number(a) + Number(b), 0);
+
+export function percentage(percent: any, total: any) {
+  return ((percent / 100) * total).toFixed(2);
+}
