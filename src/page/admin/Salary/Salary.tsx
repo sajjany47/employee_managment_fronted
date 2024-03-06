@@ -35,6 +35,7 @@ const Salary = () => {
   const [pendingUserList, setPendingUserList] = useState([]);
   const [open, setOpen] = useState(false);
   const [actionType, setActionType] = useState("add");
+  const [selectUser, setSelectUser] = useState<any>({});
 
   useEffect(() => {
     Promise.all([salaryList(), userList()]);
@@ -107,7 +108,9 @@ const Salary = () => {
             color="primary"
             style={{ cursor: "pointer" }}
             onClick={() => {
-              navigate(`/admin/user-update/${value.row._id}`);
+              setActionType("edit");
+              setOpen(true);
+              setSelectUser(value.row);
             }}
           />
           <VisibilityIcon
@@ -138,6 +141,10 @@ const Salary = () => {
       .createSalaryStructure(values)
       .then((res) => {
         enqueueSnackbar(res.message, { variant: "success" });
+        salaryList();
+        setPendingUserList([]);
+        setSalaryDetailList([]);
+        setOpen(false);
       })
       .catch((err) => enqueueSnackbar(err.message, { variant: "error" }))
       .finally(() => setLoading(false));
@@ -220,22 +227,7 @@ const Salary = () => {
                     totalEarning: "",
                   }
                 : {
-                    date: "",
-                    username: "",
-                    basicSalary: "",
-                    hra: "",
-                    travelAllowance: "",
-                    MedicalAllowance: "",
-                    LeaveTravelAllowance: "",
-                    SpecialAllowance: "",
-                    providentFund: "",
-                    professionalTax: "",
-                    incomeTax: "",
-                    incrementType: "",
-                    incrementValue: "",
-                    totalEarning: "",
-                    type: "",
-                    healthInsurance: "",
+                    ...selectUser,
                   }
             }
             // validationSchema={activationKeyValidation}
@@ -355,33 +347,9 @@ const Salary = () => {
                     <InputField
                       name="totalEarning"
                       value={
-                        actionType === "add"
-                          ? sumValues({
-                              basicSalary: values.basicSalary,
-                              hra: values.hra,
-                              travelAllowance: values.travelAllowance,
-                              MedicalAllowance: values.MedicalAllowance,
-                              LeaveTravelAllowance: values.LeaveTravelAllowance,
-                              SpecialAllowance: values.SpecialAllowance,
-                              providentFund: -values.providentFund,
-                              professionalTax: -values.professionalTax,
-                              incomeTax: -values.incomeTax,
-                              healthInsurance: -values.healthInsurance,
-                            })
-                          : values.type === "changes"
-                          ? sumValues({
-                              basicSalary: values.basicSalary,
-                              hra: values.hra,
-                              travelAllowance: values.travelAllowance,
-                              MedicalAllowance: values.MedicalAllowance,
-                              LeaveTravelAllowance: values.LeaveTravelAllowance,
-                              SpecialAllowance: values.SpecialAllowance,
-                              providentFund: -values.providentFund,
-                              professionalTax: -values.professionalTax,
-                              incomeTax: -values.incomeTax,
-                              healthInsurance: -values.healthInsurance,
-                            })
-                          : values.incrementType === "fixed"
+                        actionType === "add" ||
+                        values.type === "changes" ||
+                        values.incrementType === "fixed"
                           ? sumValues({
                               basicSalary: values.basicSalary,
                               hra: values.hra,
