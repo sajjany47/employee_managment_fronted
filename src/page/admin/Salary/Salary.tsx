@@ -210,6 +210,8 @@ const Salary = () => {
       .catch((err) => enqueueSnackbar(err.message, { variant: "error" }))
       .finally(() => setLoading(false));
   };
+
+  console.log(selectUser);
   return (
     <div>
       {loading && <Loader />}
@@ -289,8 +291,9 @@ const Salary = () => {
                     ctc: "",
                   }
                 : {
-                    ...selectUser,
-                    date: moment.utc(selectUser.date),
+                    ...selectUser.currentSalary,
+                    username: selectUser.username,
+                    date: moment.utc(selectUser.currentSalary.date),
                   }
             }
             // validationSchema={activationKeyValidation}
@@ -312,15 +315,18 @@ const Salary = () => {
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
-                    <SelectField
-                      name="username"
-                      label="Username"
-                      options={pendingUserList.map((item: any) => ({
-                        label: `${item.name}(${item.username})`,
-                        value: item.username,
-                      }))}
-                      disabled={actionType === "edit" ? true : false}
-                    />
+                    {actionType === "edit" ? (
+                      <InputField name="username" label="Username" disabled />
+                    ) : (
+                      <SelectField
+                        name="username"
+                        label="Username"
+                        options={pendingUserList.map((item: any) => ({
+                          label: `${item.name}(${item.username})`,
+                          value: item.username,
+                        }))}
+                      />
+                    )}
                   </Grid>
                   {actionType === "edit" && (
                     <Grid item xs={2} sm={4} md={6}>
