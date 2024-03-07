@@ -268,6 +268,8 @@ const Salary = () => {
         open={open}
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
+        fullWidth
+        maxWidth="md"
       >
         <DialogTitle id="alert-dialog-title">Add Salary Structure</DialogTitle>
         <DialogContent>
@@ -307,14 +309,14 @@ const Salary = () => {
                   spacing={{ xs: 2, md: 2 }}
                   columns={{ xs: 4, sm: 8, md: 12 }}
                 >
-                  <Grid item xs={2} sm={4} md={6}>
+                  <Grid item xs={2} sm={4} md={4}>
                     <DateField
                       name="date"
                       label="Date"
                       views={["year", "month", "day"]}
                     />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
+                  <Grid item xs={2} sm={4} md={4}>
                     {actionType === "edit" ? (
                       <InputField name="username" label="Username" disabled />
                     ) : (
@@ -329,7 +331,7 @@ const Salary = () => {
                     )}
                   </Grid>
                   {actionType === "edit" && (
-                    <Grid item xs={2} sm={4} md={6}>
+                    <Grid item xs={2} sm={4} md={4}>
                       <SelectField
                         name="type"
                         label="Type"
@@ -341,77 +343,79 @@ const Salary = () => {
                     </Grid>
                   )}
 
-                  <Grid item xs={2} sm={4} md={6}>
+                  {values.type === "appraisal" && (
+                    <Grid item xs={2} sm={4} md={4}>
+                      <SelectField
+                        name="incrementType"
+                        label="Increment Type"
+                        options={[
+                          { label: "Fixed", value: "fixed" },
+                          { label: "Percentage", value: "percentage" },
+                        ]}
+                      />
+                    </Grid>
+                  )}
+
+                  {values.incrementType === "percentage" && (
+                    <Grid item xs={2} sm={4} md={4}>
+                      <InputField
+                        name="incrementValue"
+                        label="Increment Value"
+                      />
+                    </Grid>
+                  )}
+
+                  <Grid item xs={2} sm={4} md={4}>
                     <InputField name="basicSalary" label="Basic Salary" />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
+                  <Grid item xs={2} sm={4} md={4}>
                     <InputField name="hra" label="House Reantal Allowance" />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
+                  <Grid item xs={2} sm={4} md={4}>
                     <InputField
                       name="travelAllowance"
                       label="Travel Allowance"
                     />
                   </Grid>
 
-                  <Grid item xs={2} sm={4} md={6}>
+                  <Grid item xs={2} sm={4} md={4}>
                     <InputField
                       name="MedicalAllowance"
                       label="Medical Allowance"
                     />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
+                  <Grid item xs={2} sm={4} md={4}>
                     <InputField
                       name="LeaveTravelAllowance"
                       label="Leave Travel Allowance"
                     />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
+                  <Grid item xs={2} sm={4} md={4}>
                     <InputField
                       name="SpecialAllowance"
                       label="Special Allowance"
                     />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
+                  <Grid item xs={2} sm={4} md={4}>
                     <InputField
                       name="healthInsurance"
                       label="Health Insurance"
                     />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
+                  <Grid item xs={2} sm={4} md={4}>
                     <InputField name="providentFund" label="Provident Fund" />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
+                  <Grid item xs={2} sm={4} md={4}>
                     <InputField name="incomeTax" label="Income Tax" />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
+                  <Grid item xs={2} sm={4} md={4}>
                     <InputField
                       name="professionalTax"
                       label="Professional Tax"
                     />
                   </Grid>
-                  {values.type === "appraisal" && (
-                    <>
-                      {" "}
-                      <Grid item xs={2} sm={4} md={6}>
-                        <SelectField
-                          name="incrementType"
-                          label="Increment Type"
-                          options={[
-                            { label: "Fixed", value: "fixed" },
-                            { label: "Percentage", value: "percentage" },
-                          ]}
-                        />
-                      </Grid>
-                      <Grid item xs={2} sm={4} md={6}>
-                        <InputField
-                          name="incrementValue"
-                          label="Increment Value"
-                        />
-                      </Grid>
-                    </>
-                  )}
-                  <Grid item xs={2} sm={4} md={6}>
+
+                  <Grid item xs={2} sm={4} md={4}>
                     <InputField
                       name="ctc"
                       label="CTC/Month"
@@ -429,7 +433,7 @@ const Salary = () => {
                       })}
                     />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
+                  <Grid item xs={2} sm={4} md={4}>
                     <InputField
                       name="totalEarning"
                       value={
