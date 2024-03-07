@@ -81,12 +81,10 @@ const Salary = () => {
       renderCell: (value: any) => <span>{value.value}</span>,
     },
     {
-      field: "totalEarning",
-      headerName: "CTC",
+      field: "ctc",
+      headerName: "CTC/Month",
       width: 200,
-      renderCell: (value: any) => (
-        <span>{value.row.currentSalary.totalEarning}</span>
-      ),
+      renderCell: (value: any) => <span>{value.row.currentSalary.ctc}</span>,
     },
 
     {
@@ -136,9 +134,72 @@ const Salary = () => {
   };
 
   const generateSalary = (values: any) => {
+    const requestData = {
+      ...values,
+      ctc: sumValues({
+        basicSalary: values.basicSalary,
+        hra: values.hra,
+        travelAllowance: values.travelAllowance,
+        MedicalAllowance: values.MedicalAllowance,
+        LeaveTravelAllowance: values.LeaveTravelAllowance,
+        SpecialAllowance: values.SpecialAllowance,
+        providentFund: values.providentFund,
+        professionalTax: values.professionalTax,
+        incomeTax: values.incomeTax,
+        healthInsurance: values.healthInsurance,
+      }),
+      totalEarning:
+        actionType === "add" ||
+        values.type === "changes" ||
+        values.incrementType === "fixed"
+          ? sumValues({
+              basicSalary: values.basicSalary,
+              hra: values.hra,
+              travelAllowance: values.travelAllowance,
+              MedicalAllowance: values.MedicalAllowance,
+              LeaveTravelAllowance: values.LeaveTravelAllowance,
+              SpecialAllowance: values.SpecialAllowance,
+              providentFund: -values.providentFund,
+              professionalTax: -values.professionalTax,
+              incomeTax: -values.incomeTax,
+              healthInsurance: -values.healthInsurance,
+            })
+          : sumValues({
+              basicSalary:
+                values.basicSalary +
+                percentage(values.incrementValue, values.basicSalary),
+              hra: values.hra + percentage(values.incrementValue, values.hra),
+              travelAllowance:
+                values.travelAllowance +
+                percentage(values.incrementValue, values.travelAllowance),
+              MedicalAllowance:
+                values.MedicalAllowance +
+                percentage(values.incrementValue, values.MedicalAllowance),
+              LeaveTravelAllowance:
+                values.LeaveTravelAllowance +
+                percentage(values.incrementValue, values.LeaveTravelAllowance),
+              SpecialAllowance:
+                values.SpecialAllowance +
+                percentage(values.incrementValue, values.SpecialAllowance),
+              providentFund: -(
+                values.providentFund +
+                percentage(values.incrementValue, values.providentFund)
+              ),
+              professionalTax: -values.professionalTax,
+              incomeTax: -(
+                values.incomeTax +
+                percentage(values.incrementValue, values.incomeTax)
+              ),
+              healthInsurance: -(
+                values.healthInsurance +
+                percentage(values.incrementValue, values.healthInsurance)
+              ),
+            }),
+    };
+
     setLoading(true);
     salaryService
-      .createSalaryStructure(values)
+      .createSalaryStructure(requestData)
       .then((res) => {
         enqueueSnackbar(res.message, { variant: "success" });
         salaryList();
@@ -225,9 +286,11 @@ const Salary = () => {
                     incomeTax: "",
                     healthInsurance: "",
                     totalEarning: "",
+                    ctc: "",
                   }
                 : {
                     ...selectUser,
+                    date: moment.utc(selectUser.date),
                   }
             }
             // validationSchema={activationKeyValidation}
@@ -342,7 +405,24 @@ const Salary = () => {
                       </Grid>
                     </>
                   )}
-
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField
+                      name="ctc"
+                      label="CTC/Month"
+                      value={sumValues({
+                        basicSalary: values.basicSalary,
+                        hra: values.hra,
+                        travelAllowance: values.travelAllowance,
+                        MedicalAllowance: values.MedicalAllowance,
+                        LeaveTravelAllowance: values.LeaveTravelAllowance,
+                        SpecialAllowance: values.SpecialAllowance,
+                        providentFund: values.providentFund,
+                        professionalTax: values.professionalTax,
+                        incomeTax: values.incomeTax,
+                        healthInsurance: values.healthInsurance,
+                      })}
+                    />
+                  </Grid>
                   <Grid item xs={2} sm={4} md={6}>
                     <InputField
                       name="totalEarning"
