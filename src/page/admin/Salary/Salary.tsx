@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  InputAdornment,
   TextField,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -25,6 +26,7 @@ import {
   SelectField,
 } from "../../../components/DynamicField";
 import { percentage, sumValues } from "../../../shared/UtlityFunction";
+import UpdateIcon from "@mui/icons-material/Update";
 
 const Salary = () => {
   const salaryService = new SalaryServices();
@@ -136,6 +138,7 @@ const Salary = () => {
   const generateSalary = (values: any) => {
     const requestData = {
       ...values,
+
       ctc: sumValues({
         basicSalary: values.basicSalary,
         hra: values.hra,
@@ -302,7 +305,7 @@ const Salary = () => {
             onSubmit={generateSalary}
             enableReinitialize
           >
-            {({ handleSubmit, values }) => (
+            {({ handleSubmit, values, setFieldValue }) => (
               <Form className="mt-1" onSubmit={handleSubmit}>
                 <Grid
                   container
@@ -361,7 +364,57 @@ const Salary = () => {
                       <InputField
                         name="incrementValue"
                         label="Increment Value"
-                        value={Number(values.incrementValue)}
+                        onChange={(e: any) => {
+                          const a = Number(e.target.value);
+                          console.log(
+                            Number(values.hra) + percentage(a, values.hra)
+                          );
+                          setFieldValue("incrementValue", a);
+                          setFieldValue(
+                            "hra",
+                            Number(values.hra) + percentage(a, values.hra)
+                          );
+                          setFieldValue(
+                            "travelAllowance",
+                            Number(values.travelAllowance) +
+                              percentage(a, values.travelAllowance)
+                          );
+                          setFieldValue(
+                            "MedicalAllowance",
+                            Number(values.MedicalAllowance) +
+                              percentage(a, values.MedicalAllowance)
+                          );
+                          setFieldValue(
+                            "LeaveTravelAllowance",
+                            Number(values.LeaveTravelAllowance) +
+                              percentage(a, values.LeaveTravelAllowance)
+                          );
+                          setFieldValue(
+                            "SpecialAllowance",
+                            Number(values.SpecialAllowance) +
+                              percentage(a, values.SpecialAllowance)
+                          );
+                          setFieldValue(
+                            "providentFund",
+                            Number(values.providentFund) +
+                              percentage(a, values.providentFund)
+                          );
+                          setFieldValue(
+                            "professionalTax",
+                            Number(values.professionalTax) +
+                              percentage(a, values.professionalTax)
+                          );
+                          setFieldValue(
+                            "incomeTax",
+                            Number(values.incomeTax) +
+                              percentage(a, values.incomeTax)
+                          );
+                          setFieldValue(
+                            "healthInsurance",
+                            Number(values.healthInsurance) +
+                              percentage(a, values.healthInsurance)
+                          );
+                        }}
                       />
                     </Grid>
                   )}
@@ -420,55 +473,67 @@ const Salary = () => {
                     <InputField
                       name="ctc"
                       label="CTC/Month"
-                      value={sumValues({
-                        basicSalary: values.basicSalary,
-                        hra: values.hra,
-                        travelAllowance: values.travelAllowance,
-                        MedicalAllowance: values.MedicalAllowance,
-                        LeaveTravelAllowance: values.LeaveTravelAllowance,
-                        SpecialAllowance: values.SpecialAllowance,
-                        providentFund: values.providentFund,
-                        professionalTax: values.professionalTax,
-                        incomeTax: values.incomeTax,
-                        healthInsurance: values.healthInsurance,
-                      })}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment
+                            position="start"
+                            onClick={() =>
+                              setFieldValue(
+                                "ctc",
+                                sumValues({
+                                  basicSalary: values.basicSalary,
+                                  hra: values.hra,
+                                  travelAllowance: values.travelAllowance,
+                                  MedicalAllowance: values.MedicalAllowance,
+                                  LeaveTravelAllowance:
+                                    values.LeaveTravelAllowance,
+                                  SpecialAllowance: values.SpecialAllowance,
+                                  providentFund: values.providentFund,
+                                  professionalTax: values.professionalTax,
+                                  incomeTax: values.incomeTax,
+                                  healthInsurance: values.healthInsurance,
+                                })
+                              )
+                            }
+                            sx={{ cursor: "pointer" }}
+                          >
+                            <UpdateIcon />
+                          </InputAdornment>
+                        ),
+                      }}
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
                     <InputField
                       name="totalEarning"
-                      value={
-                        actionType === "add" ||
-                        (actionType === "edit" &&
-                          values.type === "changes" &&
-                          values.incrementType === "fixed")
-                          ? sumValues({
-                              basicSalary: values.basicSalary,
-                              hra: values.hra,
-                              travelAllowance: values.travelAllowance,
-                              MedicalAllowance: values.MedicalAllowance,
-                              LeaveTravelAllowance: values.LeaveTravelAllowance,
-                              SpecialAllowance: values.SpecialAllowance,
-                              providentFund: -values.providentFund,
-                              professionalTax: -values.professionalTax,
-                              incomeTax: -values.incomeTax,
-                              healthInsurance: -values.healthInsurance,
-                            })
-                          : actionType === "edit"
-                          ? sumValues({
-                              basicSalary: values.basicSalary,
-                              hra: values.hra,
-                              travelAllowance: values.travelAllowance,
-                              MedicalAllowance: values.MedicalAllowance,
-                              LeaveTravelAllowance: values.LeaveTravelAllowance,
-                              SpecialAllowance: values.SpecialAllowance,
-                              providentFund: -values.providentFund,
-                              professionalTax: -values.professionalTax,
-                              incomeTax: -values.incomeTax,
-                              healthInsurance: -values.healthInsurance,
-                            })
-                          : null
-                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment
+                            position="start"
+                            onClick={() =>
+                              setFieldValue(
+                                "totalEarning",
+                                sumValues({
+                                  basicSalary: values.basicSalary,
+                                  hra: values.hra,
+                                  travelAllowance: values.travelAllowance,
+                                  MedicalAllowance: values.MedicalAllowance,
+                                  LeaveTravelAllowance:
+                                    values.LeaveTravelAllowance,
+                                  SpecialAllowance: values.SpecialAllowance,
+                                  providentFund: -values.providentFund,
+                                  professionalTax: -values.professionalTax,
+                                  incomeTax: -values.incomeTax,
+                                  healthInsurance: -values.healthInsurance,
+                                })
+                              )
+                            }
+                            sx={{ cursor: "pointer" }}
+                          >
+                            <UpdateIcon />
+                          </InputAdornment>
+                        ),
+                      }}
                       label="Total In Hand"
                     />
                   </Grid>
