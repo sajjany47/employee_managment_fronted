@@ -211,7 +211,7 @@ const Salary = () => {
       .finally(() => setLoading(false));
   };
 
-  console.log(selectUser);
+  console.log(selectUser.currentSalary);
   return (
     <div>
       {loading && <Loader />}
@@ -361,6 +361,7 @@ const Salary = () => {
                       <InputField
                         name="incrementValue"
                         label="Increment Value"
+                        value={Number(values.incrementValue)}
                       />
                     </Grid>
                   )}
@@ -438,8 +439,9 @@ const Salary = () => {
                       name="totalEarning"
                       value={
                         actionType === "add" ||
-                        values.type === "changes" ||
-                        values.incrementType === "fixed"
+                        (actionType === "edit" &&
+                          values.type === "changes" &&
+                          values.incrementType === "fixed")
                           ? sumValues({
                               basicSalary: values.basicSalary,
                               hra: values.hra,
@@ -452,63 +454,20 @@ const Salary = () => {
                               incomeTax: -values.incomeTax,
                               healthInsurance: -values.healthInsurance,
                             })
-                          : sumValues({
-                              basicSalary:
-                                values.basicSalary +
-                                percentage(
-                                  values.incrementValue,
-                                  values.basicSalary
-                                ),
-                              hra:
-                                values.hra +
-                                percentage(values.incrementValue, values.hra),
-                              travelAllowance:
-                                values.travelAllowance +
-                                percentage(
-                                  values.incrementValue,
-                                  values.travelAllowance
-                                ),
-                              MedicalAllowance:
-                                values.MedicalAllowance +
-                                percentage(
-                                  values.incrementValue,
-                                  values.MedicalAllowance
-                                ),
-                              LeaveTravelAllowance:
-                                values.LeaveTravelAllowance +
-                                percentage(
-                                  values.incrementValue,
-                                  values.LeaveTravelAllowance
-                                ),
-                              SpecialAllowance:
-                                values.SpecialAllowance +
-                                percentage(
-                                  values.incrementValue,
-                                  values.SpecialAllowance
-                                ),
-                              providentFund: -(
-                                values.providentFund +
-                                percentage(
-                                  values.incrementValue,
-                                  values.providentFund
-                                )
-                              ),
+                          : actionType === "edit"
+                          ? sumValues({
+                              basicSalary: values.basicSalary,
+                              hra: values.hra,
+                              travelAllowance: values.travelAllowance,
+                              MedicalAllowance: values.MedicalAllowance,
+                              LeaveTravelAllowance: values.LeaveTravelAllowance,
+                              SpecialAllowance: values.SpecialAllowance,
+                              providentFund: -values.providentFund,
                               professionalTax: -values.professionalTax,
-                              incomeTax: -(
-                                values.incomeTax +
-                                percentage(
-                                  values.incrementValue,
-                                  values.incomeTax
-                                )
-                              ),
-                              healthInsurance: -(
-                                values.healthInsurance +
-                                percentage(
-                                  values.incrementValue,
-                                  values.healthInsurance
-                                )
-                              ),
+                              incomeTax: -values.incomeTax,
+                              healthInsurance: -values.healthInsurance,
                             })
+                          : null
                       }
                       label="Total In Hand"
                     />
