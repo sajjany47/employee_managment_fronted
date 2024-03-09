@@ -309,95 +309,157 @@ const Salary = () => {
                     </Grid>
                   )}
 
-                  {values.incrementType === "percentage" && (
-                    <Grid item xs={2} sm={4} md={4}>
-                      <InputField
-                        name="incrementValue"
-                        label="Increment Value"
-                        onChange={(e: any) => {
-                          setFieldValue("totalEarning", "");
-                          setFieldValue("ctc", "");
-                          setFieldValue("incrementValue", e.target.value);
-                        }}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment
-                              position="start"
-                              onClick={() => {
-                                const a: any = Number(values.incrementValue);
-                                setFieldValue("incrementValue", a);
-                                setFieldValue(
-                                  "basicSalary",
-                                  Number(values.basicSalary) +
-                                    Number(percentage(a, values.basicSalary))
-                                );
-                                setFieldValue(
-                                  "hra",
-                                  Number(values.hra) +
-                                    Number(percentage(a, values.hra))
-                                );
-                                setFieldValue(
-                                  "travelAllowance",
-                                  Number(values.travelAllowance) +
+                  {values.type === "appraisal" &&
+                    values.incrementType === "percentage" && (
+                      <Grid item xs={2} sm={4} md={4}>
+                        <InputField
+                          name="incrementValue"
+                          label="Increment Value"
+                          onChange={(e: any) => {
+                            setFieldValue("totalEarning", "");
+                            setFieldValue("ctc", "");
+                            setFieldValue("incrementValue", e.target.value);
+                          }}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment
+                                position="start"
+                                onClick={() => {
+                                  const a: any = Number(values.incrementValue);
+                                  setFieldValue("incrementValue", a);
+                                  setFieldValue(
+                                    "basicSalary",
                                     Number(
-                                      percentage(a, values.travelAllowance)
-                                    )
-                                );
-                                setFieldValue(
-                                  "MedicalAllowance",
-                                  Number(values.MedicalAllowance) +
+                                      selectUser.currentSalary.basicSalary
+                                    ) +
+                                      Number(
+                                        percentage(
+                                          a,
+                                          selectUser.currentSalary.basicSalary
+                                        )
+                                      )
+                                  );
+                                  setFieldValue(
+                                    "hra",
+                                    Number(selectUser.currentSalary.hra) +
+                                      Number(
+                                        percentage(
+                                          a,
+                                          selectUser.currentSalary.hra
+                                        )
+                                      )
+                                  );
+                                  setFieldValue(
+                                    "travelAllowance",
                                     Number(
-                                      percentage(a, values.MedicalAllowance)
-                                    )
-                                );
-                                setFieldValue(
-                                  "LeaveTravelAllowance",
-                                  Number(values.LeaveTravelAllowance) +
+                                      selectUser.currentSalary.travelAllowance
+                                    ) +
+                                      Number(
+                                        percentage(
+                                          a,
+                                          selectUser.currentSalary
+                                            .travelAllowance
+                                        )
+                                      )
+                                  );
+                                  setFieldValue(
+                                    "MedicalAllowance",
                                     Number(
-                                      percentage(a, values.LeaveTravelAllowance)
-                                    )
-                                );
-                                setFieldValue(
-                                  "SpecialAllowance",
-                                  Number(values.SpecialAllowance) +
+                                      selectUser.currentSalary.MedicalAllowance
+                                    ) +
+                                      Number(
+                                        percentage(
+                                          a,
+                                          selectUser.currentSalary
+                                            .MedicalAllowance
+                                        )
+                                      )
+                                  );
+                                  setFieldValue(
+                                    "LeaveTravelAllowance",
                                     Number(
-                                      percentage(a, values.SpecialAllowance)
-                                    )
-                                );
-                                setFieldValue(
-                                  "providentFund",
-                                  Number(values.providentFund) +
-                                    Number(percentage(a, values.providentFund))
-                                );
-                                setFieldValue(
-                                  "professionalTax",
-                                  Number(values.professionalTax) +
+                                      selectUser.currentSalary
+                                        .LeaveTravelAllowance
+                                    ) +
+                                      Number(
+                                        percentage(
+                                          a,
+                                          selectUser.currentSalary
+                                            .LeaveTravelAllowance
+                                        )
+                                      )
+                                  );
+                                  setFieldValue(
+                                    "SpecialAllowance",
                                     Number(
-                                      percentage(a, values.professionalTax)
-                                    )
-                                );
-                                setFieldValue(
-                                  "incomeTax",
-                                  Number(values.incomeTax) +
-                                    Number(percentage(a, values.incomeTax))
-                                );
-                                setFieldValue(
-                                  "healthInsurance",
-                                  Number(values.healthInsurance) +
+                                      selectUser.currentSalary.SpecialAllowance
+                                    ) +
+                                      Number(
+                                        percentage(
+                                          a,
+                                          selectUser.currentSalary
+                                            .SpecialAllowance
+                                        )
+                                      )
+                                  );
+                                  setFieldValue(
+                                    "providentFund",
                                     Number(
-                                      percentage(a, values.healthInsurance)
-                                    )
-                                );
-                              }}
-                              sx={{ cursor: "pointer" }}
-                            >
-                              <UpdateIcon />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </Grid>
-                  )}
+                                      selectUser.currentSalary.providentFund
+                                    ) +
+                                      Number(
+                                        percentage(
+                                          a,
+                                          selectUser.currentSalary.providentFund
+                                        )
+                                      )
+                                  );
+                                  setFieldValue(
+                                    "professionalTax",
+                                    Number(
+                                      selectUser.currentSalary.professionalTax
+                                    ) +
+                                      Number(
+                                        percentage(
+                                          a,
+                                          selectUser.currentSalary
+                                            .professionalTax
+                                        )
+                                      )
+                                  );
+                                  setFieldValue(
+                                    "incomeTax",
+                                    Number(selectUser.currentSalary.incomeTax) +
+                                      Number(
+                                        percentage(
+                                          a,
+                                          selectUser.currentSalary.incomeTax
+                                        )
+                                      )
+                                  );
+                                  setFieldValue(
+                                    "healthInsurance",
+                                    Number(
+                                      selectUser.currentSalary.healthInsurance
+                                    ) +
+                                      Number(
+                                        percentage(
+                                          a,
+                                          selectUser.currentSalary
+                                            .healthInsurance
+                                        )
+                                      )
+                                  );
+                                }}
+                                sx={{ cursor: "pointer" }}
+                              >
+                                <UpdateIcon />
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </Grid>
+                    )}
 
                   <Grid item xs={2} sm={4} md={4}>
                     <InputField
