@@ -146,9 +146,7 @@ const Salary = () => {
             color="secondary"
             style={{ cursor: "pointer" }}
             onClick={() => {
-              navigate("/admin/user-verified/", {
-                state: { data: value.row },
-              });
+              navigate(`/admin/salary/${value.row.username}`);
             }}
           />
         </>

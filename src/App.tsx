@@ -13,6 +13,7 @@ import UserUpdate from "./page/admin/EmployeeList/UserUpdate";
 import LeaveApply from "./page/admin/Attendance/LeaveApply";
 import EmployeeList from "./page/admin/EmployeeList/EmployeeList";
 import Salary from "./page/admin/Salary/Salary";
+import SalaryDetails from "./page/admin/Salary/SalaryDetails";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
             <Route path="/admin/leave" element={<LeaveList />} />
             <Route path="/admin/holiday-list" element={<HolidayList />} />
             <Route path="/admin/salary" element={<Salary />} />
+            <Route path="/admin/salary/:id" element={<SalaryDetails />} />
           </Route>
         </Routes>
         {/* <Copyright /> */}

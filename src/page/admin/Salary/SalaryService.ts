@@ -52,4 +52,16 @@ export class SalaryServices {
       throw err;
     }
   };
+
+  singleSalaryList = async (id: any) => {
+    try {
+      const response = await axios.get(`${apiPath}/salary/list/${id}`, {
+        headers: this.headers,
+      });
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
 }
