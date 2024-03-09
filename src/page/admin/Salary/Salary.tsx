@@ -40,10 +40,29 @@ const Salary = () => {
   const [open, setOpen] = useState(false);
   const [actionType, setActionType] = useState("add");
   const [selectUser, setSelectUser] = useState<any>({});
+  const [getId, setGetId] = useState("");
 
   useEffect(() => {
     Promise.all([salaryList(), userList()]);
-
+    if (actionType === "edit") {
+      const selectId = selectUser.salaryHistory.find(
+        (item: any) =>
+          item.basicSalary === selectUser.currentSalary.basicSalary &&
+          item.hra === selectUser.currentSalary.hra &&
+          item.travelAllowance === selectUser.currentSalary.travelAllowance &&
+          item.MedicalAllowance === selectUser.currentSalary.MedicalAllowance &&
+          item.LeaveTravelAllowance ===
+            selectUser.currentSalary.LeaveTravelAllowance &&
+          item.SpecialAllowance === selectUser.currentSalary.SpecialAllowance &&
+          item.providentFund === selectUser.currentSalary.providentFund &&
+          item.professionalTax === selectUser.currentSalary.professionalTax &&
+          item.incomeTax === selectUser.currentSalary.incomeTax &&
+          item.totalEarning === selectUser.currentSalary.totalEarning &&
+          item.healthInsurance === selectUser.currentSalary.healthInsurance &&
+          item.ctc === selectUser.currentSalary.ctc
+      );
+      setGetId(selectId._id);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -146,12 +165,19 @@ const Salary = () => {
   };
 
   const generateSalary = (values: any) => {
-    const requestData = {
-      ...values,
-      updatedBy: userType.username,
-    };
-
     setLoading(true);
+    const requestData =
+      actionType === "add"
+        ? {
+            ...values,
+            updatedBy: userType.username,
+          }
+        : {
+            ...values,
+            id: getId,
+            updatedBy: userType.username,
+          };
+    console.log(requestData);
     salaryService
       .createSalaryStructure(requestData)
       .then((res) => {
