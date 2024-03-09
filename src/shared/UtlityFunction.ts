@@ -17,9 +17,11 @@ export function convertNullToString(obj: any) {
   return obj;
 }
 
-export const sumValues = (obj: any) =>
-  Object.values(obj).reduce((a: any, b: any) => Number(a) + Number(b), 0);
+export const sumValues = (obj: object) =>
+  Object.values(obj)
+    .reduce((a: any, b: any) => Number(a) + Number(b), 0)
+    .toFixed(2);
 
 export function percentage(percent: any, total: any) {
-  return ((percent / 100) * total).toFixed(2);
+  return Number((percent / 100) * total).toFixed(2);
 }

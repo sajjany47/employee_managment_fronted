@@ -27,11 +27,13 @@ import {
 } from "../../../components/DynamicField";
 import { percentage, sumValues } from "../../../shared/UtlityFunction";
 import UpdateIcon from "@mui/icons-material/Update";
+import { useSelector } from "react-redux";
 
 const Salary = () => {
   const salaryService = new SalaryServices();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const userType = useSelector((state: any) => state.auth.auth.user);
   const [loading, setLoading] = useState(false);
   const [salaryDetailList, setSalaryDetailList] = useState([]);
   const [pendingUserList, setPendingUserList] = useState([]);
@@ -84,9 +86,17 @@ const Salary = () => {
     },
     {
       field: "ctc",
-      headerName: "CTC/Month",
+      headerName: "Gross Monthly",
       width: 200,
       renderCell: (value: any) => <span>{value.row.currentSalary.ctc}</span>,
+    },
+    {
+      field: "totalEarning",
+      headerName: "Net Monthly",
+      width: 200,
+      renderCell: (value: any) => (
+        <span>{value.row.currentSalary.totalEarning}</span>
+      ),
     },
 
     {
@@ -138,66 +148,7 @@ const Salary = () => {
   const generateSalary = (values: any) => {
     const requestData = {
       ...values,
-
-      ctc: sumValues({
-        basicSalary: values.basicSalary,
-        hra: values.hra,
-        travelAllowance: values.travelAllowance,
-        MedicalAllowance: values.MedicalAllowance,
-        LeaveTravelAllowance: values.LeaveTravelAllowance,
-        SpecialAllowance: values.SpecialAllowance,
-        providentFund: values.providentFund,
-        professionalTax: values.professionalTax,
-        incomeTax: values.incomeTax,
-        healthInsurance: values.healthInsurance,
-      }),
-      totalEarning:
-        actionType === "add" ||
-        values.type === "changes" ||
-        values.incrementType === "fixed"
-          ? sumValues({
-              basicSalary: values.basicSalary,
-              hra: values.hra,
-              travelAllowance: values.travelAllowance,
-              MedicalAllowance: values.MedicalAllowance,
-              LeaveTravelAllowance: values.LeaveTravelAllowance,
-              SpecialAllowance: values.SpecialAllowance,
-              providentFund: -values.providentFund,
-              professionalTax: -values.professionalTax,
-              incomeTax: -values.incomeTax,
-              healthInsurance: -values.healthInsurance,
-            })
-          : sumValues({
-              basicSalary:
-                values.basicSalary +
-                percentage(values.incrementValue, values.basicSalary),
-              hra: values.hra + percentage(values.incrementValue, values.hra),
-              travelAllowance:
-                values.travelAllowance +
-                percentage(values.incrementValue, values.travelAllowance),
-              MedicalAllowance:
-                values.MedicalAllowance +
-                percentage(values.incrementValue, values.MedicalAllowance),
-              LeaveTravelAllowance:
-                values.LeaveTravelAllowance +
-                percentage(values.incrementValue, values.LeaveTravelAllowance),
-              SpecialAllowance:
-                values.SpecialAllowance +
-                percentage(values.incrementValue, values.SpecialAllowance),
-              providentFund: -(
-                values.providentFund +
-                percentage(values.incrementValue, values.providentFund)
-              ),
-              professionalTax: -values.professionalTax,
-              incomeTax: -(
-                values.incomeTax +
-                percentage(values.incrementValue, values.incomeTax)
-              ),
-              healthInsurance: -(
-                values.healthInsurance +
-                percentage(values.incrementValue, values.healthInsurance)
-              ),
-            }),
+      updatedBy: userType.username,
     };
 
     setLoading(true);
@@ -214,7 +165,6 @@ const Salary = () => {
       .finally(() => setLoading(false));
   };
 
-  console.log(selectUser.currentSalary);
   return (
     <div>
       {loading && <Loader />}
@@ -365,70 +315,121 @@ const Salary = () => {
                         name="incrementValue"
                         label="Increment Value"
                         onChange={(e: any) => {
-                          const a = Number(e.target.value);
-                          console.log(
-                            Number(values.hra) + percentage(a, values.hra)
-                          );
-                          setFieldValue("incrementValue", a);
-                          setFieldValue(
-                            "hra",
-                            Number(values.hra) + percentage(a, values.hra)
-                          );
-                          setFieldValue(
-                            "travelAllowance",
-                            Number(values.travelAllowance) +
-                              percentage(a, values.travelAllowance)
-                          );
-                          setFieldValue(
-                            "MedicalAllowance",
-                            Number(values.MedicalAllowance) +
-                              percentage(a, values.MedicalAllowance)
-                          );
-                          setFieldValue(
-                            "LeaveTravelAllowance",
-                            Number(values.LeaveTravelAllowance) +
-                              percentage(a, values.LeaveTravelAllowance)
-                          );
-                          setFieldValue(
-                            "SpecialAllowance",
-                            Number(values.SpecialAllowance) +
-                              percentage(a, values.SpecialAllowance)
-                          );
-                          setFieldValue(
-                            "providentFund",
-                            Number(values.providentFund) +
-                              percentage(a, values.providentFund)
-                          );
-                          setFieldValue(
-                            "professionalTax",
-                            Number(values.professionalTax) +
-                              percentage(a, values.professionalTax)
-                          );
-                          setFieldValue(
-                            "incomeTax",
-                            Number(values.incomeTax) +
-                              percentage(a, values.incomeTax)
-                          );
-                          setFieldValue(
-                            "healthInsurance",
-                            Number(values.healthInsurance) +
-                              percentage(a, values.healthInsurance)
-                          );
+                          setFieldValue("totalEarning", "");
+                          setFieldValue("ctc", "");
+                          setFieldValue("incrementValue", e.target.value);
+                        }}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment
+                              position="start"
+                              onClick={() => {
+                                const a: any = Number(values.incrementValue);
+                                setFieldValue("incrementValue", a);
+                                setFieldValue(
+                                  "basicSalary",
+                                  Number(values.basicSalary) +
+                                    Number(percentage(a, values.basicSalary))
+                                );
+                                setFieldValue(
+                                  "hra",
+                                  Number(values.hra) +
+                                    Number(percentage(a, values.hra))
+                                );
+                                setFieldValue(
+                                  "travelAllowance",
+                                  Number(values.travelAllowance) +
+                                    Number(
+                                      percentage(a, values.travelAllowance)
+                                    )
+                                );
+                                setFieldValue(
+                                  "MedicalAllowance",
+                                  Number(values.MedicalAllowance) +
+                                    Number(
+                                      percentage(a, values.MedicalAllowance)
+                                    )
+                                );
+                                setFieldValue(
+                                  "LeaveTravelAllowance",
+                                  Number(values.LeaveTravelAllowance) +
+                                    Number(
+                                      percentage(a, values.LeaveTravelAllowance)
+                                    )
+                                );
+                                setFieldValue(
+                                  "SpecialAllowance",
+                                  Number(values.SpecialAllowance) +
+                                    Number(
+                                      percentage(a, values.SpecialAllowance)
+                                    )
+                                );
+                                setFieldValue(
+                                  "providentFund",
+                                  Number(values.providentFund) +
+                                    Number(percentage(a, values.providentFund))
+                                );
+                                setFieldValue(
+                                  "professionalTax",
+                                  Number(values.professionalTax) +
+                                    Number(
+                                      percentage(a, values.professionalTax)
+                                    )
+                                );
+                                setFieldValue(
+                                  "incomeTax",
+                                  Number(values.incomeTax) +
+                                    Number(percentage(a, values.incomeTax))
+                                );
+                                setFieldValue(
+                                  "healthInsurance",
+                                  Number(values.healthInsurance) +
+                                    Number(
+                                      percentage(a, values.healthInsurance)
+                                    )
+                                );
+                              }}
+                              sx={{ cursor: "pointer" }}
+                            >
+                              <UpdateIcon />
+                            </InputAdornment>
+                          ),
                         }}
                       />
                     </Grid>
                   )}
 
                   <Grid item xs={2} sm={4} md={4}>
-                    <InputField name="basicSalary" label="Basic Salary" />
+                    <InputField
+                      name="basicSalary"
+                      label="Basic Salary"
+                      onChange={(e: any) => {
+                        setFieldValue("totalEarning", "");
+                        setFieldValue("ctc", "");
+                        setFieldValue("basicSalary", e.target.value);
+                      }}
+                    />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
-                    <InputField name="hra" label="House Reantal Allowance" />
+                    <InputField
+                      name="hra"
+                      label="House Reantal Allowance"
+                      onChange={(e: any) => {
+                        setFieldValue("totalEarning", "");
+                        setFieldValue("ctc", "");
+                        setFieldValue("hra", e.target.value);
+                      }}
+                    />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
                     <InputField
                       name="travelAllowance"
                       label="Travel Allowance"
+                      onChange={(e: any) => {
+                        setFieldValue("totalEarning", "");
+                        setFieldValue("ctc", "");
+                        setFieldValue("travelAllowance", e.target.value);
+                      }}
                     />
                   </Grid>
 
@@ -436,36 +437,77 @@ const Salary = () => {
                     <InputField
                       name="MedicalAllowance"
                       label="Medical Allowance"
+                      onChange={(e: any) => {
+                        setFieldValue("totalEarning", "");
+                        setFieldValue("ctc", "");
+                        setFieldValue("MedicalAllowance", e.target.value);
+                      }}
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
                     <InputField
                       name="LeaveTravelAllowance"
                       label="Leave Travel Allowance"
+                      onChange={(e: any) => {
+                        setFieldValue("totalEarning", "");
+                        setFieldValue("ctc", "");
+                        setFieldValue("LeaveTravelAllowance", e.target.value);
+                      }}
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
                     <InputField
                       name="SpecialAllowance"
                       label="Special Allowance"
+                      onChange={(e: any) => {
+                        setFieldValue("totalEarning", "");
+                        setFieldValue("ctc", "");
+                        setFieldValue("SpecialAllowance", e.target.value);
+                      }}
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
                     <InputField
                       name="healthInsurance"
                       label="Health Insurance"
+                      onChange={(e: any) => {
+                        setFieldValue("totalEarning", "");
+                        setFieldValue("ctc", "");
+                        setFieldValue("healthInsurance", e.target.value);
+                      }}
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
-                    <InputField name="providentFund" label="Provident Fund" />
+                    <InputField
+                      name="providentFund"
+                      label="Provident Fund"
+                      onChange={(e: any) => {
+                        setFieldValue("totalEarning", "");
+                        setFieldValue("ctc", "");
+                        setFieldValue("providentFund", e.target.value);
+                      }}
+                    />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
-                    <InputField name="incomeTax" label="Income Tax" />
+                    <InputField
+                      name="incomeTax"
+                      label="Income Tax"
+                      onChange={(e: any) => {
+                        setFieldValue("totalEarning", "");
+                        setFieldValue("ctc", "");
+                        setFieldValue("incomeTax", e.target.value);
+                      }}
+                    />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
                     <InputField
                       name="professionalTax"
                       label="Professional Tax"
+                      onChange={(e: any) => {
+                        setFieldValue("totalEarning", "");
+                        setFieldValue("ctc", "");
+                        setFieldValue("professionalTax", e.target.value);
+                      }}
                     />
                   </Grid>
 
