@@ -21,10 +21,7 @@ const SalaryDetails = () => {
       .singleSalaryList(id.id)
       .then((res) => {
         setData(res.data.salaryHistory);
-        setCurrentData({
-          ...res.data.currentSalary,
-          username: res.data.username,
-        });
+        setCurrentData(res.data.currentSalary);
       })
       .catch((err) => enqueueSnackbar(err.message, { variant: "error" }))
       .finally(() => setLoading(false));
@@ -37,14 +34,14 @@ const SalaryDetails = () => {
       headerName: "Date",
       width: 200,
       renderCell: (value: any) => (
-        <span>{moment(value.date).format("MMM,YYYY")}</span>
+        <span>{moment(value.date).format("DD MMM,YYYY")}</span>
       ),
     },
     {
       field: "username",
       headerName: "Username",
       width: 200,
-      renderCell: () => <span>{currentData.username}</span>,
+      renderCell: () => <span>{id.id}</span>,
     },
     {
       field: "ctc",
@@ -66,7 +63,7 @@ const SalaryDetails = () => {
       renderCell: (value: any) => <span>{value.value}</span>,
     },
   ];
-  console.log(data);
+
   return (
     <div>
       {" "}
@@ -77,7 +74,87 @@ const SalaryDetails = () => {
             <strong>Salary Structure Details</strong>
           </h6>
         </Grid>
-        <Grid item xs={12} className="mt-1">
+        <Grid item xs={12} sx={{ marginTop: 3 }}>
+          <Grid
+            container
+            spacing={{ xs: 2, md: 2 }}
+            columns={{ xs: 4, sm: 8, md: 12 }}
+          >
+            <Grid item xs={2} sm={4} md={3}>
+              <h6>
+                <strong>Basic Salary</strong>
+              </h6>
+              <small>{currentData.basicSalary}</small>
+            </Grid>
+            <Grid item xs={2} sm={4} md={3}>
+              <h6>
+                <strong>House Rent Allowance</strong>
+              </h6>
+              <small>{currentData.hra}</small>
+            </Grid>
+            <Grid item xs={2} sm={4} md={3}>
+              <h6>
+                <strong>Travel Allowance</strong>
+              </h6>
+              <small>{currentData.travelAllowance}</small>
+            </Grid>
+            <Grid item xs={2} sm={4} md={3}>
+              <h6>
+                <strong>Medical Allowance</strong>
+              </h6>
+              <small>{currentData.MedicalAllowance}</small>
+            </Grid>
+            <Grid item xs={2} sm={4} md={3}>
+              <h6>
+                <strong>Leave Travel Allowance</strong>
+              </h6>
+              <small>{currentData.LeaveTravelAllowance}</small>
+            </Grid>
+            <Grid item xs={2} sm={4} md={3}>
+              <h6>
+                <strong>Special Allowance</strong>
+              </h6>
+              <small>{currentData.SpecialAllowance}</small>
+            </Grid>
+            <Grid item xs={2} sm={4} md={3}>
+              <h6>
+                <strong>Provident Fund</strong>
+              </h6>
+              <small>{currentData.providentFund}</small>
+            </Grid>
+            <Grid item xs={2} sm={4} md={3}>
+              <h6>
+                <strong>Professional Tax</strong>
+              </h6>
+              <small>{currentData.professionalTax}</small>
+            </Grid>
+            <Grid item xs={2} sm={4} md={3}>
+              <h6>
+                <strong>Income Tax</strong>
+              </h6>
+              <small>{currentData.incomeTax}</small>
+            </Grid>
+            <Grid item xs={2} sm={4} md={3}>
+              <h6>
+                <strong>Health Insurance</strong>
+              </h6>
+              <small>{currentData.healthInsurance}</small>
+            </Grid>
+            <Grid item xs={2} sm={4} md={3}>
+              <h6>
+                <strong>Net Monthly</strong>
+              </h6>
+              <small>{currentData.totalEarning}</small>
+            </Grid>
+            <Grid item xs={2} sm={4} md={3}>
+              <h6>
+                <strong>Gross Monthly</strong>
+              </h6>
+              <small>{currentData.ctc}</small>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item xs={12} sx={{ marginTop: 3 }}>
           <Box>
             <DataGrid
               style={{
@@ -97,7 +174,10 @@ const SalaryDetails = () => {
               pageSizeOptions={ConfigData.pageRow}
               localeText={{ noRowsLabel: "No Data Available!!!" }}
               // checkboxSelection
-              // disableRowSelectionOnClick
+              //  disableRowSelectionOnClick
+              onRowClick={(value) => {
+                setCurrentData(value.row);
+              }}
             />
           </Box>
         </Grid>
