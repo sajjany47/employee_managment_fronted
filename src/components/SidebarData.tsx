@@ -74,7 +74,7 @@ const SidebarData = {
     },
     {
       path: "/admin/salary",
-      title: "Salary",
+      title: "Salary Alloted",
       icon: <CurrencyExchangeIcon />,
     },
     {

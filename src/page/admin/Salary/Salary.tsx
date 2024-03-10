@@ -94,7 +94,9 @@ const Salary = () => {
       headerName: "Date",
       width: 200,
       renderCell: (value: any) => (
-        <span>{moment(value.row.currentSalary.date).format("MMM,YYYY")}</span>
+        <span>
+          {moment(value.row.currentSalary.date).format("DD MMM,YYYY")}
+        </span>
       ),
     },
     {
