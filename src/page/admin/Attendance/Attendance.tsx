@@ -28,6 +28,7 @@ import {
   TimeField,
 } from "../../../components/DynamicField";
 import { useSelector } from "react-redux";
+import * as Yup from "yup";
 
 const Attendance = () => {
   const navigate = useNavigate();
@@ -41,6 +42,26 @@ const Attendance = () => {
   const [loading, setLoading] = useState(false);
   const [selectLeave, setSelectLeave] = useState<any>({});
   const [invalidAttendanceData, setInvalidAttendanceData] = useState([]);
+
+  const statusChangeSchems = Yup.object().shape({
+    statusChange: Yup.string().required("Status is required"),
+  });
+
+  const invalidTimeSchema = Yup.object().shape({
+    date: Yup.string().required("Date is required"),
+    startTime: Yup.string().required("Start time is required"),
+    endTime: Yup.string()
+      .when("startTime", (startTime: any, schema: any) => {
+        return schema.test({
+          test: (time: any) => {
+            if (!time) return true;
+            return time > startTime;
+          },
+          message: "Start time not greater than end time",
+        });
+      })
+      .required("End time is required"),
+  });
 
   useEffect(() => {
     allUserLeave(year);
@@ -237,15 +258,15 @@ const Attendance = () => {
   const initialValueTime = {
     startTime:
       selectTime?.timeSchedule?.startTime !== null
-        ? moment.utc(selectTime?.timeSchedule?.startTime)
+        ? selectTime?.timeSchedule?.startTime
         : "",
     endTime:
       selectTime?.timeSchedule?.endTime !== null
-        ? moment.utc(selectTime?.timeSchedule?.endTime)
+        ? selectTime?.timeSchedule?.endTime
         : "",
     date:
       selectTime?.timeSchedule?.date !== null
-        ? moment.utc(selectTime?.timeSchedule?.date)
+        ? selectTime?.timeSchedule?.date
         : "",
   };
   const handelStatusChanges = (values: any) => {
@@ -272,16 +293,26 @@ const Attendance = () => {
   };
 
   const handelinvaliTimeChanges = (values: any) => {
-    setLoading(true);
+    // setLoading(true);
+    const modifyStartTime = moment(values.startTime).format("HH:mm");
+    const modifyEndTime = moment(values.endTime).format("HH:mm");
+
+    const startDate = moment(
+      `${selectTime?.timeSchedule?.date} ${modifyStartTime}`,
+      "YYYY-MM-DD HH:mm"
+    );
+
+    const endDate = moment(
+      `${selectTime?.timeSchedule?.date} ${modifyEndTime}`,
+      "YYYY-MM-DD HH:mm"
+    );
     const requestBody = {
       id: selectTime.timeSchedule._id,
-      startTime: values.startTime,
+      startTime: startDate,
       updatedBy: user.username,
-      endTime: values.endTime,
-      totalTime: moment(new Date(values.endTime)).diff(
-        moment(new Date(values.startTime)),
-        "minutes"
-      ),
+      endTime: endDate,
+
+      totalTime: moment.duration(endDate.diff(startDate)).asMinutes(),
     };
 
     attendanceService
@@ -372,7 +403,7 @@ const Attendance = () => {
       <Grid container rowSpacing={2} columnSpacing={2}>
         <Grid item xs={12}>
           <Box className="mt-2 flex justify-between">
-            <Box className="mt-2">
+            <Box className="mt-4">
               {" "}
               <h6>
                 <strong> User Pending Leave Details</strong>
@@ -473,7 +504,11 @@ const Attendance = () => {
           <strong>Leave Status Change</strong>
         </DialogTitle>
         <DialogContent>
-          <Formik initialValues={initialValue} onSubmit={handelStatusChanges}>
+          <Formik
+            initialValues={initialValue}
+            onSubmit={handelStatusChanges}
+            validationSchema={statusChangeSchems}
+          >
             {({ handleSubmit }) => (
               <Form onSubmit={handleSubmit} className="mt-5">
                 <Grid
@@ -536,6 +571,7 @@ const Attendance = () => {
           <Formik
             initialValues={initialValueTime}
             onSubmit={handelinvaliTimeChanges}
+            validationSchema={invalidTimeSchema}
           >
             {({ handleSubmit }) => (
               <Form onSubmit={handleSubmit} className="mt-5">
@@ -552,6 +588,7 @@ const Attendance = () => {
                       disabled
                     />
                   </Grid>
+
                   <Grid item xs={2} sm={4} md={6}>
                     <TimeField name="startTime" label="Start Time" />
                   </Grid>

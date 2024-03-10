@@ -42,6 +42,16 @@ const AttendanceDetail = () => {
       .attendanceDateCheck({ username: user.username, checkDate: new Date() })
       .then((res) => {
         setDateCheckData(res.data);
+        if (res.data.startTime !== null && res.data.endTime !== null) {
+          setShowTime(
+            moment(res.data.endTime).diff(moment(res.data.startTime), "minutes")
+          );
+        }
+        if (res.data.startTime !== null && res.data.endTime === null) {
+          setShowTime(
+            moment(new Date()).diff(moment(res.data.startTime), "minutes")
+          );
+        }
         setInterval(() => {
           setShowTime(
             calculateTotalTime(
@@ -49,7 +59,7 @@ const AttendanceDetail = () => {
               res.data.endTime === null ? new Date() : res.data.endTime
             )
           );
-        }, 1);
+        }, 60000);
       })
       .catch((err: any) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
@@ -190,7 +200,7 @@ const AttendanceDetail = () => {
       <Grid container rowSpacing={2} columnSpacing={2}>
         <Grid item xs={12}>
           <Box className="mt-2 flex justify-between">
-            <Box>
+            <Box className="mt-4">
               <h6>
                 <strong>Attendance Details</strong>
               </h6>

@@ -1,16 +1,16 @@
 import moment from "moment";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ActivationService } from "./ActivationServices";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
 import { useState } from "react";
 import { Chip } from "@mui/material";
 import { useSelector } from "react-redux";
+import { EmployeeServices } from "./EmployeeServices";
 
 const UserVerified = () => {
   const navigate = useNavigate();
-  const activationService = new ActivationService();
+  const employeeServices = new EmployeeServices();
   const [loading, setLoading] = useState(false);
   const { state } = useLocation();
   const data: any = state.data;
@@ -18,7 +18,7 @@ const UserVerified = () => {
 
   const approvedUser = (payload: any) => {
     setLoading(true);
-    activationService
+    employeeServices
       .userVerified(payload)
       .then((res) => {
         enqueueSnackbar(res.message, { variant: "success" });

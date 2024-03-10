@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { apiPath } from "../../../shared/constant";
 
-export class ActivationService {
+export class EmployeeServices {
   token: string | null;
   headers: { "Content-type": string; Authorization: string };
 

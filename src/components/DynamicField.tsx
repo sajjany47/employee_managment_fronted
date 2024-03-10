@@ -23,7 +23,7 @@ export const InputField = (props: any) => {
         size="medium"
         {...field}
         {...props}
-        value={field.value !== undefined ? field.value : ""}
+        // value={field.value !== undefined ? field.value : ""}
         id={field.name}
         variant="outlined"
         className="w-full"
@@ -54,7 +54,7 @@ export const SelectField = (props: any) => {
           labelId="demo-simple-select-label"
           {...field}
           {...props}
-          value={field.value !== undefined ? field.value : ""}
+          value={field?.value !== undefined ? field.value : ""}
           className="w-full"
           // helperText={meta.touched ? meta.error : ""}
           error={meta.touched && Boolean(meta.error)}
@@ -120,7 +120,7 @@ export const TimeField = (props: any) => {
             sx={{ width: "100%" }}
             {...field}
             {...props}
-            value={field.value !== undefined ? moment.utc(field.value) : ""}
+            value={field.value !== undefined ? moment(field.value) : ""}
             onChange={(e: any) => setFieldValue(field.name, moment(e))}
             slotProps={{
               textField: {
