@@ -17,7 +17,9 @@ import { enqueueSnackbar } from "notistack";
 const Payroll = () => {
   const navigate = useNavigate();
   const payrollService = new PayrollService();
-  const [monthYear, setMonthYear] = useState(moment.utc(new Date()));
+  const [monthYear, setMonthYear] = useState(
+    moment.utc(new Date()).subtract(1, "months")
+  );
   const [payrollList, setPayrollList] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -31,9 +33,12 @@ const Payroll = () => {
     payrollService
       .payrollMonthList({ date: moment(value).format("YYYY-MM") })
       .then((res) => {
-        setPayrollList(res.data);
+        console.log(res.data.userPayroll);
+        setPayrollList(res.data.userPayroll);
       })
-      .catch((err) => enqueueSnackbar(err.message, { variant: "error" }))
+      .catch((err) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      )
       .finally(() => setLoading(false));
   };
 
@@ -49,7 +54,7 @@ const Payroll = () => {
       headerName: "Date",
       width: 200,
       renderCell: (value: any) => (
-        <span>{moment(value.value, "YYYY-MM").format("MMM,YYYY")}</span>
+        <span>{moment(new Date(value.value)).format("MMM,YYYY")}</span>
       ),
     },
 
@@ -58,23 +63,23 @@ const Payroll = () => {
       headerName: "Net Monthly",
       width: 200,
       renderCell: (value: any) => (
-        <span>{value.row.userSalary.totalEarning}</span>
+        <span>{value.row.currentMonthSalary.totalEarning}</span>
       ),
     },
     {
       field: "salaryStatus",
       headerName: "Status",
       width: 200,
-      renderCell: (value: any) => (
-        <span>{value.row.userSalary.salaryStatus}</span>
-      ),
+      renderCell: (value: any) => <span>{value.row.salaryStatus}</span>,
     },
 
     {
       field: "updatedBy",
       headerName: "UpdatedBy ",
       width: 200,
-      renderCell: (value: any) => <span>{value.row.userSalary.updatedBy}</span>,
+      renderCell: (value: any) => (
+        <span>{value.row.currentMonthSalary.updatedBy}</span>
+      ),
     },
 
     {
@@ -105,6 +110,7 @@ const Payroll = () => {
     setMonthYear(moment.utc(value));
     const formatDate = moment(value).format("YYYY-MM");
     payrollListApi(formatDate);
+    setPayrollList([]);
   };
 
   const handelGeneratePayroll = () => {
