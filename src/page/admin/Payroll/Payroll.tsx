@@ -9,17 +9,33 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import { PayrollService } from "./PayrollService";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { enqueueSnackbar } from "notistack";
 
 const Payroll = () => {
   const navigate = useNavigate();
   const payrollService = new PayrollService();
+  const [monthYear, setMonthYear] = useState(moment.utc(new Date()));
   const [payrollList, setPayrollList] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setPayrollList([]);
-    setLoading(false);
+    payrollListApi(monthYear);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const payrollListApi = (value: any) => {
+    setLoading(true);
+    payrollService
+      .payrollMonthList({ date: moment(value).format("YYYY-MM") })
+      .then((res) => {
+        setPayrollList(res.data);
+      })
+      .catch((err) => enqueueSnackbar(err.message, { variant: "error" }))
+      .finally(() => setLoading(false));
+  };
 
   const columns: GridColDef[] = [
     {
@@ -85,6 +101,22 @@ const Payroll = () => {
       ),
     },
   ];
+  const handleChange = (value: any) => {
+    setMonthYear(moment.utc(value));
+    const formatDate = moment(value).format("YYYY-MM");
+    payrollListApi(formatDate);
+  };
+
+  const handelGeneratePayroll = () => {
+    setLoading(true);
+    payrollService
+      .payrollGenerate({ date: moment(monthYear).format("YYYY-MM") })
+      .then(() => {
+        payrollListApi(monthYear);
+      })
+      .catch((err) => enqueueSnackbar(err.message, { variant: "error" }))
+      .finally(() => setLoading(false));
+  };
   return (
     <div>
       {loading && <Loader />}{" "}
@@ -98,7 +130,28 @@ const Payroll = () => {
             </Box>
             <Box className="mt-2 flex justify-end gap-2">
               <TextField label="Search" id="outlined-size-small" size="small" />
-              <Button variant="contained" startIcon={<AddIcon />}>
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <DemoContainer
+                  components={["DatePicker"]}
+                  sx={{ marginTop: -1 }}
+                >
+                  <DatePicker
+                    // sx={{ width: "50% " }}
+                    label="Select Year"
+                    value={monthYear}
+                    slotProps={{
+                      textField: { size: "small", fullWidth: false },
+                    }}
+                    views={["year", "month"]}
+                    onChange={handleChange}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={handelGeneratePayroll}
+              >
                 Generate Payroll
               </Button>
             </Box>
