@@ -120,7 +120,9 @@ const Payroll = () => {
       .then(() => {
         payrollListApi(monthYear);
       })
-      .catch((err) => enqueueSnackbar(err.message, { variant: "error" }))
+      .catch((err) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      )
       .finally(() => setLoading(false));
   };
   return (
