@@ -15,6 +15,7 @@ import EmployeeList from "./page/admin/EmployeeList/EmployeeList";
 import Salary from "./page/admin/Salary/Salary";
 import SalaryDetails from "./page/admin/Salary/SalaryDetails";
 import Payroll from "./page/admin/Payroll/Payroll";
+import PayrollUpdate from "./page/admin/Payroll/PayrollUpdate";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
             <Route path="/admin/salary" element={<Salary />} />
             <Route path="/admin/salary/:id" element={<SalaryDetails />} />
             <Route path="/admin/payroll" element={<Payroll />} />
+            <Route path="/admin/payroll/update" element={<PayrollUpdate />} />
           </Route>
         </Routes>
         {/* <Copyright /> */}

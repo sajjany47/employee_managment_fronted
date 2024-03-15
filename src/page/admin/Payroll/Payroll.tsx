@@ -63,7 +63,7 @@ const Payroll = () => {
       headerName: "Net Monthly",
       width: 200,
       renderCell: (value: any) => (
-        <span>{value.row.currentMonthSalary.totalEarning}</span>
+        <span>{value.row.currentMonthSalary.totalEarning.toFixed(2)}</span>
       ),
     },
     {
@@ -92,7 +92,7 @@ const Payroll = () => {
             color="primary"
             style={{ cursor: "pointer" }}
             onClick={() => {
-              navigate(`/admin/salary/${value.row.username}`);
+              navigate(`/admin/payroll/update`, { state: { data: value.row } });
             }}
           />
           <VisibilityIcon
