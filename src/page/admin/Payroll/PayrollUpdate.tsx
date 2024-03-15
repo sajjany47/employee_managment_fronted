@@ -2,11 +2,7 @@ import { useEffect, useState } from "react";
 import Loader from "../../../components/Loader";
 import { Button, Grid, InputAdornment } from "@mui/material";
 import { Form, Formik } from "formik";
-import {
-  DateField,
-  InputField,
-  SelectField,
-} from "../../../components/DynamicField";
+import { DateField, InputField } from "../../../components/DynamicField";
 import { calculateSalary, sumValues } from "../../../shared/UtlityFunction";
 import UpdateIcon from "@mui/icons-material/Update";
 import { useLocation } from "react-router-dom";
@@ -283,9 +279,23 @@ const PayrollUpdate = () => {
                                     values.absent,
                                     values.currentMonthTotalHoliday
                                   ),
-                                  providentFund: -values.providentFund,
+                                  providentFund: -calculateSalary(
+                                    values.providentFund,
+                                    data.totalMonthDays,
+                                    data.present,
+                                    values.totalWeekend,
+                                    values.absent,
+                                    values.currentMonthTotalHoliday
+                                  ),
                                   professionalTax: -values.professionalTax,
-                                  incomeTax: -values.incomeTax,
+                                  incomeTax: -calculateSalary(
+                                    values.incomeTax,
+                                    data.totalMonthDays,
+                                    data.present,
+                                    values.totalWeekend,
+                                    values.absent,
+                                    values.currentMonthTotalHoliday
+                                  ),
                                   healthInsurance: -values.healthInsurance,
                                 })
                               )
