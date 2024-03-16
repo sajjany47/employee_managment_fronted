@@ -78,9 +78,7 @@ const Payroll = () => {
       field: "updatedBy",
       headerName: "UpdatedBy ",
       width: 200,
-      renderCell: (value: any) => (
-        <span>{value.row.currentMonthSalary.updatedBy}</span>
-      ),
+      renderCell: (value: any) => <span>{value.value}</span>,
     },
 
     {
