@@ -6,25 +6,31 @@ import { DateField, InputField } from "../../../components/DynamicField";
 import { calculateSalary, sumValues } from "../../../shared/UtlityFunction";
 import UpdateIcon from "@mui/icons-material/Update";
 import { useLocation } from "react-router-dom";
+import { SalaryServices } from "../Salary/SalaryService";
+import { enqueueSnackbar } from "notistack";
 
 const PayrollUpdate = () => {
   const propsData = useLocation();
+  const salaryService = new SalaryServices();
   const data = propsData.state.data;
+  const [userSalary, setUserSalary] = useState<any>({});
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    setLoading(true);
+    salaryService
+      .singleSalaryList(data.username)
+      .then((res) => {
+        setUserSalary(res.data.currentSalary);
+      })
+      .catch((err) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      )
+      .finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [loading, setLoading] = useState(false);
 
-  const updateSalary = (value) => {
-    console.log(value);
-  };
-  //  values.LeaveTravelAllowance,
-  //    data.currentMontTotalDays,
-  //    data.present,
-  //    values.totalWeekend,
-  //    values.absent,
-  //    values.currentMonthTotalHoliday;
-
-  console.log(data.totalMonthDays);
+  const onUpdateSalary = () => {};
 
   return (
     <>
@@ -58,7 +64,7 @@ const PayrollUpdate = () => {
               totalWeekend: data.totalWeekend,
             }}
             // validationSchema={activationKeyValidation}
-            onSubmit={updateSalary}
+            onSubmit={onUpdateSalary}
             enableReinitialize
           >
             {({ handleSubmit, values, setFieldValue }) => (
@@ -197,6 +203,7 @@ const PayrollUpdate = () => {
                         setFieldValue("totalEarning", "");
                         setFieldValue("providentFund", e.target.value);
                       }}
+                      disabled
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={3}>
@@ -207,6 +214,7 @@ const PayrollUpdate = () => {
                         setFieldValue("totalEarning", "");
                         setFieldValue("incomeTax", e.target.value);
                       }}
+                      disabled
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={3}>
@@ -227,79 +235,191 @@ const PayrollUpdate = () => {
                         endAdornment: (
                           <InputAdornment
                             position="start"
-                            onClick={() =>
+                            onClick={() => {
                               setFieldValue(
                                 "totalEarning",
                                 sumValues({
                                   basicSalary: calculateSalary(
-                                    values.basicSalary,
+                                    userSalary.basicSalary,
                                     data.totalMonthDays,
                                     data.present,
                                     values.totalWeekend,
                                     values.absent,
-                                    values.currentMonthTotalHoliday
+                                    values.currentMonthTotalHoliday,
+                                    data.currentMonthTotalLeave
                                   ),
                                   hra: calculateSalary(
-                                    values.hra,
+                                    userSalary.hra,
                                     data.totalMonthDays,
                                     data.present,
                                     values.totalWeekend,
                                     values.absent,
-                                    values.currentMonthTotalHoliday
+                                    values.currentMonthTotalHoliday,
+                                    data.currentMonthTotalLeave
                                   ),
                                   travelAllowance: calculateSalary(
-                                    values.travelAllowance,
+                                    userSalary.travelAllowance,
                                     data.totalMonthDays,
                                     data.present,
                                     values.totalWeekend,
                                     values.absent,
-                                    values.currentMonthTotalHoliday
+                                    values.currentMonthTotalHoliday,
+                                    data.currentMonthTotalLeave
                                   ),
                                   MedicalAllowance: calculateSalary(
-                                    values.MedicalAllowance,
+                                    userSalary.MedicalAllowance,
                                     data.totalMonthDays,
                                     data.present,
                                     values.totalWeekend,
                                     values.absent,
-                                    values.currentMonthTotalHoliday
+                                    values.currentMonthTotalHoliday,
+                                    data.currentMonthTotalLeave
                                   ),
                                   LeaveTravelAllowance: calculateSalary(
-                                    values.LeaveTravelAllowance,
+                                    userSalary.LeaveTravelAllowance,
                                     data.totalMonthDays,
                                     data.present,
                                     values.totalWeekend,
                                     values.absent,
-                                    values.currentMonthTotalHoliday
+                                    values.currentMonthTotalHoliday,
+                                    data.currentMonthTotalLeave
                                   ),
                                   SpecialAllowance: calculateSalary(
-                                    values.SpecialAllowance,
+                                    userSalary.SpecialAllowance,
                                     data.totalMonthDays,
                                     data.present,
                                     values.totalWeekend,
                                     values.absent,
-                                    values.currentMonthTotalHoliday
+                                    values.currentMonthTotalHoliday,
+                                    data.currentMonthTotalLeave
                                   ),
                                   providentFund: -calculateSalary(
-                                    values.providentFund,
+                                    userSalary.providentFund,
                                     data.totalMonthDays,
                                     data.present,
                                     values.totalWeekend,
                                     values.absent,
-                                    values.currentMonthTotalHoliday
+                                    values.currentMonthTotalHoliday,
+                                    data.currentMonthTotalLeave
                                   ),
                                   professionalTax: -values.professionalTax,
                                   incomeTax: -calculateSalary(
-                                    values.incomeTax,
+                                    userSalary.incomeTax,
                                     data.totalMonthDays,
                                     data.present,
                                     values.totalWeekend,
                                     values.absent,
-                                    values.currentMonthTotalHoliday
+                                    values.currentMonthTotalHoliday,
+                                    data.currentMonthTotalLeave
                                   ),
                                   healthInsurance: -values.healthInsurance,
                                 })
-                              )
-                            }
+                              );
+                              setFieldValue(
+                                "basicSalary",
+                                calculateSalary(
+                                  userSalary.basicSalary,
+                                  data.totalMonthDays,
+                                  data.present,
+                                  values.totalWeekend,
+                                  values.absent,
+                                  values.currentMonthTotalHoliday,
+                                  data.currentMonthTotalLeave
+                                )
+                              );
+                              setFieldValue(
+                                "hra",
+                                calculateSalary(
+                                  userSalary.hra,
+                                  data.totalMonthDays,
+                                  data.present,
+                                  values.totalWeekend,
+                                  values.absent,
+                                  values.currentMonthTotalHoliday,
+                                  data.currentMonthTotalLeave
+                                )
+                              );
+                              setFieldValue(
+                                "travelAllowance",
+                                calculateSalary(
+                                  userSalary.travelAllowance,
+                                  data.totalMonthDays,
+                                  data.present,
+                                  values.totalWeekend,
+                                  values.absent,
+                                  values.currentMonthTotalHoliday,
+                                  data.currentMonthTotalLeave
+                                )
+                              );
+                              setFieldValue(
+                                "MedicalAllowance",
+                                calculateSalary(
+                                  userSalary.MedicalAllowance,
+                                  data.totalMonthDays,
+                                  data.present,
+                                  values.totalWeekend,
+                                  values.absent,
+                                  values.currentMonthTotalHoliday,
+                                  data.currentMonthTotalLeave
+                                )
+                              );
+                              setFieldValue(
+                                "LeaveTravelAllowance",
+                                calculateSalary(
+                                  userSalary.LeaveTravelAllowance,
+                                  data.totalMonthDays,
+                                  data.present,
+                                  values.totalWeekend,
+                                  values.absent,
+                                  values.currentMonthTotalHoliday,
+                                  data.currentMonthTotalLeave
+                                )
+                              );
+                              setFieldValue(
+                                "SpecialAllowance",
+                                calculateSalary(
+                                  userSalary.SpecialAllowance,
+                                  data.totalMonthDays,
+                                  data.present,
+                                  values.totalWeekend,
+                                  values.absent,
+                                  values.currentMonthTotalHoliday,
+                                  data.currentMonthTotalLeave
+                                )
+                              );
+                              setFieldValue(
+                                "healthInsurance",
+                                values.healthInsurance
+                              );
+                              setFieldValue(
+                                "providentFund",
+                                calculateSalary(
+                                  userSalary.providentFund,
+                                  data.totalMonthDays,
+                                  data.present,
+                                  values.totalWeekend,
+                                  values.absent,
+                                  values.currentMonthTotalHoliday,
+                                  data.currentMonthTotalLeave
+                                )
+                              );
+                              setFieldValue(
+                                "incomeTax",
+                                calculateSalary(
+                                  userSalary.incomeTax,
+                                  data.totalMonthDays,
+                                  data.present,
+                                  values.totalWeekend,
+                                  values.absent,
+                                  values.currentMonthTotalHoliday,
+                                  data.currentMonthTotalLeave
+                                )
+                              );
+                              setFieldValue(
+                                "professionalTax",
+                                values.professionalTax
+                              );
+                            }}
                             sx={{ cursor: "pointer" }}
                           >
                             <UpdateIcon />

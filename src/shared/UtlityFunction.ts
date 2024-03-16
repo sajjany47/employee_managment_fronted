@@ -32,17 +32,19 @@ export const calculateSalary = (
   c: any,
   d: any,
   e: any,
-  f: any
+  f: any,
+  g: any
 ) => {
-  const salary = a;
-  const currentMonthTotalDays = b;
-  const present = c;
-  const weekendLength = d;
-  const absent = e;
-  const holiday = f;
+  const salary = Number(a);
+  const currentMonthTotalDays = Number(b);
+  const present = Number(c);
+  const weekendLength = Number(d);
+  const absent = Number(e);
+  const holiday = Number(f);
+  const currentMonthTotalLeave = Number(g);
   const total = (
     (salary / currentMonthTotalDays) *
-    (present + (currentMonthTotalDays - weekendLength) + holiday - absent)
+    (present + weekendLength + currentMonthTotalLeave + holiday - absent)
   ).toFixed(2);
 
   return Number(total);
