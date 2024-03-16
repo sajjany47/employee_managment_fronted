@@ -8,10 +8,14 @@ import UpdateIcon from "@mui/icons-material/Update";
 import { useLocation } from "react-router-dom";
 import { SalaryServices } from "../Salary/SalaryService";
 import { enqueueSnackbar } from "notistack";
+import { useSelector } from "react-redux";
+import { PayrollService } from "./PayrollService";
 
 const PayrollUpdate = () => {
   const propsData = useLocation();
+  const userType = useSelector((state: any) => state.auth.auth.user);
   const salaryService = new SalaryServices();
+  const payrollService = new PayrollService();
   const data = propsData.state.data;
   const [userSalary, setUserSalary] = useState<any>({});
 
@@ -30,12 +34,50 @@ const PayrollUpdate = () => {
   }, []);
   const [loading, setLoading] = useState(false);
 
-  const onUpdateSalary = () => {};
+  const onUpdateSalary = (values: any) => {
+    setLoading(true);
+    const requestData = {
+      payrollId: data._id,
+      date: values.date,
+      username: values.username,
+      currentMonthSalary: {
+        basicSalary: values.basicSalary,
+        hra: values.hra,
+        travelAllowance: values.travelAllowance,
+        MedicalAllowance: values.MedicalAllowance,
+        LeaveTravelAllowance: values.LeaveTravelAllowance,
+        SpecialAllowance: values.SpecialAllowance,
+        providentFund: values.providentFund,
+        professionalTax: values.professionalTax,
+        incomeTax: values.incomeTax,
+        healthInsurance: values.healthInsurance,
+        totalEarning: Number(values.totalEarning),
+      },
+      salaryStatus: data.salaryStatus,
+      currentMonthTotalLeave: Number(data.currentMonthTotalLeave),
+      absent: Number(values.absent),
+      currentMonthTotalHoliday: Number(values.currentMonthTotalHoliday),
+      totalWeekend: Number(values.totalWeekend),
+      transactionNumber: null,
+      transactionDate: null,
+      updatedBy: userType.username,
+    };
+
+    payrollService
+      .payrollUpdate(requestData)
+      .then((res) => {
+        enqueueSnackbar(res.message, { variant: "success" });
+      })
+      .catch((err) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      )
+      .finally(() => setLoading(false));
+  };
 
   return (
     <>
       {" "}
-      {loading && <Loader />}{" "}
+      {loading && <Loader />}
       <Grid container rowSpacing={2} columnSpacing={2}>
         <Grid item xs={12}>
           <h6>
@@ -45,7 +87,7 @@ const PayrollUpdate = () => {
         <Grid item xs={12} className="mt-1">
           <Formik
             initialValues={{
-              date: data.currentMonthSalary,
+              date: data.date,
               username: data.username,
               basicSalary: data.currentMonthSalary.basicSalary,
               hra: data.currentMonthSalary.hra,

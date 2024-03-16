@@ -33,7 +33,6 @@ const Payroll = () => {
     payrollService
       .payrollMonthList({ date: moment(value).format("YYYY-MM") })
       .then((res) => {
-        console.log(res.data.userPayroll);
         setPayrollList(res.data.userPayroll);
       })
       .catch((err) =>
@@ -63,7 +62,9 @@ const Payroll = () => {
       headerName: "Net Monthly",
       width: 200,
       renderCell: (value: any) => (
-        <span>{value.row.currentMonthSalary.totalEarning.toFixed(2)}</span>
+        <span>
+          {Number(value.row.currentMonthSalary.totalEarning).toFixed(2)}
+        </span>
       ),
     },
     {
