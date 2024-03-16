@@ -98,7 +98,9 @@ const Payroll = () => {
             color="secondary"
             style={{ cursor: "pointer" }}
             onClick={() => {
-              navigate(`/admin/salary/${value.row.username}`);
+              navigate(`/admin/user-payroll/view`, {
+                state: { data: value.row.username },
+              });
             }}
           />
         </>
