@@ -13,9 +13,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 function UserPayroll() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [monthYear, setMonthYear] = useState(
-    moment.utc(new Date()).subtract(1, "months")
-  );
+  const [monthYear, setMonthYear] = useState(moment.utc(new Date()));
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -84,7 +82,7 @@ function UserPayroll() {
 
   const handleChange = (value: any) => {
     setMonthYear(moment.utc(value));
-    const formatDate = moment(value).format("YYYY-MM");
+    const formatDate = moment(value).format("YYYY");
     console.log(formatDate);
     setLoading(false);
   };
@@ -113,7 +111,7 @@ function UserPayroll() {
                     slotProps={{
                       textField: { size: "small", fullWidth: false },
                     }}
-                    views={["year", "month"]}
+                    views={["year"]}
                     onChange={handleChange}
                   />
                 </DemoContainer>
@@ -121,7 +119,7 @@ function UserPayroll() {
             </Box>
           </Box>
         </Grid>
-        <Grid item xs={12} marginTop={10}>
+        <Grid item xs={12} marginTop={1}>
           <DataGrid
             style={{
               height: data.length > 0 ? "100%" : 200,
