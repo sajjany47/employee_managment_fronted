@@ -69,4 +69,20 @@ export class PayrollService {
       throw err;
     }
   };
+
+  salarySlip = async (payload: any) => {
+    try {
+      const response = await axios.post(
+        `${apiPath}/salary-slip/generate`,
+        payload,
+        {
+          headers: this.headers,
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
 }
