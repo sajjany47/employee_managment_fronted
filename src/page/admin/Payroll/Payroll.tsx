@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Loader from "../../../components/Loader";
-import { Box, Button, Grid, TextField } from "@mui/material";
+import { Box, Button, Chip, Grid, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { ConfigData } from "../../../shared/ConfigData";
@@ -71,7 +71,23 @@ const Payroll = () => {
       field: "salaryStatus",
       headerName: "Status",
       width: 200,
-      renderCell: (value: any) => <span>{value.row.salaryStatus}</span>,
+      renderCell: (value: any) => (
+        <span>
+          {value.row.salaryStatus === "paid" ? (
+            <Chip
+              label={value.row.salaryStatus}
+              color="success"
+              sx={{ textTransform: "capitalize" }}
+            />
+          ) : (
+            <Chip
+              label={value.row.salaryStatus}
+              color="warning"
+              sx={{ textTransform: "capitalize" }}
+            />
+          )}
+        </span>
+      ),
     },
 
     {
