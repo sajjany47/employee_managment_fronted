@@ -1,27 +1,10 @@
-import { useEffect, useState } from "react";
-import { PayrollService } from "./PayrollService";
-import { enqueueSnackbar } from "notistack";
-import Loader from "../../../components/Loader";
+import { useLocation } from "react-router-dom";
 
 const SalarySlip = () => {
-  const payrollService = new PayrollService();
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({});
-
-  useEffect(() => {
-    payrollService
-      .salarySlip({})
-      .then((res) => {
-        setData(res.data);
-      })
-      .catch((err) =>
-        enqueueSnackbar(err.response.data.message, { variant: "error" })
-      )
-      .finally(() => setLoading(false));
-  }, []);
+  const data = useLocation().state.data;
+  console.log(data);
   return (
     <>
-      {loading && <Loader />}
       <div className="salary-slip">
         <table className="empDetail">
           {/* <tr style={{ backgroundColor: "#c2d69b", height: "100px" }}>
@@ -35,70 +18,75 @@ const SalarySlip = () => {
         </tr> */}
           <tr>
             <th>Name</th>
-            <td>Example</td>
+            <td>{data.userInfo.name}</td>
             <td></td>
-            <th>Bank Code</th>
-            <td>ABC123</td>
+            <th>Bank Name</th>
+            <td>{data.userPayroll.bankName}</td>
             <td></td>
-            <th>Branch Name</th>
-            <td>ABC123</td>
+            <th>Period</th>
+            <td>{data.userPayroll.date}</td>
           </tr>
           <tr>
             <th>Employee Code</th>
-            <td>XXXXXXXXXXX</td>
-            <td></td>
-            <th>Bank Name</th>
-            <td>XXXXXXXXXXX</td>
-            <td></td>
-            <th>Payslip no.</th>
-            <td>XXXXXXXXXX</td>
-          </tr>
-          <tr>
-            <th>Cost Centre</th>
-            <td>XXXXXXXXXXX</td>
-            <td></td>
-            <th>Bank Branch</th>
-            <td>XXXXXXXXXX</td>
-            <td></td>
-            <th>Pay Period</th>
-            <td>XXXXXXXXXXX</td>
-          </tr>
-          <tr>
-            <th>CC Description:</th>
-            <td>XXXXXXXXXXX</td>
+            <td>{data.userPayroll.username}</td>
             <td></td>
             <th>Bank A/C no.</th>
-            <td>XXXXXXXXXX</td>
+            <td>{data.userPayroll.accountNumber}</td>
             <td></td>
-            <th>Personel Area</th>
-            <td>XXXXXXXXXX</td>
+            <th>Branch Name</th>
+            <td>{data.userPayroll.present}</td>
           </tr>
           <tr>
-            <th>Grade:</th>
-            <td>18</td>
+            <th>Position</th>
+            <td>{data.userInfo.position}</td>
             <td></td>
-            <th>Employee Group</th>
-            <td>Sales Manager</td>
+            <th>Bank Branch</th>
+            <td>{data.userPayroll.branchName}</td>
+            <td></td>
+            <th>Days</th>
+            <td>{data.userPayroll.totalMonthDays}</td>
+          </tr>
+          <tr>
+            <th>Mobile</th>
+            <td>{data.userInfo.mobile}</td>
+            <td></td>
+            <th>IFSC</th>
+            <td>{data.userPayroll.ifsc}</td>
+            <td></td>
+            <th>Absent</th>
+            <td>{data.userPayroll.absent}</td>
+          </tr>
+          <tr>
+            <th>Position</th>
+            <td>{data.userInfo.position}</td>
             <td></td>
             <th>PAN No:</th>
-            <td>MOP72182E</td>
+            <td>{data.userInfo.document.panNumber}</td>
+            <td></td>
+            <th>Leave</th>
+            <td>{data.userPayroll.currentMonthTotalLeave}</td>
           </tr>
           <tr className="myBackground">
             <th className="col-span-2">Payments</th>
-            <th>Particular</th>
+            <th>CTC</th>
             <th className="table-border-right">Amount (Rs.)</th>
             <th className="col-span-2">Deductions</th>
-            <th>Particular</th>
+            <th>CTC</th>
             <th>Amount (Rs.)</th>
           </tr>
           <tr>
             <th className="col-span-2">Basic Salary</th>
-            <td></td>
-            <td className="myAlign">4935.00</td>
+            <td>{data.salaryInfo.currentSalary.basicSalary}</td>
+            <td className="myAlign">
+              {data.userPayroll.currentMonthSalary.basicSalary}
+            </td>
             <th className="col-span-2">Provident Fund</th>
-            <td></td>
+            <td>{data.salaryInfo.currentSalary.providentFund}</td>
 
-            <td className="myAlign">00.00</td>
+            <td className="myAlign">
+              {" "}
+              {data.userPayroll.currentMonthSalary.providentFund}
+            </td>
           </tr>
           <tr>
             <th className="col-span-2">Fixed Dearness Allowance</th>
