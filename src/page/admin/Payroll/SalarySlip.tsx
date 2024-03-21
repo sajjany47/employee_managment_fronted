@@ -1,3 +1,4 @@
+import moment from "moment";
 import { useLocation } from "react-router-dom";
 
 const SalarySlip = () => {
@@ -24,7 +25,7 @@ const SalarySlip = () => {
             <td>{data.userPayroll.bankName}</td>
             <td></td>
             <th>Period</th>
-            <td>{data.userPayroll.date}</td>
+            <td>{moment(data.userPayroll.date).format("MMM,YYYY")}</td>
           </tr>
           <tr>
             <th>Employee Code</th>
@@ -33,8 +34,14 @@ const SalarySlip = () => {
             <th>Bank A/C no.</th>
             <td>{data.userPayroll.accountNumber}</td>
             <td></td>
-            <th>Branch Name</th>
-            <td>{data.userPayroll.present}</td>
+            <th>Present</th>
+            <td>
+              {data.userPayroll.present +
+                data.userPayroll.totalWeekend +
+                data.userPayroll.currentMonthTotalHoliday +
+                data.userPayroll.currentMonthTotalLeave -
+                data.userPayroll.absent}
+            </td>
           </tr>
           <tr>
             <th>Position</th>
@@ -57,8 +64,8 @@ const SalarySlip = () => {
             <td>{data.userPayroll.absent}</td>
           </tr>
           <tr>
-            <th>Position</th>
-            <td>{data.userInfo.position}</td>
+            <th>DOB</th>
+            <td>{moment(data.userInfo.dob).format("DD MMM, YYYY")}</td>
             <td></td>
             <th>PAN No:</th>
             <td>{data.userInfo.document.panNumber}</td>
@@ -84,81 +91,72 @@ const SalarySlip = () => {
             <td>{data.salaryInfo.currentSalary.providentFund}</td>
 
             <td className="myAlign">
-              {" "}
               {data.userPayroll.currentMonthSalary.providentFund}
             </td>
           </tr>
           <tr>
-            <th className="col-span-2">Fixed Dearness Allowance</th>
-            <td></td>
+            <th className="col-span-2">HRA</th>
+            <td>{data.salaryInfo.currentSalary.hra}</td>
 
-            <td className="myAlign">00.00</td>
-            <th className="col-span-2">LIC</th>
-            <td></td>
+            <td className="myAlign">
+              {data.userPayroll.currentMonthSalary.hra}
+            </td>
+            <th className="col-span-2">Health Insurance</th>
+            <td>{data.salaryInfo.currentSalary.healthInsurance}</td>
 
-            <td className="myAlign">00.00</td>
+            <td className="myAlign">
+              {data.userPayroll.currentMonthSalary.healthInsurance}
+            </td>
           </tr>
           <tr>
-            <th className="col-span-2">Variable Dearness Allowance</th>
-            <td></td>
+            <th className="col-span-2">Travel Allowance</th>
+            <td>{data.salaryInfo.currentSalary.travelAllowance}</td>
 
-            <td className="myAlign">00.00</td>
-            <th className="col-span-2">Loan</th>
-            <td></td>
-
-            <td className="myAlign">00.00</td>
-          </tr>
-          <tr>
-            <th className="col-span-2">House Rent Allowance</th>
-            <td></td>
-            <td className="myAlign">00.00</td>
+            <td className="myAlign">
+              {data.userPayroll.currentMonthSalary.travelAllowance}
+            </td>
             <th className="col-span-2">Professional Tax</th>
-            <td></td>
-            <td className="myAlign">00.00</td>
-          </tr>
-          <tr>
-            <th className="col-span-2">Graduation Allowance</th>
-            <td></td>
+            <td>{data.salaryInfo.currentSalary.professionalTax}</td>
 
-            <td className="myAlign">00.00</td>
-            <th className="col-span-2">Security Deposite(SD)</th>
-            <td></td>
+            <td className="myAlign">
+              {data.userPayroll.currentMonthSalary.professionalTax}
+            </td>
+          </tr>
+          <tr>
+            <th className="col-span-2">Medical Allowance</th>
+            <td>{data.salaryInfo.currentSalary.MedicalAllowance}</td>
+            <td className="myAlign">
+              {data.userPayroll.currentMonthSalary.MedicalAllowance}
+            </td>
+            <th className="col-span-2">Income Tax</th>
+            <td>{data.salaryInfo.currentSalary.incomeTax}</td>
+            <td className="myAlign">
+              {data.userPayroll.currentMonthSalary.incomeTax}
+            </td>
+          </tr>
+          <tr>
+            <th className="col-span-2">LeaveTravel Allowance</th>
+            <td>{data.salaryInfo.currentSalary.LeaveTravelAllowance}</td>
 
-            <td className="myAlign">00.00</td>
+            <td className="myAlign">
+              {data.userPayroll.currentMonthSalary.LeaveTravelAllowance}
+            </td>
+            <th className="col-span-2"></th>
+            <td></td>
+            <td className="myAlign"></td>
           </tr>
           <tr>
-            <th className="col-span-2">Conveyance Allowance</th> <td></td>
-            <td className="myAlign">00.00</td>
-            <th className="col-span-2">Staff Benefit(SB)</th>
+            <th className="col-span-2">Special Allowance</th>{" "}
+            <td>{data.salaryInfo.currentSalary.SpecialAllowance}</td>
+            <td className="myAlign">
+              {data.userPayroll.currentMonthSalary.SpecialAllowance}
+            </td>
+            <th className="col-span-2"></th>
             <td></td>
-            <td className="myAlign">00.00</td>
-          </tr>
-          <tr>
-            <th className="col-span-2">Post Allowance</th>
-            <td></td>
-            <td className="myAlign">00.00</td>
-            <th className="col-span-2">Labour Welfare Fund</th>
-            <td></td>
-            <td className="myAlign">00.00</td>
-          </tr>
-          <tr>
-            <th className="col-span-2">Special Allowance</th>
-            <td></td>
-            <td className="myAlign">00.00</td>
-            <th className="col-span-2">NSC</th>
-            <td></td>
-            <td className="myAlign">00.00</td>
+            <td className="myAlign"></td>
           </tr>
 
           <tr className="myBackground ">
-            <th className="col-span-3">Total Payments</th>
-            <td className=""></td>
-            <td className="myAlign">10000</td>
-            <th className="col-span-3">Total Deductions</th>
-            <td className=""></td>
-            <td className="myAlign">1000</td>
-          </tr>
-          <tr style={{ height: "40px" }}>
             <th className="col-span-2"></th>
             <th></th>
 
@@ -167,7 +165,7 @@ const SalarySlip = () => {
             <td></td>
             <td className="table-border-right"></td>
             <th className="table-border-bottom col-span-2">Net Salary</th>
-            <td>XXXXXXXXXX</td>
+            <td>INR {data.userPayroll.currentMonthSalary.totalEarning}</td>
           </tr>
         </table>
       </div>
