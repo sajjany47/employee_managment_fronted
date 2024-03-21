@@ -1,12 +1,24 @@
 import moment from "moment";
 import { useLocation } from "react-router-dom";
+import jsPDF from "jspdf";
+import { Button } from "@mui/material";
+import { useRef } from "react";
 
 const SalarySlip = () => {
   const data = useLocation().state.data;
-  console.log(data);
+  const pdfRef = useRef(null);
+
+  const pdfGenerator = () => {
+    const pdf = new jsPDF("l", "pt", [1200, 1040]);
+    const a: any = pdfRef.current;
+    pdf.html(a).then(() => {
+      pdf.save(`${data.userPayroll.date}.pdf`);
+    });
+  };
   return (
     <>
-      <div className="salary-slip">
+      <Button onClick={pdfGenerator}>Download</Button>
+      <div ref={pdfRef} className="salary-slip">
         <table className="empDetail">
           {/* <tr style={{ backgroundColor: "#c2d69b", height: "100px" }}>
           <td className="col-span-4">
@@ -27,6 +39,7 @@ const SalarySlip = () => {
             <th>Period</th>
             <td>{moment(data.userPayroll.date).format("MMM,YYYY")}</td>
           </tr>
+
           <tr>
             <th>Employee Code</th>
             <td>{data.userPayroll.username}</td>

@@ -32,7 +32,9 @@
   border: 2px solid black;
   border-collapse: collapse;
   table-layout: fixed;
+ 
 }
+
 .salary-slip .head {
   margin: 10px;
   margin-bottom: 50px;
