@@ -8,10 +8,10 @@ import moment from "moment";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { ConfigData } from "../../../shared/ConfigData";
 import { useLocation, useNavigate } from "react-router-dom";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import { PayrollService } from "./PayrollService";
 import { enqueueSnackbar } from "notistack";
-import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import { TiEyeOutline } from "react-icons/ti";
+import { FaRegFilePdf } from "react-icons/fa";
 
 function UserPayroll() {
   const navigate = useNavigate();
@@ -119,19 +119,16 @@ function UserPayroll() {
       width: 150,
       renderCell: (value: any) => (
         <>
-          <VisibilityIcon
-            color="primary"
-            style={{ cursor: "pointer" }}
+          <TiEyeOutline
+            style={{ cursor: "pointer", fontSize: "25px" }}
             onClick={() => {
               navigate(`/salary-slip/generate`, {
                 state: { data: value.row },
               });
             }}
           />
-          <InsertDriveFileIcon
-            color="secondary"
-            style={{ cursor: "pointer" }}
-          />
+
+          <FaRegFilePdf style={{ cursor: "pointer" }} />
         </>
       ),
     },

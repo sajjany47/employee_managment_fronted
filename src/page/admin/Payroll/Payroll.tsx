@@ -4,7 +4,6 @@ import { Box, Button, Chip, Grid, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { ConfigData } from "../../../shared/ConfigData";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +12,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { enqueueSnackbar } from "notistack";
+import { TiEyeOutline } from "react-icons/ti";
 
 const Payroll = () => {
   const navigate = useNavigate();
@@ -110,9 +110,9 @@ const Payroll = () => {
               navigate(`/admin/payroll/update`, { state: { data: value.row } });
             }}
           />
-          <VisibilityIcon
+          <TiEyeOutline
             color="secondary"
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", fontSize: "25px" }}
             onClick={() => {
               navigate(`/admin/user-payroll/view`, {
                 state: { data: value.row.username },
