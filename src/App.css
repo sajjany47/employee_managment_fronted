@@ -32,6 +32,7 @@
   border: 2px solid black;
   border-collapse: collapse;
   table-layout: fixed;
+
  
 }
 
@@ -56,10 +57,11 @@
 }
 .salary-slip .myBackground {
  
-  padding-top: 10px;
+  /* padding-top: 10px; */
   text-align: left;
   border: 1px solid black;
   height: 40px;
+ 
 }
 .salary-slip .myAlign {
   text-align: center;
