@@ -22,9 +22,14 @@ function UserPayroll() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    getSalarySlip(monthYear);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getSalarySlip = (date: any) => {
     payrollService
       .salarySlip({
-        year: Number(moment(monthYear).format("YYYY")),
+        year: Number(moment(date).format("YYYY")),
         username: location.state.data,
       })
       .then((res) => {
@@ -34,9 +39,7 @@ function UserPayroll() {
         enqueueSnackbar(err.response.data.message, { variant: "error" })
       )
       .finally(() => setLoading(false));
-  }, []);
-
-  console.log(data);
+  };
 
   const columns: GridColDef[] = [
     {
@@ -136,9 +139,7 @@ function UserPayroll() {
 
   const handleChange = (value: any) => {
     setMonthYear(moment.utc(value));
-    const formatDate = moment(value).format("YYYY");
-    console.log(formatDate);
-    setLoading(false);
+    getSalarySlip(value);
   };
 
   return (
