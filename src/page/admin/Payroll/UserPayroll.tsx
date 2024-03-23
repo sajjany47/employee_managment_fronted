@@ -12,6 +12,7 @@ import { PayrollService } from "./PayrollService";
 import { enqueueSnackbar } from "notistack";
 import { TiEyeOutline } from "react-icons/ti";
 import { FaRegFilePdf } from "react-icons/fa";
+import jsPDF from "jspdf";
 
 function UserPayroll() {
   const navigate = useNavigate();
@@ -131,12 +132,33 @@ function UserPayroll() {
             }}
           />
 
-          <FaRegFilePdf style={{ cursor: "pointer" }} />
+          <FaRegFilePdf
+            style={{ cursor: "pointer" }}
+            onClick={() => downloadSalarySlip(value.row)}
+          />
         </>
       ),
     },
   ];
 
+  const downloadSalarySlip = (value: any) => {
+    payrollService
+      .salarySlipDOwnload({
+        data: value,
+      })
+      .then((res) => {
+        console.log(res.data);
+        const pdf = new jsPDF("l", "pt", [1200, 1040]);
+        const a: any = res.data;
+        pdf.html(a).then(() => {
+          pdf.save(`${value.userPayroll.date}.pdf`);
+        });
+      })
+      .catch((err) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      )
+      .finally(() => setLoading(false));
+  };
   const handleChange = (value: any) => {
     setMonthYear(moment.utc(value));
     getSalarySlip(value);
