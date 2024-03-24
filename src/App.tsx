@@ -18,6 +18,7 @@ import Payroll from "./page/admin/Payroll/Payroll";
 import PayrollUpdate from "./page/admin/Payroll/PayrollUpdate";
 import UserPayroll from "./page/admin/Payroll/UserPayroll";
 import SalarySlip from "./page/admin/Payroll/SalarySlip";
+import Task from "./page/admin/task/Task";
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
             <Route path="/admin/payroll/update" element={<PayrollUpdate />} />
             <Route path="/admin/user-payroll/view" element={<UserPayroll />} />
             <Route path="/salary-slip/generate" element={<SalarySlip />} />
+            <Route path="/admin/tasks" element={<Task />} />
           </Route>
         </Routes>
         {/* <Copyright /> */}
