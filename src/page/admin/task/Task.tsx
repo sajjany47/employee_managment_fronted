@@ -9,6 +9,7 @@ import {
   FormControl,
   Grid,
   MenuItem,
+  Rating,
   Select,
   Tab,
   Tabs,
@@ -148,11 +149,15 @@ const Task = () => {
         <DialogContent>
           <Formik
             initialValues={{
-              taskDeadline: "",
-              user: "",
-              taskStatus: "",
+              taskSender: "",
+              taskReceiver: "",
+              taskStartDate: "",
+              takDeadline: "",
               taskDetails: "",
-              remark: "",
+              taskProject: "",
+              taskStatus: "",
+              taskRating: null,
+              taskRemark: null,
             }}
             //   validationSchema={activationKeyValidation}
             onSubmit={handleTagAssign}
@@ -164,18 +169,28 @@ const Task = () => {
                   spacing={{ xs: 1, md: 1 }}
                   columns={{ xs: 4, sm: 8, md: 12 }}
                 >
-                  <Grid item xs={2} sm={4} md={12}>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField name="taskSender" label="Task Sender" />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField name="taskReceiver" label="Task Receiver" />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
                     <DateField
-                      name="taskDeadline"
-                      label="Deadline"
+                      name="taskStartDate"
+                      label="Task Start Date"
                       views={["year", "month", "day"]}
                     />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={12}>
-                    <SelectField name="user" label="User" options={[]} />
+                  <Grid item xs={2} sm={4} md={6}>
+                    <DateField
+                      name="takDeadline"
+                      label="Task End Date"
+                      views={["year", "month", "day"]}
+                    />
                   </Grid>
 
-                  <Grid item xs={2} sm={4} md={12}>
+                  <Grid item xs={2} sm={4} md={6}>
                     <InputField
                       name="taskDetails"
                       label="Task Details"
@@ -183,16 +198,29 @@ const Task = () => {
                       rows={4}
                     />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={12}>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField name="taskProject" label="Task Project" />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
                     <SelectField
                       name="taskStatus"
                       label="Task Status"
-                      options={[]}
+                      options={ConfigData.taskStatus}
                     />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={12}>
+                  <Grid item xs={2} sm={4} md={6}>
+                    <Rating
+                      name="taskRating"
+                      precision={0.5}
+                      // value={value}
+                      // onChange={(event, newValue) => {
+                      //   setValue(newValue);
+                      // }}
+                    />
+                  </Grid>
+                  <Grid item xs={2} sm={4} md={6}>
                     <InputField
-                      name="remark"
+                      name="taskRemark"
                       label="Remark"
                       multiline
                       rows={2}

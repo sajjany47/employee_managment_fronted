@@ -18,7 +18,6 @@ export const ConfigData = {
     { value: "rejected", label: "Rejected" },
   ],
   taskStatus: [
-    { value: "all", label: "All" },
     { value: "assign", label: "Assign" },
     { value: "todo", label: "To Do" },
     { value: "hold", label: "Hold" },
