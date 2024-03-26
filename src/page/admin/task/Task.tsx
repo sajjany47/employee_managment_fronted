@@ -23,6 +23,7 @@ import {
   SelectField,
 } from "../../../components/DynamicField";
 import AssignTask from "./AssignTask";
+import { ConfigData } from "../../../shared/ConfigData";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -58,6 +59,8 @@ function a11yProps(index: number) {
 }
 
 const Task = () => {
+  const options = [...ConfigData.taskStatus, { label: "All", value: "all" }];
+  console.log(options);
   const [loading, setLoading] = useState(false);
   const [taskStatus, setTaskStatus] = useState("all");
   const [value, setValue] = useState(0);
@@ -80,6 +83,7 @@ const Task = () => {
     console.log(values);
     setLoading(false);
   };
+
   return (
     <div>
       {loading && <Loader />}
@@ -95,16 +99,13 @@ const Task = () => {
               <TextField label="Search" id="outlined-size-small" size="small" />
               <FormControl sx={{ minWidth: 120 }} size="small">
                 <Select value={taskStatus} onChange={handleChange}>
-                  <MenuItem value={"all"}>All</MenuItem>
-                  <MenuItem value={"todo"}>To Do</MenuItem>
-                  <MenuItem value={"hold"}>On Hold</MenuItem>
-                  <MenuItem value={"cancelled"}>Cancelled</MenuItem>
-                  <MenuItem value={"need-Attention"}>Needs Attention</MenuItem>
-                  <MenuItem value={"waiting-for-review"}>
-                    Waiting for Review
-                  </MenuItem>
-                  <MenuItem value={"under-review"}>Under Review</MenuItem>
-                  <MenuItem value={"completed"}>Completed</MenuItem>
+                  {options.map((item: any, index: number) => {
+                    return (
+                      <MenuItem value={item.value} key={index}>
+                        {item.label}
+                      </MenuItem>
+                    );
+                  })}
                 </Select>
               </FormControl>
               <Button
