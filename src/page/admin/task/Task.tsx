@@ -189,7 +189,9 @@ const Task = () => {
                       views={["year", "month", "day"]}
                     />
                   </Grid>
-
+                  <Grid item xs={2} sm={4} md={6}>
+                    <InputField name="taskProject" label="Task Project" />
+                  </Grid>
                   <Grid item xs={2} sm={4} md={6}>
                     <InputField
                       name="taskDetails"
@@ -198,9 +200,7 @@ const Task = () => {
                       rows={4}
                     />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
-                    <InputField name="taskProject" label="Task Project" />
-                  </Grid>
+
                   <Grid item xs={2} sm={4} md={6}>
                     <SelectField
                       name="taskStatus"
@@ -209,6 +209,7 @@ const Task = () => {
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
+                    <Typography component="legend">Task Rating</Typography>
                     <Rating
                       name="taskRating"
                       precision={0.5}
