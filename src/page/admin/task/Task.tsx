@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Loader from "../../../components/Loader";
 import {
   Box,
@@ -25,6 +25,12 @@ import {
 } from "../../../components/DynamicField";
 import AssignTask from "./AssignTask";
 import { ConfigData } from "../../../shared/ConfigData";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import moment from "moment";
+import { TaskService } from "./TaskService";
+import { enqueueSnackbar } from "notistack";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -60,15 +66,38 @@ function a11yProps(index: number) {
 }
 
 const Task = () => {
+  const taskService = new TaskService();
   const options = [...ConfigData.taskStatus, { label: "All", value: "all" }];
-
   const [loading, setLoading] = useState(false);
   const [taskStatus, setTaskStatus] = useState("all");
   const [tabValue, setTabValue] = useState(0);
   const [open, setOpen] = useState(false);
   const [actionType, setActionType] = useState("add");
   const [selectTask, setSelectTask] = useState({});
+  const [year, setYear] = useState(moment.utc(new Date()));
+  const [taskListData, setTaskListData] = useState([]);
 
+  useEffect(() => {
+    taskCreate(year);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const taskCreate = (item: any) => {
+    taskService
+      .taskCreate(moment(item).format("YYYY"))
+      .then((res) => {
+        setTaskListData(res.data);
+      })
+      .catch((err: any) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      )
+      .finally(() => setLoading(false));
+  };
+  const handleYear = (value: any) => {
+    setTaskListData([]);
+    setYear(moment.utc(value));
+    taskCreate(value);
+  };
   const handleChange = (event: any) => {
     setTaskStatus(event.target.value);
   };
@@ -112,6 +141,23 @@ const Task = () => {
                   })}
                 </Select>
               </FormControl>
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <DemoContainer
+                  components={["DatePicker"]}
+                  sx={{ marginTop: -1 }}
+                >
+                  <DatePicker
+                    // sx={{ width: "50% " }}
+                    label="Select Year"
+                    value={year}
+                    slotProps={{
+                      textField: { size: "small", fullWidth: false },
+                    }}
+                    views={["year"]}
+                    onChange={handleYear}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
               <Button
                 variant="contained"
                 startIcon={<MdAssignmentAdd />}
