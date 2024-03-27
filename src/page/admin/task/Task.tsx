@@ -61,19 +61,22 @@ function a11yProps(index: number) {
 
 const Task = () => {
   const options = [...ConfigData.taskStatus, { label: "All", value: "all" }];
-  console.log(options);
+
   const [loading, setLoading] = useState(false);
   const [taskStatus, setTaskStatus] = useState("all");
-  const [value, setValue] = useState(0);
+  const [tabValue, setTabValue] = useState(0);
   const [open, setOpen] = useState(false);
+  const [actionType, setActionType] = useState("add");
+  const [selectTask, setSelectTask] = useState({});
 
   const handleChange = (event: any) => {
     setTaskStatus(event.target.value);
   };
   const handleTab = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+    setTabValue(newValue);
   };
   const handleClickOpen = () => {
+    setActionType("add");
     setOpen(true);
   };
   const handleClose = () => {
@@ -123,7 +126,7 @@ const Task = () => {
           <Box sx={{ width: "100%" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs
-                value={value}
+                value={tabValue}
                 onChange={handleTab}
                 aria-label="basic tabs example"
               >
@@ -131,10 +134,10 @@ const Task = () => {
                 <Tab label="Assign By You" {...a11yProps(1)} />
               </Tabs>
             </Box>
-            <CustomTabPanel value={value} index={0}>
+            <CustomTabPanel value={tabValue} index={0}>
               <AssignTask />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
+            <CustomTabPanel value={tabValue} index={1}>
               <AssignTask />
             </CustomTabPanel>
           </Box>
@@ -148,32 +151,40 @@ const Task = () => {
         <DialogTitle id="alert-dialog-title">{"Task Assign"}</DialogTitle>
         <DialogContent>
           <Formik
-            initialValues={{
-              taskSender: "",
-              taskReceiver: "",
-              taskStartDate: "",
-              takDeadline: "",
-              taskDetails: "",
-              taskProject: "",
-              taskStatus: "",
-              taskRating: null,
-              taskRemark: null,
-            }}
+            initialValues={
+              actionType === "edit"
+                ? { ...selectTask }
+                : {
+                    taskStatus: "assign",
+                    taskReceiver: "",
+                    taskStartDate: "",
+                    takDeadline: "",
+                    taskDetails: "",
+                    taskProject: "",
+                  }
+            }
             //   validationSchema={activationKeyValidation}
             onSubmit={handleTagAssign}
           >
-            {() => (
+            {({ values }) => (
               <Form className="mt-1">
                 <Grid
                   container
                   spacing={{ xs: 1, md: 1 }}
                   columns={{ xs: 4, sm: 8, md: 12 }}
                 >
+                  {actionType === "edit" && (
+                    <Grid item xs={2} sm={4} md={6}>
+                      <InputField name="taskSender" label="Task Sender" />
+                    </Grid>
+                  )}
+
                   <Grid item xs={2} sm={4} md={6}>
-                    <InputField name="taskSender" label="Task Sender" />
-                  </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
-                    <InputField name="taskReceiver" label="Task Receiver" />
+                    <SelectField
+                      name="taskReceiver"
+                      label="Task Receiver"
+                      options={ConfigData.taskStatus}
+                    />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
                     <DateField
@@ -192,7 +203,7 @@ const Task = () => {
                   <Grid item xs={2} sm={4} md={6}>
                     <InputField name="taskProject" label="Task Project" />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
+                  <Grid item xs={2} sm={4} md={actionType === "edit" ? 6 : 12}>
                     <InputField
                       name="taskDetails"
                       label="Task Details"
@@ -200,33 +211,35 @@ const Task = () => {
                       rows={4}
                     />
                   </Grid>
-
-                  <Grid item xs={2} sm={4} md={6}>
-                    <SelectField
-                      name="taskStatus"
-                      label="Task Status"
-                      options={ConfigData.taskStatus}
-                    />
-                  </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
-                    <Typography component="legend">Task Rating</Typography>
-                    <Rating
-                      name="taskRating"
-                      precision={0.5}
-                      // value={value}
-                      // onChange={(event, newValue) => {
-                      //   setValue(newValue);
-                      // }}
-                    />
-                  </Grid>
-                  <Grid item xs={2} sm={4} md={6}>
-                    <InputField
-                      name="taskRemark"
-                      label="Remark"
-                      multiline
-                      rows={2}
-                    />
-                  </Grid>
+                  {actionType === "edit" && (
+                    <>
+                      <Grid item xs={2} sm={4} md={6}>
+                        <SelectField
+                          name="taskStatus"
+                          label="Task Status"
+                          options={ConfigData.taskStatus}
+                        />
+                      </Grid>
+                      {values.taskStatus === "completed" && (
+                        <>
+                          <Grid item xs={2} sm={4} md={6}>
+                            <Typography component="legend">
+                              Task Rating
+                            </Typography>
+                            <Rating name="taskRating" precision={0.5} />
+                          </Grid>
+                          <Grid item xs={2} sm={4} md={6}>
+                            <InputField
+                              name="taskRemark"
+                              label="Remark"
+                              multiline
+                              rows={2}
+                            />
+                          </Grid>
+                        </>
+                      )}
+                    </>
+                  )}
 
                   <Grid
                     item

@@ -1,4 +1,5 @@
-import { Rating } from "@mui/material";
+import { IconButton, Rating } from "@mui/material";
+import { MdOutlineEditCalendar } from "react-icons/md";
 
 const AssignTask = () => {
   return (
@@ -39,9 +40,14 @@ const AssignTask = () => {
               Pending
             </button>
           </div>
-          <div className="mt-3 text-gray-600 text-sm md:text-sm">
-            t is a long established fact that a reader will be distracted by the
-            readable content of a page when looking at its layout.
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div className="mt-3 text-gray-600 text-sm md:text-sm">
+              it is a long established fact that a reader will be distracted by
+              the readable content of a page when looking at its layout.
+            </div>
+            <IconButton aria-label="edit">
+              <MdOutlineEditCalendar style={{ color: "green" }} />
+            </IconButton>
           </div>
         </div>
       </div>
