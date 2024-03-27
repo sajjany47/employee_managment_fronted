@@ -1,7 +1,8 @@
 import { IconButton, Rating } from "@mui/material";
 import { MdOutlineEditCalendar } from "react-icons/md";
 
-const AssignTask = () => {
+const AssignTask = (props: any) => {
+  console.log(props.data);
   return (
     <div style={{ border: "dashed" }}>
       <div className="w-full">
@@ -45,7 +46,7 @@ const AssignTask = () => {
               it is a long established fact that a reader will be distracted by
               the readable content of a page when looking at its layout.
             </div>
-            <IconButton aria-label="edit">
+            <IconButton aria-label="edit" onClick={() => props.selectData()}>
               <MdOutlineEditCalendar style={{ color: "green" }} />
             </IconButton>
           </div>

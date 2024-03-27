@@ -50,4 +50,16 @@ export class TaskService {
       throw err;
     }
   };
+
+  employeeList = async () => {
+    try {
+      const response = await axios.get(`${apiPath}/employee-list`, {
+        headers: this.headers,
+      });
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
 }

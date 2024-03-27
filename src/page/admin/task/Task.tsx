@@ -31,6 +31,7 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import moment from "moment";
 import { TaskService } from "./TaskService";
 import { enqueueSnackbar } from "notistack";
+import { useSelector } from "react-redux";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -67,6 +68,7 @@ function a11yProps(index: number) {
 
 const Task = () => {
   const taskService = new TaskService();
+  const userType = useSelector((state: any) => state.auth.auth.user);
   const options = [...ConfigData.taskStatus, { label: "All", value: "all" }];
   const [loading, setLoading] = useState(false);
   const [taskStatus, setTaskStatus] = useState("all");
@@ -76,8 +78,29 @@ const Task = () => {
   const [selectTask, setSelectTask] = useState({});
   const [year, setYear] = useState(moment.utc(new Date()));
   const [taskListData, setTaskListData] = useState([]);
+  const [employeeListData, setEmployeeListData] = useState([]);
 
   useEffect(() => {
+    if (tabValue === 0) {
+      taskList("receiver", userType.username, year, taskStatus);
+    }
+    if (tabValue === 1) {
+      taskList("sender", userType.username, year, taskStatus);
+    }
+    taskService
+      .employeeList()
+      .then((res) => {
+        setEmployeeListData(
+          res.data.map((item: any) => ({
+            label: `${item.name}(${item.username})`,
+            value: item.username,
+          }))
+        );
+      })
+      .catch((err: any) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      )
+      .finally(() => setLoading(false));
     // taskList(year);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -96,13 +119,30 @@ const Task = () => {
   const handleYear = (value: any) => {
     setTaskListData([]);
     setYear(moment.utc(value));
-    // taskList(value);
+    if (tabValue === 0) {
+      taskList("receiver", userType.username, value, taskStatus);
+    }
+    if (tabValue === 1) {
+      taskList("sender", userType.username, value, taskStatus);
+    }
   };
   const handleChange = (event: any) => {
     setTaskStatus(event.target.value);
+    if (tabValue === 0) {
+      taskList("receiver", userType.username, year, event.target.value);
+    }
+    if (tabValue === 1) {
+      taskList("sender", userType.username, year, event.target.value);
+    }
   };
   const handleTab = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
+    if (newValue === 0) {
+      taskList("receiver", userType.username, year, taskStatus);
+    }
+    if (newValue === 1) {
+      taskList("sender", userType.username, year, taskStatus);
+    }
   };
   const handleClickOpen = () => {
     setActionType("add");
@@ -114,7 +154,33 @@ const Task = () => {
 
   const handleTagAssign = (values: any) => {
     console.log(values);
-    setLoading(false);
+    setLoading(true);
+    if (actionType === "add") {
+      taskService
+        .taskCreate(values)
+        .then((res) => {
+          setTaskListData(res.data);
+        })
+        .catch((err: any) =>
+          enqueueSnackbar(err.response.data.message, { variant: "error" })
+        )
+        .finally(() => setLoading(false));
+    }
+    if (actionType === "edit") {
+      taskService
+        .taskUpdate(values)
+        .then((res) => {
+          setTaskListData(res.data);
+        })
+        .catch((err: any) =>
+          enqueueSnackbar(err.response.data.message, { variant: "error" })
+        )
+        .finally(() => setLoading(false));
+    }
+  };
+
+  const selectTaskData = (item: any) => {
+    setSelectTask(item);
   };
 
   return (
@@ -181,10 +247,10 @@ const Task = () => {
               </Tabs>
             </Box>
             <CustomTabPanel value={tabValue} index={0}>
-              <AssignTask />
+              <AssignTask data={taskListData} selectData={selectTaskData} />
             </CustomTabPanel>
             <CustomTabPanel value={tabValue} index={1}>
-              <AssignTask />
+              <AssignTask data={taskListData} selectData={selectTaskData} />
             </CustomTabPanel>
           </Box>
         </Grid>
@@ -229,7 +295,7 @@ const Task = () => {
                     <SelectField
                       name="taskReceiver"
                       label="Task Receiver"
-                      options={ConfigData.taskStatus}
+                      options={employeeListData}
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
