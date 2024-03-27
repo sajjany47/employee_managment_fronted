@@ -78,13 +78,13 @@ const Task = () => {
   const [taskListData, setTaskListData] = useState([]);
 
   useEffect(() => {
-    taskCreate(year);
+    // taskList(year);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const taskCreate = (item: any) => {
+  const taskList = (type: any, username: any, date: any, status: any) => {
     taskService
-      .taskCreate(moment(item).format("YYYY"))
+      .taskList(type, username, moment(date).format("YYYY"), status)
       .then((res) => {
         setTaskListData(res.data);
       })
@@ -96,7 +96,7 @@ const Task = () => {
   const handleYear = (value: any) => {
     setTaskListData([]);
     setYear(moment.utc(value));
-    taskCreate(value);
+    // taskList(value);
   };
   const handleChange = (event: any) => {
     setTaskStatus(event.target.value);
