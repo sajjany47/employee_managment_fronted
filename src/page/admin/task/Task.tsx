@@ -153,13 +153,12 @@ const Task = () => {
   };
 
   const handleTagAssign = (values: any) => {
-    console.log(values);
     setLoading(true);
     if (actionType === "add") {
       taskService
         .taskCreate(values)
         .then((res) => {
-          setTaskListData(res.data);
+          enqueueSnackbar(res.message, { variant: "success" });
         })
         .catch((err: any) =>
           enqueueSnackbar(err.response.data.message, { variant: "error" })
@@ -170,7 +169,7 @@ const Task = () => {
       taskService
         .taskUpdate(values)
         .then((res) => {
-          setTaskListData(res.data);
+          enqueueSnackbar(res.message, { variant: "success" });
         })
         .catch((err: any) =>
           enqueueSnackbar(err.response.data.message, { variant: "error" })
