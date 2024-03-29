@@ -1,14 +1,42 @@
-import { IconButton, Rating } from "@mui/material";
+import { Chip, IconButton, Rating } from "@mui/material";
 import moment from "moment";
 import { MdOutlineEditCalendar } from "react-icons/md";
 
 const AssignTask = (props: any) => {
-  console.log(props.data);
+  const btnColor = (item: any) => {
+    switch (item) {
+      case "waiting-for-review":
+        return "primary";
+
+      case "hold":
+        return "secondary";
+
+      case "completed":
+        return "success";
+
+      case "cancelled":
+        return "error";
+
+      case "need-Attention":
+        return "warning";
+
+      case "assign":
+        return "info";
+
+      case "todo":
+        return "info";
+      case "under-review":
+        return "secondary";
+
+      default:
+        return null;
+    }
+  };
   return (
     <>
-      {props.data.map((item: any) => {
+      {props.data.map((item: any, index: number) => {
         return (
-          <div style={{ border: "dashed" }}>
+          <div style={{ border: "dashed" }} key={index} className="mt-2">
             <div className="w-full">
               <div className="p-2 pb-10">
                 <h1 className="text-2xl font-semibold text-gray-800 mt-4 capitalize">
@@ -40,13 +68,18 @@ const AssignTask = (props: any) => {
                       )}
 
                       <div className="text-gray-600 ml-2 text-sm md:text-base mt-1">
-                        Sender- {item.taskSender}
+                        {props.type}-{" "}
+                        {props.type === "Sender"
+                          ? item.taskSender
+                          : item.taskReceiver}
                       </div>
                     </div>
                   </div>
-                  <button className="mt-3 sm:mt-0 py-2 px-5 md:py-3 md:px-6 bg-purple-700 hover:bg-purple-600 font-bold text-white md:text-lg rounded-lg shadow-md capitalize">
-                    {item.taskStatus}
-                  </button>
+                  <Chip
+                    label={item.taskStatus}
+                    className="mt-3 sm:mt-0 py-2 px-5 md:py-3 md:px-6 bg-purple-700 font-bold text-white md:text-lg rounded-lg shadow-md capitalize"
+                    color={item.taskStatus && btnColor(item.taskStatus)}
+                  />
                 </div>
                 <div
                   style={{ display: "flex", justifyContent: "space-between" }}
@@ -54,12 +87,14 @@ const AssignTask = (props: any) => {
                   <div className="mt-3 text-gray-600 text-sm md:text-sm">
                     {item.taskStatus === "completed" && item.taskRemark}
                   </div>
-                  <IconButton
-                    aria-label="edit"
-                    onClick={() => props.selectData()}
-                  >
-                    <MdOutlineEditCalendar style={{ color: "green" }} />
-                  </IconButton>
+                  {item.taskStatus !== "completed" && (
+                    <IconButton
+                      aria-label="edit"
+                      onClick={() => props.selectData(item, true)}
+                    >
+                      <MdOutlineEditCalendar style={{ color: "green" }} />
+                    </IconButton>
+                  )}
                 </div>
               </div>
             </div>

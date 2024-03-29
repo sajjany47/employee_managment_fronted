@@ -75,7 +75,7 @@ const Task = () => {
   const [tabValue, setTabValue] = useState(0);
   const [open, setOpen] = useState(false);
   const [actionType, setActionType] = useState("add");
-  const [selectTask, setSelectTask] = useState({});
+  const [selectTask, setSelectTask] = useState<any>({});
   const [year, setYear] = useState(moment.utc(new Date()));
   const [taskListData, setTaskListData] = useState([]);
   const [employeeListData, setEmployeeListData] = useState([]);
@@ -101,9 +101,9 @@ const Task = () => {
         enqueueSnackbar(err.response.data.message, { variant: "error" })
       )
       .finally(() => setLoading(false));
-    // taskList(year);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [open]);
 
   const taskList = (type: any, username: any, date: any, status: any) => {
     taskService
@@ -152,6 +152,14 @@ const Task = () => {
   };
   const handleClose = () => {
     setOpen(false);
+    setActionType("add");
+    setSelectTask({});
+    if (tabValue === 0) {
+      taskList("receiver", userType.username, year, taskStatus);
+    }
+    if (tabValue === 1) {
+      taskList("sender", userType.username, year, taskStatus);
+    }
   };
 
   const handleTagAssign = (values: any) => {
@@ -169,7 +177,7 @@ const Task = () => {
     }
     if (actionType === "edit") {
       taskService
-        .taskUpdate(values)
+        .taskUpdate({ ...values, id: selectTask._id })
         .then((res) => {
           enqueueSnackbar(res.message, { variant: "success" });
         })
@@ -178,9 +186,12 @@ const Task = () => {
         )
         .finally(() => setLoading(false));
     }
+    handleClose();
   };
 
   const selectTaskData = (item: any) => {
+    setOpen(true);
+    setActionType("edit");
     setSelectTask(item);
   };
 
@@ -243,15 +254,23 @@ const Task = () => {
                 onChange={handleTab}
                 aria-label="basic tabs example"
               >
-                <Tab label="Assign You" {...a11yProps(0)} />
+                <Tab label="Assign To You" {...a11yProps(0)} />
                 <Tab label="Assign By You" {...a11yProps(1)} />
               </Tabs>
             </Box>
             <CustomTabPanel value={tabValue} index={0}>
-              <AssignTask data={taskListData} selectData={selectTaskData} />
+              <AssignTask
+                data={taskListData}
+                selectData={selectTaskData}
+                type="Sender"
+              />
             </CustomTabPanel>
             <CustomTabPanel value={tabValue} index={1}>
-              <AssignTask data={taskListData} selectData={selectTaskData} />
+              <AssignTask
+                data={taskListData}
+                selectData={selectTaskData}
+                type="Receiver"
+              />
             </CustomTabPanel>
           </Box>
         </Grid>
