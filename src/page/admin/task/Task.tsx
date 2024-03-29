@@ -322,7 +322,7 @@ const Task = () => {
                       name="taskReceiver"
                       label="Task Receiver"
                       options={employeeListData}
-                      disabled
+                      disabled={actionType === "edit" ? true : false}
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
@@ -330,7 +330,13 @@ const Task = () => {
                       name="taskStartDate"
                       label="Task Start Date"
                       views={["year", "month", "day"]}
-                      disabled={tabType === "Sender" ? true : false}
+                      disabled={
+                        actionType === "edit"
+                          ? tabType === "Sender"
+                            ? true
+                            : false
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
@@ -338,14 +344,20 @@ const Task = () => {
                       name="takDeadline"
                       label="Task End Date"
                       views={["year", "month", "day"]}
-                      disabled={tabType === "Sender" ? true : false}
+                      disabled={
+                        actionType === "edit"
+                          ? tabType === "Sender"
+                            ? true
+                            : false
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
                     <InputField
                       name="taskProject"
                       label="Task Project"
-                      disabled
+                      disabled={actionType === "edit" ? true : false}
                     />
                   </Grid>
                   {actionType === "edit" && (
@@ -387,7 +399,7 @@ const Task = () => {
                       label="Task Details"
                       multiline
                       rows={4}
-                      disabled
+                      disabled={actionType === "edit" ? true : false}
                     />
                   </Grid>
 
