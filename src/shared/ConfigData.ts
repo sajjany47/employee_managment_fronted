@@ -27,4 +27,16 @@ export const ConfigData = {
     { value: "under-review", label: "Under Review" },
     { value: "completed", label: "Completed" },
   ],
+
+  senderStatus: [
+    { value: "hold", label: "Hold" },
+    { value: "cancelled", label: "Cancelled" },
+    { value: "under-review", label: "Under Review" },
+    { value: "completed", label: "Completed" },
+  ],
+  recieverStatus: [
+    { value: "todo", label: "To Do" },
+    { value: "need-Attention", label: "Needs Attention" },
+    { value: "waiting-for-review", label: "Waiting for Review" },
+  ],
 };

@@ -90,7 +90,7 @@ const AssignTask = (props: any) => {
                   {item.taskStatus !== "completed" && (
                     <IconButton
                       aria-label="edit"
-                      onClick={() => props.selectData(item, true)}
+                      onClick={() => props.selectData(item, props.type)}
                     >
                       <MdOutlineEditCalendar style={{ color: "green" }} />
                     </IconButton>

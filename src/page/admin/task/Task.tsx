@@ -79,6 +79,7 @@ const Task = () => {
   const [year, setYear] = useState(moment.utc(new Date()));
   const [taskListData, setTaskListData] = useState([]);
   const [employeeListData, setEmployeeListData] = useState([]);
+  const [tabType, setTabType] = useState("Sender");
 
   useEffect(() => {
     if (tabValue === 0) {
@@ -189,10 +190,11 @@ const Task = () => {
     handleClose();
   };
 
-  const selectTaskData = (item: any) => {
+  const selectTaskData = (item: any, type: any) => {
     setOpen(true);
     setActionType("edit");
     setSelectTask(item);
+    setTabType(type);
   };
 
   return (
@@ -307,7 +309,11 @@ const Task = () => {
                 >
                   {actionType === "edit" && (
                     <Grid item xs={2} sm={4} md={6}>
-                      <InputField name="taskSender" label="Task Sender" />
+                      <InputField
+                        name="taskSender"
+                        label="Task Sender"
+                        disabled
+                      />
                     </Grid>
                   )}
 
@@ -316,6 +322,7 @@ const Task = () => {
                       name="taskReceiver"
                       label="Task Receiver"
                       options={employeeListData}
+                      disabled
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
@@ -323,6 +330,7 @@ const Task = () => {
                       name="taskStartDate"
                       label="Task Start Date"
                       views={["year", "month", "day"]}
+                      disabled={tabType === "Sender" ? true : false}
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
@@ -330,10 +338,15 @@ const Task = () => {
                       name="takDeadline"
                       label="Task End Date"
                       views={["year", "month", "day"]}
+                      disabled={tabType === "Sender" ? true : false}
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
-                    <InputField name="taskProject" label="Task Project" />
+                    <InputField
+                      name="taskProject"
+                      label="Task Project"
+                      disabled
+                    />
                   </Grid>
                   <Grid item xs={2} sm={4} md={actionType === "edit" ? 6 : 12}>
                     <InputField
@@ -341,6 +354,7 @@ const Task = () => {
                       label="Task Details"
                       multiline
                       rows={4}
+                      disabled
                     />
                   </Grid>
                   {actionType === "edit" && (
@@ -349,7 +363,11 @@ const Task = () => {
                         <SelectField
                           name="taskStatus"
                           label="Task Status"
-                          options={ConfigData.taskStatus}
+                          options={
+                            tabType === "Sender"
+                              ? ConfigData.recieverStatus
+                              : ConfigData.senderStatus
+                          }
                         />
                       </Grid>
                       {values.taskStatus === "completed" && (
