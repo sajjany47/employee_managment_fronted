@@ -348,15 +348,6 @@ const Task = () => {
                       disabled
                     />
                   </Grid>
-                  <Grid item xs={2} sm={4} md={actionType === "edit" ? 6 : 12}>
-                    <InputField
-                      name="taskDetails"
-                      label="Task Details"
-                      multiline
-                      rows={4}
-                      disabled
-                    />
-                  </Grid>
                   {actionType === "edit" && (
                     <>
                       <Grid item xs={2} sm={4} md={6}>
@@ -390,6 +381,15 @@ const Task = () => {
                       )}
                     </>
                   )}
+                  <Grid item xs={2} sm={4} md={actionType === "edit" ? 6 : 12}>
+                    <InputField
+                      name="taskDetails"
+                      label="Task Details"
+                      multiline
+                      rows={4}
+                      disabled
+                    />
+                  </Grid>
 
                   <Grid
                     item
