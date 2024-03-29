@@ -178,7 +178,11 @@ const Task = () => {
     }
     if (actionType === "edit") {
       taskService
-        .taskUpdate({ ...values, id: selectTask._id })
+        .taskUpdate({
+          ...values,
+          id: selectTask._id,
+          type: tabType === "Sender" ? "receiver" : "sender",
+        })
         .then((res) => {
           enqueueSnackbar(res.message, { variant: "success" });
         })
