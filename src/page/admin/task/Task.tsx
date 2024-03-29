@@ -127,6 +127,7 @@ const Task = () => {
     }
   };
   const handleChange = (event: any) => {
+    setTaskListData([]);
     setTaskStatus(event.target.value);
     if (tabValue === 0) {
       taskList("receiver", userType.username, year, event.target.value);
@@ -136,6 +137,7 @@ const Task = () => {
     }
   };
   const handleTab = (event: React.SyntheticEvent, newValue: number) => {
+    setTaskListData([]);
     setTabValue(newValue);
     if (newValue === 0) {
       taskList("receiver", userType.username, year, taskStatus);
