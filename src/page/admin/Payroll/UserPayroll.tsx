@@ -13,10 +13,13 @@ import { enqueueSnackbar } from "notistack";
 import { TiEyeOutline } from "react-icons/ti";
 import { FaRegFilePdf } from "react-icons/fa";
 import jsPDF from "jspdf";
+import { useSelector } from "react-redux";
 
 function UserPayroll() {
   const navigate = useNavigate();
   const location = useLocation();
+  const user = useSelector((state: any) => state.auth.auth.user);
+  console.log(location);
   const payrollService = new PayrollService();
   const [loading, setLoading] = useState(false);
   const [monthYear, setMonthYear] = useState(moment.utc(new Date()));
@@ -31,7 +34,7 @@ function UserPayroll() {
     payrollService
       .salarySlip({
         year: Number(moment(date).format("YYYY")),
-        username: location.state.data,
+        username: location.state === null ? user.username : location.state.data,
       })
       .then((res) => {
         setData(res.data);

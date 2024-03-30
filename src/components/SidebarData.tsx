@@ -1,21 +1,21 @@
-import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
-import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import TouchAppIcon from "@mui/icons-material/TouchApp";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import RememberMeIcon from "@mui/icons-material/RememberMe";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
-import MessageIcon from "@mui/icons-material/Message";
-import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
-import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
-// import KeyIcon from "@mui/icons-material/Key";
+import { MdDashboardCustomize } from "react-icons/md";
+import { HiUserGroup } from "react-icons/hi2";
+import { GiTakeMyMoney } from "react-icons/gi";
+import { GiMoneyStack } from "react-icons/gi";
+import { FcLeave } from "react-icons/fc";
+import { BiTask } from "react-icons/bi";
+import { IoIosChatbubbles } from "react-icons/io";
+import { BiSupport } from "react-icons/bi";
+import { FaUserAlt } from "react-icons/fa";
+import { FaAngellist } from "react-icons/fa6";
 
 const SidebarData = {
   employee: [
     {
       path: "/",
       title: "Dashboard",
-      icon: <DashboardCustomizeIcon />,
+      icon: <MdDashboardCustomize />,
     },
     {
       path: "/employee/attendance",
@@ -25,39 +25,39 @@ const SidebarData = {
     {
       path: "/employee/tasks",
       title: "Tasks",
-      icon: <AssignmentIcon />,
+      icon: <BiTask />,
     },
     {
       path: "/employee/leave",
       title: "Leave",
-      icon: <RememberMeIcon />,
+      icon: <FcLeave />,
     },
 
     {
       path: "/employee/payroll",
       title: "Payroll",
-      icon: <AccountBalanceWalletIcon />,
+      icon: <GiTakeMyMoney />,
     },
 
     {
       path: "/employee/profile",
       title: "Profile",
-      icon: <AssignmentIndIcon />,
+      icon: <FaUserAlt />,
     },
     {
-      path: "/employee/announcements",
-      title: "Announcements",
-      icon: <NotificationsActiveIcon />,
+      path: "/employee/holiday-list",
+      title: "Holiday",
+      icon: <FaAngellist />,
     },
     {
       path: "/employee/chats",
       title: "Chats",
-      icon: <SupervisorAccountIcon />,
+      icon: <IoIosChatbubbles />,
     },
     {
       path: "/employee/support",
       title: "Support",
-      icon: <MessageIcon />,
+      icon: <BiSupport />,
     },
   ],
 
@@ -65,17 +65,17 @@ const SidebarData = {
     {
       path: "/",
       title: "Dashboard",
-      icon: <DashboardCustomizeIcon />,
+      icon: <MdDashboardCustomize />,
     },
     {
       path: "/admin/employee-list",
       title: "Employee",
-      icon: <SupervisorAccountIcon />,
+      icon: <HiUserGroup />,
     },
     {
       path: "/admin/salary",
       title: "Salary Alloted",
-      icon: <CurrencyExchangeIcon />,
+      icon: <GiMoneyStack />,
     },
     {
       path: "/admin/attendance",
@@ -86,37 +86,28 @@ const SidebarData = {
     {
       path: "/admin/payroll",
       title: "Payroll",
-      icon: <AccountBalanceWalletIcon />,
+      icon: <GiTakeMyMoney />,
     },
     {
       path: "/admin/leave",
       title: "Leave Alloted",
-      icon: <RememberMeIcon />,
+      icon: <FcLeave />,
     },
     {
       path: "/admin/tasks",
       title: "Tasks",
-      icon: <AssignmentIcon />,
+      icon: <BiTask />,
     },
-    {
-      path: "/admin/tasks",
-      title: "Performance",
-      icon: <AssignmentIcon />,
-    },
-    {
-      path: "/admin/announcements",
-      title: "Announcements",
-      icon: <NotificationsActiveIcon />,
-    },
+
     {
       path: "/admin/chats",
       title: "Chats",
-      icon: <MessageIcon />,
+      icon: <IoIosChatbubbles />,
     },
     {
       path: "/admin/support",
       title: "Support",
-      icon: <MessageIcon />,
+      icon: <BiSupport />,
     },
   ],
 
@@ -124,48 +115,49 @@ const SidebarData = {
     {
       path: "/",
       title: "Dashboard",
-      icon: <DashboardCustomizeIcon />,
+      icon: <MdDashboardCustomize />,
     },
     {
-      path: "/employee/profile",
-      title: "Profile",
-      icon: <AssignmentIndIcon />,
+      path: "/admin/employee-list",
+      title: "Employee",
+      icon: <HiUserGroup />,
     },
     {
-      path: "/employee/attendance",
+      path: "/admin/salary",
+      title: "Salary Alloted",
+      icon: <GiMoneyStack />,
+    },
+    {
+      path: "/admin/attendance",
       title: "Attendance",
       icon: <TouchAppIcon />,
     },
 
     {
-      path: "/employee/payroll",
+      path: "/admin/payroll",
       title: "Payroll",
-      icon: <AccountBalanceWalletIcon />,
+      icon: <GiTakeMyMoney />,
     },
     {
-      path: "/employee/leave",
-      title: "Leave",
-      icon: <RememberMeIcon />,
+      path: "/admin/leave",
+      title: "Leave Alloted",
+      icon: <FcLeave />,
     },
     {
-      path: "/employee/tasks",
+      path: "/admin/tasks",
       title: "Tasks",
-      icon: <AssignmentIcon />,
+      icon: <BiTask />,
     },
+
     {
-      path: "/employee/announcements",
-      title: "Announcements",
-      icon: <NotificationsActiveIcon />,
-    },
-    {
-      path: "/employee/chats",
+      path: "/admin/chats",
       title: "Chats",
-      icon: <MessageIcon />,
+      icon: <IoIosChatbubbles />,
     },
     {
-      path: "/employee/support",
+      path: "/admin/support",
       title: "Support",
-      icon: <MessageIcon />,
+      icon: <BiSupport />,
     },
   ],
 };

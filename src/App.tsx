@@ -19,6 +19,11 @@ import PayrollUpdate from "./page/admin/Payroll/PayrollUpdate";
 import UserPayroll from "./page/admin/Payroll/UserPayroll";
 import SalarySlip from "./page/admin/Payroll/SalarySlip";
 import Task from "./page/admin/task/Task";
+import EmpAttendance from "./page/employee/EmpAttendance";
+import EmpLeave from "./page/employee/EmpLeave";
+import EmpTask from "./page/employee/EmpTask";
+import EmpPayroll from "./page/employee/EmpPayroll";
+import EmpHoliday from "./page/employee/EmpHoliday";
 
 function App() {
   return (
@@ -45,6 +50,11 @@ function App() {
             <Route path="/admin/user-payroll/view" element={<UserPayroll />} />
             <Route path="/salary-slip/generate" element={<SalarySlip />} />
             <Route path="/admin/tasks" element={<Task />} />
+            <Route path="/employee/attendance" element={<EmpAttendance />} />
+            <Route path="/employee/leave" element={<EmpLeave />} />
+            <Route path="/employee/tasks" element={<EmpTask />} />
+            <Route path="/employee/payroll" element={<EmpPayroll />} />
+            <Route path="/employee/holiday-list" element={<EmpHoliday />} />
           </Route>
         </Routes>
         {/* <Copyright /> */}

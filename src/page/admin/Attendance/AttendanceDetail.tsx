@@ -222,14 +222,15 @@ const AttendanceDetail = () => {
                   />
                 </DemoContainer>
               </LocalizationProvider>
-
-              <Button
-                variant="contained"
-                startIcon={<ArrowForwardIosIcon />}
-                onClick={() => navigation("/user/leave/details")}
-              >
-                Leave
-              </Button>
+              {user.role === "admin" && (
+                <Button
+                  variant="contained"
+                  startIcon={<ArrowForwardIosIcon />}
+                  onClick={() => navigation("/user/leave/details")}
+                >
+                  Leave
+                </Button>
+              )}
             </Box>
           </Box>
         </Grid>

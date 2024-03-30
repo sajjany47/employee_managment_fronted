@@ -146,15 +146,16 @@ const HolidayList = () => {
                   />
                 </DemoContainer>
               </LocalizationProvider>
-
-              <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                sx={{ minWidth: 140 }}
-                onClick={handleClickOpen}
-              >
-                Add
-              </Button>
+              {userType.role !== "employee" && (
+                <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  sx={{ minWidth: 140 }}
+                  onClick={handleClickOpen}
+                >
+                  Add
+                </Button>
+              )}
             </Box>
           </Box>
         </Grid>
