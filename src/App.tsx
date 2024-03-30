@@ -24,6 +24,7 @@ import EmpLeave from "./page/employee/EmpLeave";
 import EmpTask from "./page/employee/EmpTask";
 import EmpPayroll from "./page/employee/EmpPayroll";
 import EmpHoliday from "./page/employee/EmpHoliday";
+import EmpDetails from "./page/employee/EmpDetails";
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
             <Route path="/employee/tasks" element={<EmpTask />} />
             <Route path="/employee/payroll" element={<EmpPayroll />} />
             <Route path="/employee/holiday-list" element={<EmpHoliday />} />
+            <Route path="/employee/profile" element={<EmpDetails />} />
           </Route>
         </Routes>
         {/* <Copyright /> */}

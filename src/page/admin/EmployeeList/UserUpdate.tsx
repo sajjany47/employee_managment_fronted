@@ -20,15 +20,22 @@ import { EmployeeServices } from "./EmployeeServices";
 const UserUpdate = () => {
   const employeeServices = new EmployeeServices();
   const id = useParams();
+
   const navigate = useNavigate();
   const userType = useSelector((state: any) => state.auth.auth.user);
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState<any>({});
   const [countryData, setCountryData] = useState([]);
   const [stateData, setStateData] = useState([]);
+  console.log(Object.keys(id).length > 0 ? id.id : userType._id);
   useEffect(() => {
     setLoading(true);
-    Promise.all([getAllCountryList(), employeeServices.singleUser(id.id)])
+    Promise.all([
+      getAllCountryList(),
+      employeeServices.singleUser(
+        Object.keys(id).length > 0 ? id.id : userType._id
+      ),
+    ])
       .then((res) => {
         setUserData(res[1].data);
         res[1].data.country && getAllStateByCountry(res[1].data.country);

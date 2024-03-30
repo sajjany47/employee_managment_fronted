@@ -1,4 +1,4 @@
-import { Box, Button, Chip, Grid } from "@mui/material";
+import { Box, Chip, Grid } from "@mui/material";
 
 import { useEffect, useState } from "react";
 
@@ -14,11 +14,8 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import WatchLaterIcon from "@mui/icons-material/WatchLater";
-import { useNavigate } from "react-router-dom";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 const AttendanceDetail = () => {
-  const navigation = useNavigate();
   const attendanceService = new AttendanceService();
   const user = useSelector((state: any) => state.auth.auth.user);
   const [loading, setLoading] = useState(false);
@@ -222,15 +219,6 @@ const AttendanceDetail = () => {
                   />
                 </DemoContainer>
               </LocalizationProvider>
-              {user.role === "admin" && (
-                <Button
-                  variant="contained"
-                  startIcon={<ArrowForwardIosIcon />}
-                  onClick={() => navigation("/user/leave/details")}
-                >
-                  Leave
-                </Button>
-              )}
             </Box>
           </Box>
         </Grid>

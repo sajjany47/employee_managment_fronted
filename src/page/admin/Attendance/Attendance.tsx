@@ -15,7 +15,6 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import moment from "moment";
 import { ConfigData } from "../../../shared/ConfigData";
 import { Form, Formik } from "formik";
-import AddIcon from "@mui/icons-material/Add";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -228,9 +227,7 @@ const Attendance = () => {
       ),
     },
   ];
-  const handleClick = () => {
-    navigate("/admin/attendance/details");
-  };
+
   const handleClose = () => {
     setOpen(false);
     setLoading(false);
@@ -427,20 +424,6 @@ const Attendance = () => {
                   />
                 </DemoContainer>
               </LocalizationProvider>
-              <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={() => navigate("/admin/holiday-list")}
-              >
-                Holiday List
-              </Button>
-              <Button
-                variant="contained"
-                // startIcon={<AddIcon />}
-                onClick={handleClick}
-              >
-                My Attendance
-              </Button>
             </Box>
           </Box>
         </Grid>

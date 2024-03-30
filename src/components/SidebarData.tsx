@@ -94,6 +94,11 @@ const SidebarData = {
       icon: <FcLeave />,
     },
     {
+      path: "/employee/holiday-list",
+      title: "Holiday",
+      icon: <FaAngellist />,
+    },
+    {
       path: "/admin/tasks",
       title: "Tasks",
       icon: <BiTask />,
@@ -144,11 +149,20 @@ const SidebarData = {
       icon: <FcLeave />,
     },
     {
+      path: "/employee/holiday-list",
+      title: "Holiday",
+      icon: <FaAngellist />,
+    },
+    {
       path: "/admin/tasks",
       title: "Tasks",
       icon: <BiTask />,
     },
-
+    {
+      path: "/employee/profile",
+      title: "Profile",
+      icon: <FaUserAlt />,
+    },
     {
       path: "/admin/chats",
       title: "Chats",
