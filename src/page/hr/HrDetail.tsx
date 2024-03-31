@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { Box, Tab, Tabs, Typography } from "@mui/material";
+import EmpAttendance from "../employee/EmpAttendance";
+import EmpLeave from "../employee/EmpLeave";
+import EmpPayroll from "../employee/EmpPayroll";
 import UserUpdate from "../admin/EmployeeList/UserUpdate";
 import SalaryDetails from "../admin/Salary/SalaryDetails";
 
@@ -35,7 +38,7 @@ function a11yProps(index: number) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
-const EmpDetails = () => {
+const HrDetail = () => {
   const [value, setValue] = useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -50,10 +53,24 @@ const EmpDetails = () => {
             onChange={handleChange}
             aria-label="basic tabs example"
           >
-            <Tab label="User Details" {...a11yProps(0)} />
-            <Tab label="Salary Details" {...a11yProps(1)} />
+            <Tab label="Attendance" {...a11yProps(0)} />
+            <Tab label="Leave Details " {...a11yProps(1)} />
+            <Tab label="Payroll Details" {...a11yProps(2)} />
+
+            <Tab label="User Details" {...a11yProps(3)} />
+            <Tab label="Salary Details" {...a11yProps(4)} />
           </Tabs>
         </Box>
+
+        <CustomTabPanel value={value} index={0}>
+          <EmpAttendance />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={1}>
+          <EmpLeave />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={2}>
+          <EmpPayroll />
+        </CustomTabPanel>
 
         <CustomTabPanel value={value} index={3}>
           <UserUpdate />
@@ -66,4 +83,4 @@ const EmpDetails = () => {
   );
 };
 
-export default EmpDetails;
+export default HrDetail;

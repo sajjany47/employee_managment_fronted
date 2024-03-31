@@ -46,7 +46,7 @@ const SidebarData = {
     },
     {
       path: "/employee/holiday-list",
-      title: "Holiday",
+      title: "Holiday List",
       icon: <FaAngellist />,
     },
     {
@@ -79,7 +79,7 @@ const SidebarData = {
     },
     {
       path: "/admin/attendance",
-      title: "Attendance",
+      title: "Attendance List",
       icon: <TouchAppIcon />,
     },
 
@@ -95,7 +95,7 @@ const SidebarData = {
     },
     {
       path: "/employee/holiday-list",
-      title: "Holiday",
+      title: "Holiday List",
       icon: <FaAngellist />,
     },
     {
@@ -103,7 +103,11 @@ const SidebarData = {
       title: "Tasks",
       icon: <BiTask />,
     },
-
+    {
+      path: "/hr/profile",
+      title: "Profile",
+      icon: <FaUserAlt />,
+    },
     {
       path: "/admin/chats",
       title: "Chats",
@@ -134,7 +138,7 @@ const SidebarData = {
     },
     {
       path: "/admin/attendance",
-      title: "Attendance",
+      title: "Attendance List",
       icon: <TouchAppIcon />,
     },
 
@@ -150,7 +154,7 @@ const SidebarData = {
     },
     {
       path: "/employee/holiday-list",
-      title: "Holiday",
+      title: "Holiday List",
       icon: <FaAngellist />,
     },
     {
@@ -159,7 +163,7 @@ const SidebarData = {
       icon: <BiTask />,
     },
     {
-      path: "/employee/profile",
+      path: "/hr/profile",
       title: "Profile",
       icon: <FaUserAlt />,
     },
