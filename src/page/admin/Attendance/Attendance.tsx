@@ -73,10 +73,11 @@ const Attendance = () => {
   const [open, setOpen] = useState(false);
   const [timeModal, setTimeModel] = useState(false);
   const [selectTime, setSelectTime] = useState<any>({});
-  const [year, setYear] = useState(moment.utc(new Date()));
+  const [year, setYear] = useState(moment(new Date()));
   const [loading, setLoading] = useState(false);
   const [selectLeave, setSelectLeave] = useState<any>({});
   const [invalidAttendanceData, setInvalidAttendanceData] = useState([]);
+  const [attendanceData, setAttendanceData] = useState([]);
   const [tabValue, setTabValue] = useState(0);
 
   const statusChangeSchems = Yup.object().shape({
@@ -102,8 +103,22 @@ const Attendance = () => {
   useEffect(() => {
     allUserLeave(year);
     invalidAttendance();
+    attendanceList(year);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const attendanceList = (date: any) => {
+    attendanceService
+      .AttendanceAllList({ date: date })
+      .then((res) => {
+        setAttendanceData(res.data);
+      })
+      .catch((err: any) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      )
+      .finally(() => setLoading(false));
+  };
 
   const allUserLeave = (year: any) => {
     attendanceService
@@ -278,7 +293,8 @@ const Attendance = () => {
   };
   const handleChange = (value: any) => {
     setAllUserLeaveList([]);
-    setYear(moment.utc(value));
+    setYear(moment(value));
+    attendanceList(value);
 
     allUserLeave(value);
   };
@@ -430,6 +446,71 @@ const Attendance = () => {
     },
   ];
 
+  const AttendanceColumns: GridColDef[] = [
+    {
+      field: "username",
+      headerName: "Username",
+      width: 150,
+      renderCell: (value: any) => <span>{value.value}</span>,
+    },
+    {
+      field: "date",
+      headerName: "Date",
+      width: 150,
+      renderCell: (value: any) =>
+        moment(value.row.timeSchedule.date).format("Do MMM, YYYY"),
+    },
+    {
+      field: "startTime",
+      headerName: "Clock In",
+      width: 150,
+      renderCell: (value: any) =>
+        moment(value.row.timeSchedule.startTime).format("HH:mm:ss"),
+    },
+    {
+      field: "endTime",
+      headerName: "Clock Out",
+      width: 200,
+      renderCell: (value: any) =>
+        value.row.timeSchedule.endTime &&
+        moment(value.row.timeSchedule.endTime).format("HH:mm:ss"),
+    },
+    {
+      field: "totalTime",
+      headerName: "Total Time",
+      width: 150,
+      renderCell: (value: any) => (
+        <span>{value.row.timeSchedule.totalTime}</span>
+      ),
+    },
+    {
+      field: "updatedBy",
+      headerName: "Updated By",
+      width: 150,
+      renderCell: (value: any) => (
+        <span>{value.row.timeSchedule?.updatedBy}</span>
+      ),
+    },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 120,
+      renderCell: (value: any) => (
+        <>
+          <VisibilityIcon
+            color="secondary"
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              navigate("/admin/attendance/details", {
+                state: { data: value.row.username },
+              });
+            }}
+          />
+        </>
+      ),
+    },
+  ];
+
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
@@ -460,7 +541,7 @@ const Attendance = () => {
                     slotProps={{
                       textField: { size: "small", fullWidth: false },
                     }}
-                    views={["year"]}
+                    views={["year", "month"]}
                     onChange={handleChange}
                   />
                 </DemoContainer>
@@ -482,7 +563,26 @@ const Attendance = () => {
               </Tabs>
             </Box>
             <CustomTabPanel value={tabValue} index={0}>
-              Item One
+              <DataGrid
+                style={{
+                  height: attendanceData.length !== 0 ? "100%" : 200,
+                  width: "100%",
+                }}
+                rows={attendanceData}
+                columns={AttendanceColumns}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: ConfigData.pageSize,
+                    },
+                  },
+                }}
+                getRowId={(row) => row.timeSchedule._id}
+                pageSizeOptions={ConfigData.pageRow}
+                localeText={{ noRowsLabel: "No Data Available!!!" }}
+                // checkboxSelection
+                // disableRowSelectionOnClick
+              />
             </CustomTabPanel>
             <CustomTabPanel value={tabValue} index={1}>
               <DataGrid
