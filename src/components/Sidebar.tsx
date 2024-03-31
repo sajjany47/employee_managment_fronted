@@ -21,7 +21,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { Avatar, Menu, MenuItem } from "@mui/material";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/reducer/authReducer";
 import { AttendanceService } from "../page/admin/Attendance/AttendanceService";
 import { enqueueSnackbar } from "notistack";
@@ -102,6 +102,8 @@ const Drawer = styled(MuiDrawer, {
 
 export default function Sidebar(props: Props) {
   const attendanceService = new AttendanceService();
+  const user = useSelector((state: any) => state.auth.auth.user);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -197,7 +199,20 @@ export default function Sidebar(props: Props) {
                 alt="Remy Sharp"
                 src="https://wallpapercave.com/wp/wp4041985.jpg"
               />
-              <Typography sx={{ marginLeft: 1 }}>SAJJAN</Typography>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  fontSize: "10px",
+                }}
+              >
+                <Typography sx={{ marginLeft: 1 }}>{user.username}</Typography>
+                <small
+                  style={{ fontSize: "12px", textTransform: "capitalize" }}
+                >
+                  {user.role}
+                </small>
+              </div>
             </IconButton>
 
             <Menu
