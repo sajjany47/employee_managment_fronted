@@ -185,4 +185,20 @@ export class AttendanceService {
       throw err;
     }
   };
+
+  notificationList = async () => {
+    try {
+      const response = await axios.get(
+        `${apiPath}/notification`,
+
+        {
+          headers: this.headers,
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
 }

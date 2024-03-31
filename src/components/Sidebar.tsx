@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -23,6 +23,8 @@ import { Avatar, Menu, MenuItem } from "@mui/material";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/reducer/authReducer";
+import { AttendanceService } from "../page/admin/Attendance/AttendanceService";
+import { enqueueSnackbar } from "notistack";
 
 type Props = {
   sidebarList: { path: string; title: string; icon: JSX.Element }[] | null;
@@ -99,12 +101,30 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function Sidebar(props: Props) {
+  const attendanceService = new AttendanceService();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [notificationData, setNotificationData] = useState([]);
 
+  useEffect(() => {
+    notifiCall();
+  }, []);
+
+  const notifiCall = () => {
+    // setInterval(() => {
+    attendanceService
+      .notificationList()
+      .then((res) => {
+        setNotificationData(res.data);
+      })
+      .catch((err: any) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      );
+    // }, 1000);
+  };
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -160,7 +180,7 @@ export default function Sidebar(props: Props) {
               aria-label="show 17 new notifications"
               color="inherit"
             >
-              <Badge badgeContent={17} color="error">
+              <Badge badgeContent={notificationData.length} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
@@ -177,7 +197,9 @@ export default function Sidebar(props: Props) {
                 alt="Remy Sharp"
                 src="https://wallpapercave.com/wp/wp4041985.jpg"
               />
+              <Typography sx={{ marginLeft: 1 }}>SAJJAN</Typography>
             </IconButton>
+
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}
