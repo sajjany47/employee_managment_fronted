@@ -25,6 +25,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/reducer/authReducer";
 import { AttendanceService } from "../page/admin/Attendance/AttendanceService";
 import { enqueueSnackbar } from "notistack";
+import { FaRegUser } from "react-icons/fa6";
+import { CiLogout } from "react-icons/ci";
 
 type Props = {
   sidebarList: { path: string; title: string; icon: JSX.Element }[] | null;
@@ -230,10 +232,19 @@ export default function Sidebar(props: Props) {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem className="w-full h-full m-2">Profile</MenuItem>
-              <MenuItem className="w-full h-full m-2" onClick={handleLogout}>
-                Logout
+              <MenuItem sx={{ width: 150 }}>
+                <ListItemIcon>
+                  <FaRegUser fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Profile</ListItemText>
               </MenuItem>
+              <MenuItem sx={{ width: 150 }} onClick={handleLogout}>
+                <ListItemIcon>
+                  <CiLogout fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Logout</ListItemText>
+              </MenuItem>
+
               {/* <MenuItem className="w-full h-full m-6">Change Password</MenuItem> */}
             </Menu>
           </Box>
