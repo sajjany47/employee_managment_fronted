@@ -7,10 +7,12 @@ import { Box, Grid } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { ConfigData } from "../../../shared/ConfigData";
 import moment from "moment";
+import { useSelector } from "react-redux";
 
 const SalaryDetails = () => {
   const salaryService = new SalaryServices();
   const [loading, setLoading] = useState(false);
+  const userType = useSelector((state: any) => state.auth.auth.user);
   const [data, setData] = useState<any>([]);
   const [currentData, setCurrentData] = useState<any>({});
   const id = useParams();
@@ -18,10 +20,15 @@ const SalaryDetails = () => {
   useEffect(() => {
     setLoading(true);
     salaryService
-      .singleSalaryList(id.id)
+      .singleSalaryList(Object.keys(id).length > 0 ? id.id : userType.username)
       .then((res) => {
-        setData(res.data.salaryHistory);
-        setCurrentData(res.data.currentSalary);
+        if (res.data === null) {
+          setData([]);
+          setCurrentData({});
+        } else {
+          setData(res.data.salaryHistory);
+          setCurrentData(res.data.currentSalary);
+        }
       })
       .catch((err) => enqueueSnackbar(err.message, { variant: "error" }))
       .finally(() => setLoading(false));
@@ -41,7 +48,9 @@ const SalaryDetails = () => {
       field: "username",
       headerName: "Username",
       width: 200,
-      renderCell: () => <span>{id.id}</span>,
+      renderCell: () => (
+        <span>{Object.keys(id).length > 0 ? id.id : userType.username}</span>
+      ),
     },
     {
       field: "ctc",

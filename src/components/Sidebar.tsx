@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -21,8 +21,12 @@ import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { Avatar, Menu, MenuItem } from "@mui/material";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/reducer/authReducer";
+import { AttendanceService } from "../page/admin/Attendance/AttendanceService";
+import { enqueueSnackbar } from "notistack";
+import { FaRegUser } from "react-icons/fa6";
+import { CiLogout } from "react-icons/ci";
 
 type Props = {
   sidebarList: { path: string; title: string; icon: JSX.Element }[] | null;
@@ -99,12 +103,32 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function Sidebar(props: Props) {
+  const attendanceService = new AttendanceService();
+  const user = useSelector((state: any) => state.auth.auth.user);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [notificationData, setNotificationData] = useState([]);
 
+  useEffect(() => {
+    notifiCall();
+  }, []);
+
+  const notifiCall = () => {
+    // setInterval(() => {
+    attendanceService
+      .notificationList()
+      .then((res) => {
+        setNotificationData(res.data);
+      })
+      .catch((err: any) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      );
+    // }, 1000);
+  };
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -160,7 +184,7 @@ export default function Sidebar(props: Props) {
               aria-label="show 17 new notifications"
               color="inherit"
             >
-              <Badge badgeContent={17} color="error">
+              <Badge badgeContent={notificationData.length} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
@@ -177,7 +201,22 @@ export default function Sidebar(props: Props) {
                 alt="Remy Sharp"
                 src="https://wallpapercave.com/wp/wp4041985.jpg"
               />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  fontSize: "10px",
+                }}
+              >
+                <Typography sx={{ marginLeft: 1 }}>{user.username}</Typography>
+                <small
+                  style={{ fontSize: "12px", textTransform: "capitalize" }}
+                >
+                  {user.role}
+                </small>
+              </div>
             </IconButton>
+
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}
@@ -193,10 +232,19 @@ export default function Sidebar(props: Props) {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem className="w-full h-full m-2">Profile</MenuItem>
-              <MenuItem className="w-full h-full m-2" onClick={handleLogout}>
-                Logout
+              <MenuItem sx={{ width: 150 }}>
+                <ListItemIcon>
+                  <FaRegUser fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Profile</ListItemText>
               </MenuItem>
+              <MenuItem sx={{ width: 150 }} onClick={handleLogout}>
+                <ListItemIcon>
+                  <CiLogout fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Logout</ListItemText>
+              </MenuItem>
+
               {/* <MenuItem className="w-full h-full m-6">Change Password</MenuItem> */}
             </Menu>
           </Box>

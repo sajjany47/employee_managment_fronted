@@ -6,6 +6,9 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  Tab,
+  Tabs,
+  Typography,
 } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
@@ -15,7 +18,6 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import moment from "moment";
 import { ConfigData } from "../../../shared/ConfigData";
 import { Form, Formik } from "formik";
-import AddIcon from "@mui/icons-material/Add";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -30,6 +32,39 @@ import {
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
 
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function CustomTabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+function a11yProps(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
+
 const Attendance = () => {
   const navigate = useNavigate();
   const attendanceService = new AttendanceService();
@@ -38,10 +73,12 @@ const Attendance = () => {
   const [open, setOpen] = useState(false);
   const [timeModal, setTimeModel] = useState(false);
   const [selectTime, setSelectTime] = useState<any>({});
-  const [year, setYear] = useState(moment.utc(new Date()));
+  const [year, setYear] = useState(moment(new Date()));
   const [loading, setLoading] = useState(false);
   const [selectLeave, setSelectLeave] = useState<any>({});
   const [invalidAttendanceData, setInvalidAttendanceData] = useState([]);
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [tabValue, setTabValue] = useState(0);
 
   const statusChangeSchems = Yup.object().shape({
     statusChange: Yup.string().required("Status is required"),
@@ -66,8 +103,22 @@ const Attendance = () => {
   useEffect(() => {
     allUserLeave(year);
     invalidAttendance();
+    attendanceList(year);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const attendanceList = (date: any) => {
+    attendanceService
+      .AttendanceAllList({ date: date })
+      .then((res) => {
+        setAttendanceData(res.data);
+      })
+      .catch((err: any) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      )
+      .finally(() => setLoading(false));
+  };
 
   const allUserLeave = (year: any) => {
     attendanceService
@@ -228,9 +279,7 @@ const Attendance = () => {
       ),
     },
   ];
-  const handleClick = () => {
-    navigate("/admin/attendance/details");
-  };
+
   const handleClose = () => {
     setOpen(false);
     setLoading(false);
@@ -244,7 +293,8 @@ const Attendance = () => {
   };
   const handleChange = (value: any) => {
     setAllUserLeaveList([]);
-    setYear(moment.utc(value));
+    setYear(moment(value));
+    attendanceList(value);
 
     allUserLeave(value);
   };
@@ -396,6 +446,75 @@ const Attendance = () => {
     },
   ];
 
+  const AttendanceColumns: GridColDef[] = [
+    {
+      field: "username",
+      headerName: "Username",
+      width: 150,
+      renderCell: (value: any) => <span>{value.value}</span>,
+    },
+    {
+      field: "date",
+      headerName: "Date",
+      width: 150,
+      renderCell: (value: any) =>
+        moment(value.row.timeSchedule.date).format("Do MMM, YYYY"),
+    },
+    {
+      field: "startTime",
+      headerName: "Clock In",
+      width: 150,
+      renderCell: (value: any) =>
+        moment(value.row.timeSchedule.startTime).format("HH:mm:ss"),
+    },
+    {
+      field: "endTime",
+      headerName: "Clock Out",
+      width: 200,
+      renderCell: (value: any) =>
+        value.row.timeSchedule.endTime &&
+        moment(value.row.timeSchedule.endTime).format("HH:mm:ss"),
+    },
+    {
+      field: "totalTime",
+      headerName: "Total Time",
+      width: 150,
+      renderCell: (value: any) => (
+        <span>{value.row.timeSchedule.totalTime}</span>
+      ),
+    },
+    {
+      field: "updatedBy",
+      headerName: "Updated By",
+      width: 150,
+      renderCell: (value: any) => (
+        <span>{value.row.timeSchedule?.updatedBy}</span>
+      ),
+    },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 120,
+      renderCell: (value: any) => (
+        <>
+          <VisibilityIcon
+            color="secondary"
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              navigate("/admin/attendance/details", {
+                state: { data: value.row.username },
+              });
+            }}
+          />
+        </>
+      ),
+    },
+  ];
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
+
   return (
     <>
       {loading && <Loader />}
@@ -406,7 +525,7 @@ const Attendance = () => {
             <Box className="mt-4">
               {" "}
               <h6>
-                <strong> User Pending Leave Details</strong>
+                <strong> User Attendance Details</strong>
               </h6>
             </Box>
             <Box className="mt-2 flex justify-end gap-2">
@@ -422,76 +541,94 @@ const Attendance = () => {
                     slotProps={{
                       textField: { size: "small", fullWidth: false },
                     }}
-                    views={["year"]}
+                    views={["year", "month"]}
                     onChange={handleChange}
                   />
                 </DemoContainer>
               </LocalizationProvider>
-              <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={() => navigate("/admin/holiday-list")}
-              >
-                Holiday List
-              </Button>
-              <Button
-                variant="contained"
-                // startIcon={<AddIcon />}
-                onClick={handleClick}
-              >
-                My Attendance
-              </Button>
             </Box>
           </Box>
         </Grid>
         <Grid item xs={12} sm={12} md={12}>
-          <DataGrid
-            style={{
-              height: allUserLeaveList.length !== 0 ? "100%" : 200,
-              width: "100%",
-            }}
-            rows={allUserLeaveList}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: ConfigData.pageSize,
-                },
-              },
-            }}
-            getRowId={(row) => row.leaveDetail.leaveUseDetail._id}
-            pageSizeOptions={ConfigData.pageRow}
-            localeText={{ noRowsLabel: "No Data Available!!!" }}
-            // checkboxSelection
-            // disableRowSelectionOnClick
-          />
-        </Grid>
-        <Grid item xs={12} sm={12} md={12} marginTop={5}>
-          <h6>
-            <strong> User Invalid Attendance Details</strong>
-          </h6>
-        </Grid>
-        <Grid item xs={12} sm={12} md={12}>
-          <DataGrid
-            style={{
-              height: invalidAttendanceData.length !== 0 ? "100%" : 200,
-              width: "100%",
-            }}
-            rows={invalidAttendanceData}
-            columns={timeColumns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: ConfigData.pageSize,
-                },
-              },
-            }}
-            getRowId={(row) => row.timeSchedule._id}
-            pageSizeOptions={ConfigData.pageRow}
-            localeText={{ noRowsLabel: "No Data Available!!!" }}
-            // checkboxSelection
-            // disableRowSelectionOnClick
-          />
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={tabValue}
+                onChange={handleTabChange}
+                aria-label="basic tabs example"
+              >
+                <Tab label="Attendance List" {...a11yProps(0)} />
+                <Tab label="Invalid Attendance" {...a11yProps(1)} />
+                <Tab label="Apply Leave List" {...a11yProps(2)} />
+              </Tabs>
+            </Box>
+            <CustomTabPanel value={tabValue} index={0}>
+              <DataGrid
+                style={{
+                  height: attendanceData.length !== 0 ? "100%" : 200,
+                  width: "100%",
+                }}
+                rows={attendanceData}
+                columns={AttendanceColumns}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: ConfigData.pageSize,
+                    },
+                  },
+                }}
+                getRowId={(row) => row.timeSchedule._id}
+                pageSizeOptions={ConfigData.pageRow}
+                localeText={{ noRowsLabel: "No Data Available!!!" }}
+                // checkboxSelection
+                // disableRowSelectionOnClick
+              />
+            </CustomTabPanel>
+            <CustomTabPanel value={tabValue} index={1}>
+              <DataGrid
+                style={{
+                  height: invalidAttendanceData.length !== 0 ? "100%" : 200,
+                  width: "100%",
+                }}
+                rows={invalidAttendanceData}
+                columns={timeColumns}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: ConfigData.pageSize,
+                    },
+                  },
+                }}
+                getRowId={(row) => row.timeSchedule._id}
+                pageSizeOptions={ConfigData.pageRow}
+                localeText={{ noRowsLabel: "No Data Available!!!" }}
+                // checkboxSelection
+                // disableRowSelectionOnClick
+              />
+            </CustomTabPanel>
+            <CustomTabPanel value={tabValue} index={2}>
+              <DataGrid
+                style={{
+                  height: allUserLeaveList.length !== 0 ? "100%" : 200,
+                  width: "100%",
+                }}
+                rows={allUserLeaveList}
+                columns={columns}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: ConfigData.pageSize,
+                    },
+                  },
+                }}
+                getRowId={(row) => row.leaveDetail.leaveUseDetail._id}
+                pageSizeOptions={ConfigData.pageRow}
+                localeText={{ noRowsLabel: "No Data Available!!!" }}
+                // checkboxSelection
+                // disableRowSelectionOnClick
+              />
+            </CustomTabPanel>
+          </Box>
         </Grid>
       </Grid>
 

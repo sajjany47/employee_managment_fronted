@@ -17,4 +17,26 @@ export const ConfigData = {
     { value: "approved", label: "Approved" },
     { value: "rejected", label: "Rejected" },
   ],
+  taskStatus: [
+    { value: "assign", label: "Assign" },
+    { value: "todo", label: "To Do" },
+    { value: "hold", label: "Hold" },
+    { value: "cancelled", label: "Cancelled" },
+    { value: "need-Attention", label: "Needs Attention" },
+    { value: "waiting-for-review", label: "Waiting for Review" },
+    { value: "under-review", label: "Under Review" },
+    { value: "completed", label: "Completed" },
+  ],
+
+  senderStatus: [
+    { value: "hold", label: "Hold" },
+    { value: "cancelled", label: "Cancelled" },
+    { value: "under-review", label: "Under Review" },
+    { value: "completed", label: "Completed" },
+  ],
+  recieverStatus: [
+    { value: "todo", label: "To Do" },
+    { value: "need-Attention", label: "Needs Attention" },
+    { value: "waiting-for-review", label: "Waiting for Review" },
+  ],
 };

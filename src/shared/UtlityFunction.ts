@@ -25,3 +25,27 @@ export const sumValues = (obj: object) =>
 export function percentage(percent: any, total: any) {
   return Number((percent / 100) * total).toFixed(2);
 }
+
+export const calculateSalary = (
+  a: any,
+  b: any,
+  c: any,
+  d: any,
+  e: any,
+  f: any,
+  g: any
+) => {
+  const salary = Number(a);
+  const currentMonthTotalDays = Number(b);
+  const present = Number(c);
+  const weekendLength = Number(d);
+  const absent = Number(e);
+  const holiday = Number(f);
+  const currentMonthTotalLeave = Number(g);
+  const total = (
+    (salary / currentMonthTotalDays) *
+    (present + weekendLength + currentMonthTotalLeave + holiday - absent)
+  ).toFixed(2);
+
+  return Number(total);
+};

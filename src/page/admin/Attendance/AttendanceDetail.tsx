@@ -1,4 +1,4 @@
-import { Box, Button, Chip, Grid } from "@mui/material";
+import { Box, Chip, Grid } from "@mui/material";
 
 import { useEffect, useState } from "react";
 
@@ -14,12 +14,11 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import WatchLaterIcon from "@mui/icons-material/WatchLater";
-import { useNavigate } from "react-router-dom";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { useLocation } from "react-router-dom";
 
 const AttendanceDetail = () => {
-  const navigation = useNavigate();
   const attendanceService = new AttendanceService();
+  const location = useLocation();
   const user = useSelector((state: any) => state.auth.auth.user);
   const [loading, setLoading] = useState(false);
   const [month, setMonth] = useState(moment.utc(new Date()));
@@ -30,7 +29,10 @@ const AttendanceDetail = () => {
   useEffect(() => {
     Promise.all([
       attendanceDateChecker(),
-      userAttendance({ username: user.username, date: month }),
+      userAttendance({
+        username: location.state === null ? user.username : location.state.data,
+        date: month,
+      }),
     ]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,7 +41,10 @@ const AttendanceDetail = () => {
   const attendanceDateChecker = () => {
     setLoading(true);
     attendanceService
-      .attendanceDateCheck({ username: user.username, checkDate: new Date() })
+      .attendanceDateCheck({
+        username: location.state === null ? user.username : location.state.data,
+        checkDate: new Date(),
+      })
       .then((res) => {
         setDateCheckData(res.data);
         if (res.data.startTime !== null && res.data.endTime !== null) {
@@ -127,7 +132,10 @@ const AttendanceDetail = () => {
   const handleMonthChange = (value: any) => {
     const formatDate: any = moment(value).format("MM-YYYY");
     setMonth(formatDate);
-    userAttendance({ username: user.username, date: value });
+    userAttendance({
+      username: location.state === null ? user.username : location.state.data,
+      date: value,
+    });
   };
 
   const userAttendance = (data: any) => {
@@ -163,7 +171,11 @@ const AttendanceDetail = () => {
       .finally(() => {
         setLoading(false);
         attendanceDateChecker();
-        userAttendance({ username: user.username, date: month });
+        userAttendance({
+          username:
+            location.state === null ? user.username : location.state.data,
+          date: month,
+        });
       });
   };
 
@@ -190,7 +202,11 @@ const AttendanceDetail = () => {
       .finally(() => {
         setLoading(false);
         attendanceDateChecker();
-        userAttendance({ username: user.username, date: month });
+        userAttendance({
+          username:
+            location.state === null ? user.username : location.state.data,
+          date: month,
+        });
       });
   };
   return (
@@ -222,14 +238,6 @@ const AttendanceDetail = () => {
                   />
                 </DemoContainer>
               </LocalizationProvider>
-
-              <Button
-                variant="contained"
-                startIcon={<ArrowForwardIosIcon />}
-                onClick={() => navigation("/user/leave/details")}
-              >
-                Leave
-              </Button>
             </Box>
           </Box>
         </Grid>
