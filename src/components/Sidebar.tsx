@@ -27,6 +27,7 @@ import { AttendanceService } from "../page/admin/Attendance/AttendanceService";
 import { enqueueSnackbar } from "notistack";
 import { FaRegUser } from "react-icons/fa6";
 import { CiLogout } from "react-icons/ci";
+import socketIOClient from "socket.io-client";
 
 type Props = {
   sidebarList: { path: string; title: string; icon: JSX.Element }[] | null;
@@ -112,9 +113,18 @@ export default function Sidebar(props: Props) {
   const [open, setOpen] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [notificationData, setNotificationData] = useState([]);
+  const [notification, setNotification] = useState("");
 
+  const socket = socketIOClient("http://localhost:5173/");
   useEffect(() => {
-    notifiCall();
+    socket.on("receiveNotification", (data) => {
+      console.log("Received notification:", data);
+      setNotification(data.message);
+      notifiCall();
+    });
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   const notifiCall = () => {
@@ -131,6 +141,7 @@ export default function Sidebar(props: Props) {
   };
   const handleDrawerOpen = () => {
     setOpen(true);
+    socket.emit("sendNotification", { message: "New notification!" });
   };
 
   const handleDrawerClose = () => {
@@ -149,6 +160,11 @@ export default function Sidebar(props: Props) {
     navigate("/");
     dispatch(setUser({ token: null, user: null }));
   };
+  // const sendNotification = () => {
+  //   // Emit a notification event to the server
+  //   socket.emit("sendNotification", { message: "New notification!" });
+  // };
+  console.log(notification);
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
