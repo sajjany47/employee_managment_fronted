@@ -1,4 +1,29 @@
+import { useEffect, useState } from "react";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:5173");
 const Chat = () => {
+  const [messages, setMessages] = useState<any>([]);
+  const [input, setInput] = useState("sajjan");
+
+  useEffect(() => {
+    socket.on("chat message", (msg) => {
+      setMessages((prevMessages) => [...prevMessages, msg]);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  const handleSubmit = (e: any) => {
+    console.log("sa");
+    e.preventDefault();
+    if (input.trim() !== "") {
+      socket.emit("chat message", input);
+      setInput("");
+    }
+  };
   return (
     <div className="flex h-screen overflow-hidden">
       {/* <!-- Sidebar --> */}
@@ -322,6 +347,7 @@ const Chat = () => {
                 </svg>
               </button>
               <button
+                onClick={handleSubmit}
                 type="button"
                 className="inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
               >
