@@ -73,7 +73,9 @@ export default function EmployeeList() {
           res.data.map((item: any, index: any) => ({ ...item, id: index }))
         );
       })
-      .catch((err) => enqueueSnackbar(err.message, { variant: "error" }));
+      .catch((err) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      );
   };
   const customRegistrationStatus = (value: any) => {
     switch (value) {
