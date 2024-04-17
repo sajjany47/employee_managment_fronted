@@ -2,7 +2,9 @@ import { Fragment, useEffect, useState } from "react";
 import { EmployeeService } from "../admin/Emloyee/EmployeeService";
 import { enqueueSnackbar } from "notistack";
 import { useSelector } from "react-redux";
+import io from "socket.io-client";
 
+const socket = io("http://localhost:8081");
 const Chat = () => {
   const employeeService = new EmployeeService();
   const user = useSelector((state: any) => state.auth.auth.user);
@@ -19,11 +21,15 @@ const Chat = () => {
         );
         setEmployeeList(filterUsername);
         setSelectUser(res.data[0].username);
-        receiveMessage(res.data[0].username);
+        // receiveMessage(res.data[0].username);
       })
       .catch((error: any) =>
         enqueueSnackbar(error.response.data.message, { variant: "error" })
       );
+
+    socket.on("chat message", (msg) => {
+      setChatDetails((prevMessages) => [...prevMessages, msg]);
+    });
   }, []);
 
   const receiveMessage = (receiveId: any) => {
@@ -37,6 +43,7 @@ const Chat = () => {
       );
   };
   const handelSend = () => {
+    socket.emit("chat message", send);
     employeeService
       .sendMessage({
         receiver: selectUser,
