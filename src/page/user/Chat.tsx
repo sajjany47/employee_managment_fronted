@@ -1,9 +1,11 @@
 import { Fragment, useEffect, useState } from "react";
 import { EmployeeService } from "../admin/Emloyee/EmployeeService";
 import { enqueueSnackbar } from "notistack";
+import { useSelector } from "react-redux";
 
 const Chat = () => {
   const employeeService = new EmployeeService();
+  const user = useSelector((state: any) => state.auth.auth.user);
   const [employeeList, setEmployeeList] = useState([]);
   const [selectUser, setSelectUser] = useState("");
   const [chatDetails, setChatDetails] = useState([]);
@@ -12,7 +14,10 @@ const Chat = () => {
     employeeService
       .employeeList()
       .then((res) => {
-        setEmployeeList(res.data);
+        const filterUsername = res.data.filter(
+          (item: any) => item.username !== user.username
+        );
+        setEmployeeList(filterUsername);
         setSelectUser(res.data[0].username);
         receiveMessage(res.data[0].username);
       })
