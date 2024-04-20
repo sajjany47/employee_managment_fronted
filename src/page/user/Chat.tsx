@@ -1,16 +1,16 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { EmployeeService } from "../admin/Emloyee/EmployeeService";
 import { enqueueSnackbar } from "notistack";
 import { useSelector } from "react-redux";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:8081");
 const Chat = () => {
   const employeeService = new EmployeeService();
+  const socket = useMemo(() => io("http://localhost:8081"), []);
   const user = useSelector((state: any) => state.auth.auth.user);
   const [employeeList, setEmployeeList] = useState([]);
   const [selectUser, setSelectUser] = useState("");
-  const [chatDetails, setChatDetails] = useState([]);
+  const [chatDetails, setChatDetails] = useState<any>([]);
   const [send, setSend] = useState("");
   useEffect(() => {
     employeeService
@@ -27,9 +27,22 @@ const Chat = () => {
         enqueueSnackbar(error.response.data.message, { variant: "error" })
       );
 
-    socket.on("chat message", (msg) => {
-      setChatDetails((prevMessages) => [...prevMessages, msg]);
+    socket.on("connect", () => {
+      console.log("connected", socket.id);
     });
+    socket.on("chat message", (msg) => {
+      setChatDetails([...chatDetails, msg]);
+    });
+    socket.on("receive-message", (data) => {
+      console.log("receive-message", data);
+    });
+    socket.on("welcome", (s) => {
+      console.log(s);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   const receiveMessage = (receiveId: any) => {
@@ -43,13 +56,13 @@ const Chat = () => {
       );
   };
   const handelSend = () => {
-    socket.emit("chat message", send);
     employeeService
       .sendMessage({
         receiver: selectUser,
         message: send,
       })
       .then((res) => {
+        socket.emit("message", send);
         console.log(res.message);
         receiveMessage(selectUser);
         setSend("");
