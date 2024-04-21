@@ -12,6 +12,8 @@ const Chat = () => {
   const [selectUser, setSelectUser] = useState("");
   const [chatDetails, setChatDetails] = useState<any>([]);
   const [send, setSend] = useState("");
+
+  var selectedChatCompare;
   useEffect(() => {
     employeeService
       .employeeList()
@@ -27,22 +29,22 @@ const Chat = () => {
         enqueueSnackbar(error.response.data.message, { variant: "error" })
       );
 
-    socket.on("connect", () => {
-      console.log("connected", socket.id);
-    });
-    socket.on("chat message", (msg) => {
-      setChatDetails([...chatDetails, msg]);
-    });
-    socket.on("receive-message", (data) => {
-      console.log("receive-message", data);
-    });
-    socket.on("welcome", (s) => {
-      console.log(s);
-    });
+    // socket.on("connect", () => {
+    //   console.log("connected", socket.id);
+    // });
+    // socket.on("chat message", (msg) => {
+    //   setChatDetails([...chatDetails, msg]);
+    // });
+    // socket.on("receive-message", (data) => {
+    //   console.log("receive-message", data);
+    // });
+    // socket.on("welcome", (s) => {
+    //   console.log(s);
+    // });
 
-    return () => {
-      socket.disconnect();
-    };
+    // return () => {
+    //   socket.disconnect();
+    // };
   }, []);
 
   const receiveMessage = (receiveId: any) => {
@@ -50,6 +52,7 @@ const Chat = () => {
       .receiveMessage({ receiver: receiveId })
       .then((res) => {
         setChatDetails(res.data);
+        socket.emit("join chat", selectUser);
       })
       .catch((error: any) =>
         enqueueSnackbar(error.response.data.message, { variant: "error" })
@@ -62,8 +65,10 @@ const Chat = () => {
         message: send,
       })
       .then((res) => {
-        socket.emit("message", send);
-        console.log(res.message);
+        socket.emit("new message", send);
+        setChatDetails([...chatDetails, send]);
+        // socket.emit("message", send);
+        // console.log(res.message);
         receiveMessage(selectUser);
         setSend("");
       })
@@ -71,6 +76,34 @@ const Chat = () => {
         enqueueSnackbar(err.response.data.message, { variant: "error" })
       );
   };
+
+  useEffect(() => {
+    socket.emit("setup", user.username);
+  }, []);
+
+  useEffect(() => {
+    receiveMessage(selectUser);
+
+    selectedChatCompare = selectUser;
+    // eslint-disable-next-line
+  }, [selectUser]);
+
+  useEffect(() => {
+    socket.on("message recieved", (newMessageRecieved) => {
+      setChatDetails([...chatDetails, newMessageRecieved]);
+      // if (
+      //   !selectedChatCompare || // if chat is not selected or doesn't match current chat
+      //   selectedChatCompare !== newMessageRecieved
+      // ) {
+      //   if (!notification.includes(newMessageRecieved)) {
+      //     setNotification([newMessageRecieved, ...notification]);
+      //     setFetchAgain(!fetchAgain);
+      //   }
+      // } else {
+      //   setChatDetails([...chatDetails, newMessageRecieved]);
+      // }
+    });
+  });
   return (
     <div className="flex h-screen overflow-hidden">
       {/* <!-- Sidebar --> */}
