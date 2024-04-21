@@ -308,3 +308,5 @@ const Chat = () => {
 };
 
 export default Chat;
+
+// https://github.com/piyush-eon/mern-chat-app/blob/master/frontend/src/components/SingleChat.js
