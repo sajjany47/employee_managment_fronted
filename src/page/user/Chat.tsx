@@ -13,7 +13,6 @@ const Chat = () => {
   const [chatDetails, setChatDetails] = useState<any>([]);
   const [send, setSend] = useState("");
 
-  var selectedChatCompare;
   useEffect(() => {
     employeeService
       .employeeList()
@@ -23,28 +22,13 @@ const Chat = () => {
         );
         setEmployeeList(filterUsername);
         setSelectUser(res.data[0].username);
-        // receiveMessage(res.data[0].username);
+        receiveMessage(res.data[0].username);
       })
       .catch((error: any) =>
         enqueueSnackbar(error.response.data.message, { variant: "error" })
       );
 
-    // socket.on("connect", () => {
-    //   console.log("connected", socket.id);
-    // });
-    // socket.on("chat message", (msg) => {
-    //   setChatDetails([...chatDetails, msg]);
-    // });
-    // socket.on("receive-message", (data) => {
-    //   console.log("receive-message", data);
-    // });
-    // socket.on("welcome", (s) => {
-    //   console.log(s);
-    // });
-
-    // return () => {
-    //   socket.disconnect();
-    // };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const receiveMessage = (receiveId: any) => {
@@ -52,7 +36,6 @@ const Chat = () => {
       .receiveMessage({ receiver: receiveId })
       .then((res) => {
         setChatDetails(res.data);
-        socket.emit("join chat", selectUser);
       })
       .catch((error: any) =>
         enqueueSnackbar(error.response.data.message, { variant: "error" })
@@ -65,10 +48,14 @@ const Chat = () => {
         message: send,
       })
       .then((res) => {
-        socket.emit("new message", send);
+        console.log(res);
+        socket.emit("message:send", {
+          sender: user.username,
+          selectUser,
+          send,
+        });
         setChatDetails([...chatDetails, send]);
-        // socket.emit("message", send);
-        // console.log(res.message);
+
         receiveMessage(selectUser);
         setSend("");
       })
@@ -78,32 +65,16 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    socket.emit("setup", user.username);
-  }, []);
-
-  useEffect(() => {
-    receiveMessage(selectUser);
-
-    selectedChatCompare = selectUser;
-    // eslint-disable-next-line
-  }, [selectUser]);
-
-  useEffect(() => {
-    socket.on("message recieved", (newMessageRecieved) => {
-      setChatDetails([...chatDetails, newMessageRecieved]);
-      // if (
-      //   !selectedChatCompare || // if chat is not selected or doesn't match current chat
-      //   selectedChatCompare !== newMessageRecieved
-      // ) {
-      //   if (!notification.includes(newMessageRecieved)) {
-      //     setNotification([newMessageRecieved, ...notification]);
-      //     setFetchAgain(!fetchAgain);
-      //   }
-      // } else {
-      //   setChatDetails([...chatDetails, newMessageRecieved]);
-      // }
+    socket.on("message:receive", (data) => {
+      setChatDetails([...chatDetails, data]);
     });
-  });
+
+    return () => {
+      socket.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatDetails]);
+
   return (
     <div className="flex h-screen overflow-hidden">
       {/* <!-- Sidebar --> */}
@@ -122,6 +93,7 @@ const Chat = () => {
                 className="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md"
                 key={item.username}
                 onClick={() => {
+                  socket.emit("user:join", item.username);
                   setSelectUser(item.username);
                   receiveMessage(item.username);
                 }}
