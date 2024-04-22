@@ -20,6 +20,7 @@ const Chat = () => {
         const filterUsername = res.data.filter(
           (item: any) => item.username !== user.username
         );
+        socket.emit("user:join", res.data[0].username);
         setEmployeeList(filterUsername);
         setSelectUser(res.data[0].username);
         receiveMessage(res.data[0].username);
@@ -28,6 +29,17 @@ const Chat = () => {
         enqueueSnackbar(error.response.data.message, { variant: "error" })
       );
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    socket.on("message:receive", (data) => {
+      setChatDetails([...chatDetails, data]);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -48,13 +60,15 @@ const Chat = () => {
         message: send,
       })
       .then((res) => {
-        console.log(res);
         socket.emit("message:send", {
           sender: user.username,
           selectUser,
           send,
         });
-        setChatDetails([...chatDetails, send]);
+        socket.on("message:receive", () => {
+          setChatDetails(res.data.chat);
+        });
+        // setChatDetails(res.data.chat);
 
         receiveMessage(selectUser);
         setSend("");
@@ -63,17 +77,6 @@ const Chat = () => {
         enqueueSnackbar(err.response.data.message, { variant: "error" })
       );
   };
-
-  useEffect(() => {
-    socket.on("message:receive", (data) => {
-      setChatDetails([...chatDetails, data]);
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatDetails]);
 
   return (
     <div className="flex h-screen overflow-hidden">
