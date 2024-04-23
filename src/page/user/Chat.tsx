@@ -14,25 +14,6 @@ const Chat = () => {
   const [send, setSend] = useState("");
 
   useEffect(() => {
-    employeeService
-      .employeeList()
-      .then((res) => {
-        const filterUsername = res.data.filter(
-          (item: any) => item.username !== user.username
-        );
-
-        setEmployeeList(filterUsername);
-        setSelectUser(filterUsername[0].username);
-        receiveMessage(filterUsername[0].username);
-      })
-      .catch((error: any) =>
-        enqueueSnackbar(error.response.data.message, { variant: "error" })
-      );
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     socket.emit("joinRoom", { room: user.username });
 
     socket.on("receiveMessage", (message) => {
@@ -47,6 +28,24 @@ const Chat = () => {
         },
       ]);
     });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatDetails]);
+  useEffect(() => {
+    employeeService
+      .employeeList()
+      .then((res) => {
+        const filterUsername = res.data.filter(
+          (item: any) => item.username !== user.username
+        );
+
+        setEmployeeList(filterUsername);
+        setSelectUser(filterUsername[0].username);
+        receiveMessage(filterUsername[0].username);
+      })
+      .catch((error: any) =>
+        enqueueSnackbar(error.response.data.message, { variant: "error" })
+      );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -74,6 +73,7 @@ const Chat = () => {
           receiver: selectUser, // Adjust as needed
           send,
         });
+
         receiveMessage(selectUser);
         setSend("");
       })
@@ -132,9 +132,9 @@ const Chat = () => {
 
         {/* <!-- Chat Messages --> */}
         <div className="h-screen overflow-y-auto p-4 pb-36">
-          {chatDetails.map((item: any) => {
+          {chatDetails.map((item: any, ind: number) => {
             return (
-              <Fragment key={item._id}>
+              <Fragment key={ind}>
                 {item.name === selectUser ? (
                   <div className="flex mb-4 cursor-pointer">
                     <div className="w-9 h-9 rounded-full flex items-center justify-center mr-2">
