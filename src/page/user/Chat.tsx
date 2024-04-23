@@ -20,7 +20,7 @@ const Chat = () => {
         const filterUsername = res.data.filter(
           (item: any) => item.username !== user.username
         );
-        socket.emit("user:join", filterUsername[0].username);
+
         setEmployeeList(filterUsername);
         setSelectUser(filterUsername[0].username);
         receiveMessage(filterUsername[0].username);
@@ -33,13 +33,21 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
-    socket.on("message:receive", (data) => {
-      setChatDetails([...chatDetails, data]);
+    socket.emit("joinRoom", { room: user.username });
+
+    socket.on("receiveMessage", (message) => {
+      console.log(message);
+      setChatDetails((prevMessages: any) => [
+        ...prevMessages,
+        {
+          name: message.receiver,
+          message: message.send,
+          document: null,
+          status: "seen",
+        },
+      ]);
     });
 
-    return () => {
-      socket.disconnect();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -60,16 +68,12 @@ const Chat = () => {
         message: send,
       })
       .then((res) => {
-        socket.emit("message:send", {
+        setChatDetails(res.data.chat);
+        socket.emit("sendMessage", {
           sender: user.username,
-          selectUser,
+          receiver: selectUser, // Adjust as needed
           send,
         });
-        socket.on("message:receive", () => {
-          setChatDetails(res.data.chat);
-        });
-        // setChatDetails(res.data.chat);
-
         receiveMessage(selectUser);
         setSend("");
       })
@@ -96,7 +100,8 @@ const Chat = () => {
                 className="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md"
                 key={item.username}
                 onClick={() => {
-                  socket.emit("user:join", item.username);
+                  socket.emit("joinRoom", { room: item.username });
+                  // socket.emit("user:join", item.username);
                   setSelectUser(item.username);
                   receiveMessage(item.username);
                 }}
