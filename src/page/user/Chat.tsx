@@ -20,10 +20,10 @@ const Chat = () => {
         const filterUsername = res.data.filter(
           (item: any) => item.username !== user.username
         );
-        socket.emit("user:join", res.data[0].username);
+        socket.emit("user:join", filterUsername[0].username);
         setEmployeeList(filterUsername);
-        setSelectUser(res.data[0].username);
-        receiveMessage(res.data[0].username);
+        setSelectUser(filterUsername[0].username);
+        receiveMessage(filterUsername[0].username);
       })
       .catch((error: any) =>
         enqueueSnackbar(error.response.data.message, { variant: "error" })
