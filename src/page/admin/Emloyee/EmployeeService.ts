@@ -24,4 +24,28 @@ export class EmployeeService {
       throw err;
     }
   };
+
+  sendMessage = async (payload: any) => {
+    try {
+      const response = await axios.post(`${apiPath}/chat/send`, payload, {
+        headers: this.headers,
+      });
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
+
+  receiveMessage = async (payload: any) => {
+    try {
+      const response = await axios.post(`${apiPath}/chat/receive`, payload, {
+        headers: this.headers,
+      });
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
 }

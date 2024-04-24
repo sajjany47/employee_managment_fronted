@@ -26,6 +26,7 @@ import EmpPayroll from "./page/employee/EmpPayroll";
 import EmpHoliday from "./page/employee/EmpHoliday";
 import EmpDetails from "./page/employee/EmpDetails";
 import HrDetail from "./page/hr/HrDetail";
+import Chat from "./page/user/Chat";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
             <Route path="/admin/user-payroll/view" element={<UserPayroll />} />
             <Route path="/salary-slip/generate" element={<SalarySlip />} />
             <Route path="/admin/tasks" element={<Task />} />
+            <Route path="/admin/chats" element={<Chat />} />
             <Route path="/employee/attendance" element={<EmpAttendance />} />
             <Route path="/employee/leave" element={<EmpLeave />} />
             <Route path="/employee/tasks" element={<EmpTask />} />
