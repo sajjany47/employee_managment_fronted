@@ -17,6 +17,16 @@ export const ConfigData = {
     { value: "approved", label: "Approved" },
     { value: "rejected", label: "Rejected" },
   ],
+
+  registrationStatus: [
+    { value: "waiting", label: "Waiting" },
+    { value: "pending", label: "Pending" },
+    { value: "verified", label: "Verified" },
+  ],
+  activeStatus: [
+    { value: true, label: "Active" },
+    { value: false, label: "Inactive" },
+  ],
   taskStatus: [
     { value: "assign", label: "Assign" },
     { value: "todo", label: "To Do" },

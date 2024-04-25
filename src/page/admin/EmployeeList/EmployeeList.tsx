@@ -29,6 +29,7 @@ import {
 import { EmployeeServices } from "./EmployeeServices";
 import { CiSearch } from "react-icons/ci";
 import { RxCross2 } from "react-icons/rx";
+import Search from "../../../components/Search";
 
 export default function EmployeeList() {
   const navigate = useNavigate();
@@ -299,7 +300,7 @@ export default function EmployeeList() {
         </Grid>
         {searchStatus && (
           <Grid item xs={12} className="mt-1">
-            SAJJAN
+            <Search />
           </Grid>
         )}
 
