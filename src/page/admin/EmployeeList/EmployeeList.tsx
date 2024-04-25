@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-escape */
 import * as React from "react";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import { Box, Button, Chip, Grid, Switch, TextField } from "@mui/material";
+import { Box, Button, Chip, Grid, Switch } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -27,6 +27,8 @@ import {
   SelectField,
 } from "../../../components/DynamicField";
 import { EmployeeServices } from "./EmployeeServices";
+import { CiSearch } from "react-icons/ci";
+import { RxCross2 } from "react-icons/rx";
 
 export default function EmployeeList() {
   const navigate = useNavigate();
@@ -37,6 +39,7 @@ export default function EmployeeList() {
   const [id, setId] = React.useState("all");
   const [activationKey, setActivationKey] = React.useState("");
   const [activationKeyData, setActivationKeyData] = React.useState([]);
+  const [searchStatus, setSearchStatus] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const userType = useSelector((state: any) => state.auth.auth.user);
@@ -127,6 +130,12 @@ export default function EmployeeList() {
         <span style={{ textTransform: "capitalize" }}>{value.value}</span>
       ),
     },
+    {
+      field: "username",
+      headerName: "Username",
+      width: 150,
+      renderCell: (value: any) => <span>{value.value}</span>,
+    },
     { field: "mobile", headerName: "Number", width: 120 },
     {
       field: "role",
@@ -145,7 +154,7 @@ export default function EmployeeList() {
     },
     {
       field: "activeStatus",
-      headerName: "IsActive",
+      headerName: "Active",
       width: 120,
       renderCell: (value: any) => (
         <Switch
@@ -154,7 +163,7 @@ export default function EmployeeList() {
         />
       ),
     },
-    { field: "createdBy", headerName: "CreatedBy ", width: 120 },
+    // { field: "createdBy", headerName: "CreatedBy ", width: 120 },
     { field: "updatedBy", headerName: "UpdatedBy ", width: 120 },
     { field: "approvedBy", headerName: "ApprovedBy ", width: 120 },
     {
@@ -261,7 +270,15 @@ export default function EmployeeList() {
               </h6>
             </Box>
             <Box className="mt-2 flex justify-end gap-2">
-              <TextField label="Search" id="outlined-size-small" size="small" />
+              <Button
+                variant="outlined"
+                color={searchStatus === true ? "error" : "primary"}
+                startIcon={searchStatus === true ? <RxCross2 /> : <CiSearch />}
+                onClick={() => setSearchStatus(!searchStatus)}
+              >
+                {searchStatus === true ? "Cancel" : "Search"}
+              </Button>
+
               <FormControl sx={{ minWidth: 120 }} size="small">
                 <Select value={id} onChange={handleChange}>
                   <MenuItem value={"all"}>All</MenuItem>
@@ -280,6 +297,12 @@ export default function EmployeeList() {
             </Box>
           </Box>
         </Grid>
+        {searchStatus && (
+          <Grid item xs={12} className="mt-1">
+            SAJJAN
+          </Grid>
+        )}
+
         <Grid item xs={12} className="mt-1">
           <Box>
             <DataGrid
