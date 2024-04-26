@@ -280,6 +280,7 @@ export default function EmployeeList() {
 
   const handelResetSearch = () => {
     activationList();
+    setSearchDetails({});
   };
 
   return (
