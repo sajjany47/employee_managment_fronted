@@ -42,6 +42,7 @@ export default function EmployeeList() {
   const [activationKeyData, setActivationKeyData] = React.useState([]);
   const [searchStatus, setSearchStatus] = React.useState(false);
   const [searchDetails, setSearchDetails] = React.useState({});
+
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const userType = useSelector((state: any) => state.auth.auth.user);
@@ -261,6 +262,7 @@ export default function EmployeeList() {
   };
 
   const handelSearch = (values: any) => {
+    console.log(values);
     if (Object.keys(values).length > 0) {
       setSearchDetails(values);
     }
@@ -336,6 +338,7 @@ export default function EmployeeList() {
               }}
               rows={activationKeyData}
               columns={columns}
+              onPaginationModelChange={(e) => console.log(e)}
               initialState={{
                 pagination: {
                   paginationModel: {

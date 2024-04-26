@@ -9,6 +9,7 @@ import { removeEmptyValue } from "../shared/UtlityFunction";
 
 const Search = (props: any) => {
   const data = props?.value;
+
   const employeeServices = new EmployeeServices();
   const [countryData, setCountryData] = useState([]);
   const [stateData, setStateData] = useState([]);
@@ -62,42 +63,42 @@ const Search = (props: any) => {
               spacing={{ xs: 2, md: 2 }}
               columns={{ xs: 4, sm: 8, md: 12 }}
             >
-              {data?.activationCode && (
+              {"activationCode" in data === true && (
                 <Grid item xs={6} sm={3} md={3}>
                   <InputField name="activationCode" label="Activation Code" />
                 </Grid>
               )}
-              {data?.name && (
+              {"name" in data && (
                 <Grid item xs={6} sm={3} md={3}>
                   <InputField name="name" label="Name" />
                 </Grid>
               )}
 
-              {data?.username && (
+              {"username" in data && (
                 <Grid item xs={6} sm={3} md={3}>
                   <InputField name="username" label="Username" />
                 </Grid>
               )}
 
-              {data?.email && (
+              {"email" in data && (
                 <Grid item xs={6} sm={3} md={3}>
                   <InputField name="email" label="Email" type="email" />
                 </Grid>
               )}
 
-              {data?.mobile && (
+              {"mobile" in data && (
                 <Grid item xs={6} sm={3} md={3}>
                   <InputField name="mobile" label="Mobile" />
                 </Grid>
               )}
 
-              {data?.position && (
+              {"position" in data && (
                 <Grid item xs={6} sm={3} md={3}>
                   <InputField name="position" label="Position" />
                 </Grid>
               )}
 
-              {data?.role && (
+              {"role" in data && (
                 <Grid item xs={6} sm={4} md={3}>
                   <SelectField
                     name="role"
@@ -107,7 +108,7 @@ const Search = (props: any) => {
                 </Grid>
               )}
 
-              {data?.country && (
+              {"country" in data && (
                 <Grid item xs={6} sm={4} md={3}>
                   <SelectField
                     name="country"
@@ -118,7 +119,7 @@ const Search = (props: any) => {
                 </Grid>
               )}
 
-              {data?.state && (
+              {"state" in data && (
                 <Grid item xs={6} sm={4} md={3}>
                   <SelectField
                     name="state"
@@ -131,13 +132,13 @@ const Search = (props: any) => {
                 </Grid>
               )}
 
-              {data?.pincode && (
+              {"pincode" in data && (
                 <Grid item xs={6} sm={4} md={3}>
                   <InputField name="pincode" label="Pincode" />
                 </Grid>
               )}
 
-              {data?.activeStatus && (
+              {"activeStatus" in data && (
                 <Grid item xs={6} sm={4} md={3}>
                   <SelectField
                     name="activeStatus"
@@ -147,7 +148,7 @@ const Search = (props: any) => {
                 </Grid>
               )}
 
-              {data?.registrationStatus && (
+              {"registrationStatus" in data && (
                 <Grid item xs={6} sm={4} md={3}>
                   <SelectField
                     name="registrationStatus"
