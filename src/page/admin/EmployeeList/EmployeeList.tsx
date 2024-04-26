@@ -8,9 +8,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { Formik, Form } from "formik";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
@@ -37,7 +34,6 @@ export default function EmployeeList() {
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [id, setId] = React.useState("all");
   const [activationKey, setActivationKey] = React.useState("");
   const [activationKeyData, setActivationKeyData] = React.useState([]);
   const [searchStatus, setSearchStatus] = React.useState(false);
@@ -244,10 +240,6 @@ export default function EmployeeList() {
     activationList();
   };
 
-  const handleChange = (event: any) => {
-    setId(event.target.value);
-  };
-
   const handleGenerateKey = (value: any) => {
     setLoading(true);
     const reqBody = {
@@ -304,14 +296,6 @@ export default function EmployeeList() {
                 {searchStatus === true ? "Cancel" : "Search"}
               </Button>
 
-              <FormControl sx={{ minWidth: 120 }} size="small">
-                <Select value={id} onChange={handleChange}>
-                  <MenuItem value={"all"}>All</MenuItem>
-                  <MenuItem value={"waiting"}>Waiting</MenuItem>
-                  <MenuItem value={"pending"}>Pending</MenuItem>
-                  <MenuItem value={"verified"}>Verified</MenuItem>
-                </Select>
-              </FormControl>
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
