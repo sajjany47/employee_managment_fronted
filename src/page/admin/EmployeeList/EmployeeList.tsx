@@ -261,7 +261,9 @@ export default function EmployeeList() {
   };
 
   const handelSearch = (values: any) => {
-    setSearchDetails(values);
+    if (Object.keys(values).length > 0) {
+      setSearchDetails(values);
+    }
   };
 
   return (

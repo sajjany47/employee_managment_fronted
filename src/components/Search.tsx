@@ -5,6 +5,7 @@ import { ConfigData } from "../shared/ConfigData";
 import { EmployeeServices } from "../page/admin/EmployeeList/EmployeeServices";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
+import { removeEmptyValue } from "../shared/UtlityFunction";
 
 const Search = (props: any) => {
   const data = props?.value;
@@ -47,7 +48,8 @@ const Search = (props: any) => {
       );
   };
   const handelSearch = (values: any) => {
-    props.handelSearch(values);
+    const a = removeEmptyValue(values);
+    props.handelSearch(a);
   };
 
   return (

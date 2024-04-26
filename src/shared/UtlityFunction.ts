@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export function convertStringToNull(obj: any) {
   Object.keys(obj).forEach(function (key) {
     if (obj[key] === "") {
@@ -48,4 +49,13 @@ export const calculateSalary = (
   ).toFixed(2);
 
   return Number(total);
+};
+
+export const removeEmptyValue = (data: object) => {
+  const result = Object.fromEntries(
+    Object.entries(data).filter(
+      ([key, value]) => value !== null && value !== undefined && value !== ""
+    )
+  );
+  return result;
 };
