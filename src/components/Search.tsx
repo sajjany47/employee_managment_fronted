@@ -47,7 +47,7 @@ const Search = (props: any) => {
       );
   };
   const handelSearch = (values: any) => {
-    console.log(values);
+    props.handelSearch(values);
   };
 
   return (

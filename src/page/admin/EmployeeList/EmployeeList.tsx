@@ -41,6 +41,7 @@ export default function EmployeeList() {
   const [activationKey, setActivationKey] = React.useState("");
   const [activationKeyData, setActivationKeyData] = React.useState([]);
   const [searchStatus, setSearchStatus] = React.useState(false);
+  const [searchDetails, setSearchDetails] = React.useState({});
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const userType = useSelector((state: any) => state.auth.auth.user);
@@ -259,6 +260,10 @@ export default function EmployeeList() {
       });
   };
 
+  const handelSearch = (values: any) => {
+    setSearchDetails(values);
+  };
+
   return (
     <div>
       {loading && <Loader />}
@@ -300,7 +305,23 @@ export default function EmployeeList() {
         </Grid>
         {searchStatus && (
           <Grid item xs={12} className="mt-1">
-            <Search />
+            <Search
+              value={{
+                name: "",
+                username: "",
+                activationCode: "",
+                email: "",
+                mobile: "",
+                position: "",
+                role: "",
+                country: "",
+                state: "",
+                pincode: "",
+                activeStatus: "",
+                registrationStatus: "",
+              }}
+              handelSearch={handelSearch}
+            />
           </Grid>
         )}
 
