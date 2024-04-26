@@ -56,7 +56,7 @@ const Search = (props: any) => {
   return (
     <div>
       <Formik onSubmit={handelSearch} initialValues={{ ...data }}>
-        {({ handleSubmit, setFieldValue }) => (
+        {({ handleSubmit, setFieldValue, resetForm }) => (
           <Form onSubmit={handleSubmit}>
             <Grid
               container
@@ -170,14 +170,17 @@ const Search = (props: any) => {
                   }}
                 >
                   <Button
-                    //   onClick={handleClose}
+                    onClick={() => {
+                      resetForm();
+                      props.handelResetSearch();
+                    }}
                     variant="contained"
                     sx={{
                       backgroundColor: "red",
                       ":hover": { backgroundColor: "red" },
                     }}
                   >
-                    Cancel
+                    Reset
                   </Button>
                   <Button variant="contained" type="submit">
                     Submit

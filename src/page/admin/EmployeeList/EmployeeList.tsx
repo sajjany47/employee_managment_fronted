@@ -42,6 +42,8 @@ export default function EmployeeList() {
   const [activationKeyData, setActivationKeyData] = React.useState([]);
   const [searchStatus, setSearchStatus] = React.useState(false);
   const [searchDetails, setSearchDetails] = React.useState({});
+  const [page, setPage] = React.useState(1);
+  const [pageRow, setPageRow] = React.useState(10);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -67,13 +69,21 @@ export default function EmployeeList() {
     password: Yup.string().required("Password is required"),
   });
   React.useEffect(() => {
-    activationList(id);
+    activationList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [searchDetails, page, pageRow]);
 
-  const activationList = (id: any) => {
+  const activationList = () => {
+    let reqData: object = {
+      page: page,
+      limit: pageRow,
+    };
+
+    if (Object.keys(searchDetails).length > 0) {
+      reqData = { ...reqData, ...searchDetails };
+    }
     employeeServices
-      .activationKeyList(id)
+      .activationKeyList(reqData)
       .then((res: any) => {
         setActivationKeyData(
           res.data.map((item: any, index: any) => ({ ...item, id: index }))
@@ -219,7 +229,7 @@ export default function EmployeeList() {
         enqueueSnackbar(err.response.data.message, { variant: "error" })
       )
       .finally(() => {
-        activationList(id);
+        activationList();
         setLoading(false);
       });
   };
@@ -231,7 +241,7 @@ export default function EmployeeList() {
   const handleClose = () => {
     setOpen(false);
     setActivationKey("");
-    activationList(id);
+    activationList();
   };
 
   const handleChange = (event: any) => {
@@ -266,6 +276,10 @@ export default function EmployeeList() {
     if (Object.keys(values).length > 0) {
       setSearchDetails(values);
     }
+  };
+
+  const handelResetSearch = () => {
+    activationList();
   };
 
   return (
@@ -325,6 +339,7 @@ export default function EmployeeList() {
                 registrationStatus: "",
               }}
               handelSearch={handelSearch}
+              handelResetSearch={handelResetSearch}
             />
           </Grid>
         )}
@@ -338,11 +353,14 @@ export default function EmployeeList() {
               }}
               rows={activationKeyData}
               columns={columns}
-              onPaginationModelChange={(e) => console.log(e)}
+              onPaginationModelChange={(e) => {
+                setPageRow(e.pageSize);
+                setPage(e.page);
+              }}
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: ConfigData.pageSize,
+                    pageSize: pageRow,
                   },
                 },
               }}
