@@ -5,7 +5,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { getIn, useField, useFormikContext } from "formik";
+import { useField, useFormikContext } from "formik";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -64,9 +64,6 @@ export const SelectField = (props: any) => {
           })}
         </Select>
       </FormControl>
-      {/* {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null} */}
     </>
   );
 };
@@ -89,12 +86,10 @@ export const DateField = (props: any) => {
             sx={{ width: "100%" }}
             slotProps={{
               textField: {
+                variant: "outlined",
                 size: "medium",
-                error:
-                  getIn(meta.error, field.name) &&
-                  getIn(meta.touched, field.name)
-                    ? true
-                    : false,
+                error: meta.touched && Boolean(meta.error),
+                // helperText: meta.touched && Boolean(meta.error),
               },
             }}
           />
@@ -120,12 +115,9 @@ export const TimeField = (props: any) => {
             onChange={(e: any) => setFieldValue(field.name, moment(e))}
             slotProps={{
               textField: {
+                variant: "outlined",
                 size: "medium",
-                error:
-                  getIn(meta.error, field.name) &&
-                  getIn(meta.touched, field.name)
-                    ? true
-                    : false,
+                error: meta.touched && Boolean(meta.error),
               },
             }}
           />
