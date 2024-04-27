@@ -28,7 +28,7 @@ const UserVerified = () => {
       })
       .finally(() => setLoading(false));
   };
-
+  console.log(data);
   return (
     <div className="bg-gray-100">
       {loading && <Loader />}
@@ -101,7 +101,7 @@ const UserVerified = () => {
               <div className="text-gray-700">
                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt className="text-sm font-medium text-gray-500">
-                    UserName
+                    Username
                   </dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                     {data.username}
@@ -139,7 +139,7 @@ const UserVerified = () => {
                   <dt className="text-sm font-medium text-gray-500">Address</dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 capitalize">
                     {data.address
-                      ? `${data.address} ,${data.city} ,${data.district} ,${data.state} ,${data.pincode}`
+                      ? `${data.address} ,${data.pincode} ,${data.state} ,${data.country}`
                       : ""}
                   </dd>
                 </div>
@@ -154,19 +154,23 @@ const UserVerified = () => {
                         className="flex justify-between flex-wrap gap-2 w-full"
                         key={index}
                       >
+                        <p>
+                          <span className="text-gray-700 mr-2 uppercase">
+                            {item.boardName ? item.boardName : ""}
+                          </span>
+                          (
+                          <span className="text-gray-700">
+                            <strong>
+                              {item.passingYear ? item.passingYear : ""}
+                            </strong>
+                          </span>
+                          )
+                        </p>
                         <span className="text-gray-700 font-bold">
                           {item.marksPercentage
                             ? `${item.marksPercentage}%`
                             : ""}
                         </span>
-                        <p>
-                          <span className="text-gray-700 mr-2">
-                            {item.boardName ? item.boardName : ""}
-                          </span>
-                          <span className="text-gray-700">
-                            {item.passingYear ? item.passingYear : ""}
-                          </span>
-                        </p>
                       </div>
                     );
                   })}
@@ -181,19 +185,23 @@ const UserVerified = () => {
                         className="flex justify-between flex-wrap gap-2 w-full"
                         key={index}
                       >
-                        <span className="text-gray-700 font-bold">
-                          {item.position ? item.position : ""}
-                        </span>
                         <p>
-                          <span className="text-gray-700 mr-2">
+                          <span className="text-gray-700 mr-2 uppercase">
                             {item.companyName ? item.companyName : ""}
                           </span>
+                          (
                           <span className="text-gray-700">
-                            {item.startingYear
-                              ? `${item.startingYear} - ${item.endingYear}`
-                              : ""}
+                            <strong>
+                              {item.startingYear
+                                ? `${item.startingYear} - ${item.endingYear}`
+                                : ""}
+                            </strong>
                           </span>
+                          )
                         </p>
+                        <span className="text-gray-700 font-bold capitalize">
+                          {item.position ? item.position : ""}
+                        </span>
                       </div>
                     );
                   })}
