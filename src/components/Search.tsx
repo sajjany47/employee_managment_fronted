@@ -1,4 +1,4 @@
-import { Button, Grid } from "@mui/material";
+import { Button, Card, Grid } from "@mui/material";
 import { Form, Formik } from "formik";
 import { InputField, SelectField } from "./DynamicField";
 import { ConfigData } from "../shared/ConfigData";
@@ -54,7 +54,7 @@ const Search = (props: any) => {
   };
 
   return (
-    <div>
+    <Card sx={{ border: 3, padding: 2, borderColor: "gray" }}>
       <Formik onSubmit={handelSearch} initialValues={{ ...data }}>
         {({ handleSubmit, setFieldValue, resetForm }) => (
           <Form onSubmit={handleSubmit}>
@@ -191,7 +191,7 @@ const Search = (props: any) => {
           </Form>
         )}
       </Formik>
-    </div>
+    </Card>
   );
 };
 

@@ -170,6 +170,8 @@ const UserUpdate = () => {
   };
 
   const handelIFSC = (setFieldValue: any, e: any) => {
+    setFieldValue("branchName", "");
+    setFieldValue("bankName", "");
     setFieldValue("ifsc", e.target.value);
     if (e.target.value.length > 10) {
       employeeServices

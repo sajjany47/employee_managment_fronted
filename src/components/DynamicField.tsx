@@ -23,17 +23,13 @@ export const InputField = (props: any) => {
         size="medium"
         {...field}
         {...props}
-        // value={field.value !== undefined ? field.value : ""}
+        value={field.value !== undefined ? field.value : ""}
         id={field.name}
         variant="outlined"
         className="w-full"
         // helperText={meta.touched ? meta.error : ""}
         error={meta.touched && Boolean(meta.error)}
       />
-
-      {/* {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null} */}
     </>
   );
 };
@@ -44,14 +40,14 @@ export const SelectField = (props: any) => {
   return (
     <>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label" sx={{ marginTop: 1 }}>
+        <InputLabel id={field.name} sx={{ marginTop: 1 }}>
           {props.label}
         </InputLabel>
         <Select
           // id={field.name}
           sx={{ marginTop: 1 }}
           size="medium"
-          labelId="demo-simple-select-label"
+          labelId={field.name}
           {...field}
           {...props}
           value={field?.value !== undefined ? field.value : ""}
