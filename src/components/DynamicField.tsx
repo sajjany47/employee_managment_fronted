@@ -30,6 +30,9 @@ export const InputField = (props: any) => {
         // helperText={meta.touched ? meta.error : ""}
         error={meta.touched && Boolean(meta.error)}
       />
+      {meta.touched && meta.error && (
+        <small className="text-red-600">{meta.error}</small>
+      )}
     </>
   );
 };
@@ -44,7 +47,7 @@ export const SelectField = (props: any) => {
           {props.label}
         </InputLabel>
         <Select
-          // id={field.name}
+          id={field.name}
           sx={{ marginTop: 1 }}
           size="medium"
           labelId={field.name}
@@ -64,6 +67,9 @@ export const SelectField = (props: any) => {
           })}
         </Select>
       </FormControl>
+      {meta.touched && meta.error && (
+        <small className="text-red-600">{meta.error}</small>
+      )}
     </>
   );
 };
@@ -80,7 +86,7 @@ export const DateField = (props: any) => {
             // views={["year", "month", "day"]}
             {...field}
             {...props}
-            value={field.value !== undefined ? moment.utc(field.value) : ""}
+            value={field.value !== undefined ? moment(field.value) : ""}
             views={props.views}
             onChange={(e: any) => setFieldValue(field.name, moment(e))}
             sx={{ width: "100%" }}
@@ -95,6 +101,9 @@ export const DateField = (props: any) => {
           />
         </DemoContainer>
       </LocalizationProvider>
+      {meta.touched && meta.error && (
+        <small className="text-red-600">{meta.error}</small>
+      )}
     </>
   );
 };
@@ -123,6 +132,9 @@ export const TimeField = (props: any) => {
           />
         </DemoContainer>
       </LocalizationProvider>
+      {meta.touched && meta.error && (
+        <small className="text-red-600">{meta.error}</small>
+      )}
     </>
   );
 };

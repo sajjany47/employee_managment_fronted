@@ -28,6 +28,7 @@ import { percentage, sumValues } from "../../../shared/UtlityFunction";
 import UpdateIcon from "@mui/icons-material/Update";
 import { useSelector } from "react-redux";
 import { ConfigData } from "../../../shared/ConfigData";
+import * as Yup from "yup";
 
 const Salary = () => {
   const salaryService = new SalaryServices();
@@ -44,6 +45,24 @@ const Salary = () => {
   const [getId, setGetId] = useState("");
   const [page, setPage] = useState(1);
   const [pageRow, setPageRow] = useState(10);
+
+  const salaryValidation = Yup.object().shape({
+    date: Yup.string().required("Date is required"),
+    username: Yup.string().required("Username is required"),
+    basicSalary: Yup.string().required("Basic salary is required"),
+    MedicalAllowance: Yup.string().required("Medical allowance is required"),
+    travelAllowance: Yup.string().required("Travel allowance is required"),
+    hra: Yup.string().required("HRA is required"),
+    SpecialAllowance: Yup.string().required("Special allowance is required"),
+    providentFund: Yup.string().required("Provident fund is required"),
+    professionalTax: Yup.string().required("Professional tax is required"),
+    incomeTax: Yup.string().required("Income tax is required"),
+    ctc: Yup.number().required("CTC is required").moreThan(0, "More than 0"),
+    totalEarning: Yup.number()
+      .required("Net salary is required")
+      .moreThan(0, "More than 0"),
+    healthInsurance: Yup.string().required("Health insurance is required"),
+  });
 
   useEffect(() => {
     Promise.all([salaryList(), userList()]);
@@ -181,13 +200,17 @@ const Salary = () => {
         ? {
             ...values,
             updatedBy: userType.username,
+            totalEarning: Number(values.totalEarning),
+            ctc: Number(values.ctc),
           }
         : {
             ...values,
             id: getId,
             updatedBy: userType.username,
+            totalEarning: Number(values.totalEarning),
+            ctc: Number(values.ctc),
           };
-    console.log(requestData);
+
     salaryService
       .createSalaryStructure(requestData)
       .then((res) => {
@@ -292,10 +315,10 @@ const Salary = () => {
                 : {
                     ...selectUser.currentSalary,
                     username: selectUser.username,
-                    date: moment.utc(selectUser.currentSalary.date),
+                    date: moment(selectUser.currentSalary.date),
                   }
             }
-            // validationSchema={activationKeyValidation}
+            validationSchema={salaryValidation}
             onSubmit={generateSalary}
             enableReinitialize
           >
