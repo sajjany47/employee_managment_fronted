@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -23,8 +23,8 @@ import { Avatar, Menu, MenuItem } from "@mui/material";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/reducer/authReducer";
-import { AttendanceService } from "../page/admin/Attendance/AttendanceService";
-import { enqueueSnackbar } from "notistack";
+// import { AttendanceService } from "../page/admin/Attendance/AttendanceService";
+// import { enqueueSnackbar } from "notistack";
 import { FaRegUser } from "react-icons/fa6";
 import { CiLogout } from "react-icons/ci";
 
@@ -103,7 +103,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function Sidebar(props: Props) {
-  const attendanceService = new AttendanceService();
+  // const attendanceService = new AttendanceService();
   const user = useSelector((state: any) => state.auth.auth.user);
 
   const navigate = useNavigate();
@@ -111,24 +111,24 @@ export default function Sidebar(props: Props) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [notificationData, setNotificationData] = useState([]);
+  // const [notificationData, setNotificationData] = useState([]);
 
   useEffect(() => {
-    notifiCall();
+    // notifiCall();
   }, []);
 
-  const notifiCall = () => {
-    // setInterval(() => {
-    attendanceService
-      .notificationList()
-      .then((res) => {
-        setNotificationData(res.data);
-      })
-      .catch((err: any) =>
-        enqueueSnackbar(err.response.data.message, { variant: "error" })
-      );
-    // }, 1000);
-  };
+  // const notifiCall = () => {
+  //   // setInterval(() => {
+  //   attendanceService
+  //     .notificationList()
+  //     .then((res) => {
+  //       setNotificationData(res.data);
+  //     })
+  //     .catch((err: any) =>
+  //       enqueueSnackbar(err.response.data.message, { variant: "error" })
+  //     );
+  //   // }, 1000);
+  // };
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -184,7 +184,7 @@ export default function Sidebar(props: Props) {
               aria-label="show 17 new notifications"
               color="inherit"
             >
-              <Badge badgeContent={notificationData.length} color="error">
+              <Badge badgeContent={5} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>

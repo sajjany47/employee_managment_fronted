@@ -41,9 +41,9 @@ export class SalaryServices {
     }
   };
 
-  salaryList = async () => {
+  salaryList = async (payload: any) => {
     try {
-      const response = await axios.get(`${apiPath}/salary/list`, {
+      const response = await axios.post(`${apiPath}/salary/list`, payload, {
         headers: this.headers,
       });
       return response.data;

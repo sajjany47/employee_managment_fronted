@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { ConfigData } from "../../../shared/ConfigData";
 import moment from "moment";
 import { SalaryServices } from "./SalaryService";
 import { useSnackbar } from "notistack";
@@ -28,6 +27,7 @@ import {
 import { percentage, sumValues } from "../../../shared/UtlityFunction";
 import UpdateIcon from "@mui/icons-material/Update";
 import { useSelector } from "react-redux";
+import { ConfigData } from "../../../shared/ConfigData";
 
 const Salary = () => {
   const salaryService = new SalaryServices();
@@ -40,7 +40,10 @@ const Salary = () => {
   const [open, setOpen] = useState(false);
   const [actionType, setActionType] = useState("add");
   const [selectUser, setSelectUser] = useState<any>({});
+  const [search, setSearch] = useState("");
   const [getId, setGetId] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageRow, setPageRow] = useState(10);
 
   useEffect(() => {
     Promise.all([salaryList(), userList()]);
@@ -64,12 +67,19 @@ const Salary = () => {
       setGetId(selectId._id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [page, pageRow, search]);
 
   const salaryList = () => {
     setLoading(true);
+    const reqData: any = {
+      page: page,
+      limit: pageRow,
+    };
+    if (search !== "") {
+      reqData.username = search;
+    }
     salaryService
-      .salaryList()
+      .salaryList(reqData)
       .then((res) => {
         setSalaryDetailList(res.data);
       })
@@ -203,7 +213,12 @@ const Salary = () => {
               </h6>
             </Box>
             <Box className="mt-2 flex justify-end gap-2">
-              <TextField label="Search" id="outlined-size-small" size="small" />
+              <TextField
+                label="Search"
+                id="outlined-size-small"
+                size="small"
+                onChange={(e) => setSearch(e.target.value)}
+              />
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
@@ -227,10 +242,14 @@ const Salary = () => {
               rows={salaryDetailList}
               columns={columns}
               getRowId={(row) => row._id}
+              onPaginationModelChange={(e) => {
+                setPageRow(e.pageSize);
+                setPage(e.page);
+              }}
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: ConfigData.pageSize,
+                    pageSize: pageRow,
                   },
                 },
               }}
