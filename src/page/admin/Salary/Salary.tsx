@@ -243,20 +243,19 @@ const Salary = () => {
               columns={columns}
               getRowId={(row) => row._id}
               onPaginationModelChange={(e) => {
-                setPageRow(e.pageSize);
-                setPage(e.page);
+                setPageRow(Number(e.pageSize));
+                setPage(Number(e.page) + 1);
               }}
               initialState={{
                 pagination: {
                   paginationModel: {
                     pageSize: pageRow,
+                    page: page,
                   },
                 },
               }}
               pageSizeOptions={ConfigData.pageRow}
               localeText={{ noRowsLabel: "No Data Available!!!" }}
-              // checkboxSelection
-              // disableRowSelectionOnClick
             />
           </Box>
         </Grid>

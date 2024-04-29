@@ -339,13 +339,14 @@ export default function EmployeeList() {
               rows={activationKeyData}
               columns={columns}
               onPaginationModelChange={(e) => {
-                setPageRow(e.pageSize);
-                setPage(e.page);
+                setPageRow(Number(e.pageSize));
+                setPage(Number(e.page) + 1);
               }}
               initialState={{
                 pagination: {
                   paginationModel: {
                     pageSize: pageRow,
+                    page: page,
                   },
                 },
               }}
