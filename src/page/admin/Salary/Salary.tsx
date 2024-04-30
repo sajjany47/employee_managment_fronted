@@ -62,6 +62,22 @@ const Salary = () => {
       .required("Net salary is required")
       .moreThan(0, "More than 0"),
     healthInsurance: Yup.string().required("Health insurance is required"),
+    incrementType: Yup.string().when("type", {
+      is: (val: any) => val === "appraisal",
+      then: () => Yup.string().required("Increment type is required"),
+      otherwise: () => Yup.string().notRequired(),
+    }),
+    incrementValue: Yup.string().when("incrementType", {
+      is: (val: any) => val === "percentage",
+      then: () => Yup.string().required("Increment value is required"),
+      otherwise: () => Yup.string().notRequired(),
+    }),
+    type: Yup.string().when("actionType", {
+      is: (val: any) => val === "edit",
+      then: () => Yup.string().required("Type is required when editing"),
+      // .oneOf(["changes", "appraisal"], "Invalid type value"),
+      otherwise: () => Yup.string().notRequired(),
+    }),
   });
 
   useEffect(() => {
@@ -297,6 +313,7 @@ const Salary = () => {
             initialValues={
               actionType === "add"
                 ? {
+                    actionType: "add",
                     date: "",
                     username: "",
                     basicSalary: "",
@@ -316,6 +333,10 @@ const Salary = () => {
                     ...selectUser.currentSalary,
                     username: selectUser.username,
                     date: moment(selectUser.currentSalary.date),
+                    actionType: "edit",
+                    type: "",
+                    incrementValue: "",
+                    incrementType: "",
                   }
             }
             validationSchema={salaryValidation}
@@ -537,6 +558,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("basicSalary", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
@@ -548,6 +575,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("hra", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
@@ -559,6 +592,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("travelAllowance", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
 
@@ -571,6 +610,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("MedicalAllowance", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
@@ -582,6 +627,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("LeaveTravelAllowance", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
@@ -593,6 +644,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("SpecialAllowance", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
@@ -604,6 +661,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("healthInsurance", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
@@ -615,6 +678,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("providentFund", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
@@ -626,6 +695,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("incomeTax", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
@@ -637,6 +712,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("professionalTax", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
 
