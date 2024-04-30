@@ -448,47 +448,47 @@ const Attendance = () => {
 
   const AttendanceColumns: GridColDef[] = [
     {
+      field: "date",
+      headerName: "Date",
+      width: 150,
+      renderCell: (value: any) =>
+        moment(value.row.date, "YYYY-MM").format("Do MMM, YYYY"),
+    },
+    {
       field: "username",
       headerName: "Username",
       width: 150,
       renderCell: (value: any) => <span>{value.value}</span>,
     },
-    {
-      field: "date",
-      headerName: "Date",
-      width: 150,
-      renderCell: (value: any) =>
-        moment(value.row.timeSchedule.date).format("Do MMM, YYYY"),
-    },
-    {
-      field: "startTime",
-      headerName: "Clock In",
-      width: 150,
-      renderCell: (value: any) =>
-        moment(value.row.timeSchedule.startTime).format("HH:mm:ss"),
-    },
-    {
-      field: "endTime",
-      headerName: "Clock Out",
-      width: 200,
-      renderCell: (value: any) =>
-        value.row.timeSchedule.endTime &&
-        moment(value.row.timeSchedule.endTime).format("HH:mm:ss"),
-    },
+
     {
       field: "totalTime",
       headerName: "Total Time",
       width: 150,
-      renderCell: (value: any) => (
-        <span>{value.row.timeSchedule.totalTime}</span>
-      ),
+      renderCell: (value: any) =>
+        moment(value.row.totalTime, "mm").format("HH:mm:ss"),
     },
     {
-      field: "updatedBy",
-      headerName: "Updated By",
+      field: "totalLeave",
+      headerName: "Total Leave",
+      width: 200,
+      renderCell: (value: any) => <span>{value.value}</span>,
+    },
+    {
+      field: "totalLeaveLeft",
+      headerName: "Leave Left",
+      width: 150,
+      renderCell: (value: any) => <span>{value.row.totalLeaveLeft}</span>,
+    },
+    {
+      field: "timeSchedule",
+      headerName: "Average",
       width: 150,
       renderCell: (value: any) => (
-        <span>{value.row.timeSchedule?.updatedBy}</span>
+        <span>
+          {(Number(value.row.totalTime) / value.row.timeSchedule.length) * 100}{" "}
+          %
+        </span>
       ),
     },
     {
@@ -577,7 +577,7 @@ const Attendance = () => {
                     },
                   },
                 }}
-                getRowId={(row) => row.timeSchedule._id}
+                getRowId={(row) => row._id}
                 pageSizeOptions={ConfigData.pageRow}
                 localeText={{ noRowsLabel: "No Data Available!!!" }}
                 // checkboxSelection
