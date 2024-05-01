@@ -79,6 +79,8 @@ const Attendance = () => {
   const [invalidAttendanceData, setInvalidAttendanceData] = useState([]);
   const [attendanceData, setAttendanceData] = useState([]);
   const [tabValue, setTabValue] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageRow, setPageRow] = useState(10);
 
   const statusChangeSchems = Yup.object().shape({
     statusChange: Yup.string().required("Status is required"),
@@ -103,14 +105,20 @@ const Attendance = () => {
   useEffect(() => {
     allUserLeave(year);
     invalidAttendance();
-    attendanceList(year);
+    attendanceList();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [year, page, pageRow]);
 
-  const attendanceList = (date: any) => {
+  const attendanceList = () => {
+    const reqData: object = {
+      page: page,
+      limit: pageRow,
+      date: year,
+    };
+
     attendanceService
-      .AttendanceAllList({ date: date })
+      .AttendanceAllList(reqData)
       .then((res) => {
         setAttendanceData(res.data);
       })
@@ -294,7 +302,7 @@ const Attendance = () => {
   const handleChange = (value: any) => {
     setAllUserLeaveList([]);
     setYear(moment(value));
-    attendanceList(value);
+    // attendanceList();
 
     allUserLeave(value);
   };
@@ -573,14 +581,19 @@ const Attendance = () => {
                 }}
                 rows={attendanceData}
                 columns={AttendanceColumns}
+                getRowId={(row) => row._id}
+                onPaginationModelChange={(e) => {
+                  setPageRow(Number(e.pageSize));
+                  setPage(Number(e.page) + 1);
+                }}
                 initialState={{
                   pagination: {
                     paginationModel: {
-                      pageSize: ConfigData.pageSize,
+                      pageSize: pageRow,
+                      page: page,
                     },
                   },
                 }}
-                getRowId={(row) => row._id}
                 pageSizeOptions={ConfigData.pageRow}
                 localeText={{ noRowsLabel: "No Data Available!!!" }}
                 // checkboxSelection
