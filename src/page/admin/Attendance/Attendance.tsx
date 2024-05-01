@@ -452,7 +452,7 @@ const Attendance = () => {
       headerName: "Date",
       width: 150,
       renderCell: (value: any) =>
-        moment(value.row.date, "YYYY-MM").format("Do MMM, YYYY"),
+        moment(value.row.date, "YYYY-MM").format("MMM, YYYY"),
     },
     {
       field: "username",
@@ -465,8 +465,7 @@ const Attendance = () => {
       field: "totalTime",
       headerName: "Total Time",
       width: 150,
-      renderCell: (value: any) =>
-        moment(value.row.totalTime, "mm").format("HH:mm:ss"),
+      renderCell: (value: any) => <span>{value.value}</span>,
     },
     {
       field: "totalLeave",
@@ -486,7 +485,11 @@ const Attendance = () => {
       width: 150,
       renderCell: (value: any) => (
         <span>
-          {(Number(value.row.totalTime) / value.row.timeSchedule.length) * 100}{" "}
+          {(
+            (Number(value.row.totalTime) /
+              (value.row.timeSchedule.length * 9 * 60)) *
+            100
+          ).toFixed(2)}{" "}
           %
         </span>
       ),
