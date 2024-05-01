@@ -8,6 +8,7 @@ import {
   Grid,
   Tab,
   Tabs,
+  TextField,
   Typography,
 } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -81,6 +82,7 @@ const Attendance = () => {
   const [tabValue, setTabValue] = useState(0);
   const [page, setPage] = useState(1);
   const [pageRow, setPageRow] = useState(10);
+  const [search, setSearch] = useState("");
 
   const statusChangeSchems = Yup.object().shape({
     statusChange: Yup.string().required("Status is required"),
@@ -108,15 +110,18 @@ const Attendance = () => {
     attendanceList();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [year, page, pageRow]);
+  }, [year, page, pageRow, search]);
 
   const attendanceList = () => {
-    const reqData: object = {
+    const reqData: any = {
       page: page,
       limit: pageRow,
       date: year,
     };
 
+    if (search !== "") {
+      reqData.username = search;
+    }
     attendanceService
       .AttendanceAllList(reqData)
       .then((res) => {
@@ -187,21 +192,21 @@ const Attendance = () => {
   const columns: GridColDef[] = [
     {
       field: "user_id",
-      headerName: "UserName",
-      width: 110,
+      headerName: "Username",
+      width: 150,
       renderCell: (value: any) => <span>{value.row.user_id}</span>,
     },
     {
       field: "totalLeaveLeft",
-      headerName: "Leave Left",
-      width: 100,
+      headerName: "Leave Available",
+      width: 150,
       renderCell: (value: any) => (
         <span>{value.row.leaveDetail.totalLeaveLeft}</span>
       ),
     },
     {
       field: "startDay",
-      headerName: "Leave Start Date",
+      headerName: "Start Date",
       width: 150,
       renderCell: (value: any) =>
         moment(value.row.leaveDetail.leaveUseDetail.startDay).format(
@@ -210,7 +215,7 @@ const Attendance = () => {
     },
     {
       field: "endDay",
-      headerName: "Leave Start Date",
+      headerName: "End Date",
       width: 150,
       renderCell: (value: any) =>
         moment(value.row.leaveDetail.leaveUseDetail.endDay).format(
@@ -228,15 +233,15 @@ const Attendance = () => {
     {
       field: "totalDays",
       headerName: "Total Days",
-      width: 100,
+      width: 150,
       renderCell: (value: any) => (
         <span>{value.row.leaveDetail.leaveUseDetail.totalDays}</span>
       ),
     },
     {
       field: "leaveStatus",
-      headerName: "Leave Status",
-      width: 120,
+      headerName: "Status",
+      width: 150,
       renderCell: (value: any) =>
         customRegistrationStatus(
           value.row.leaveDetail.leaveUseDetail.leaveStatus
@@ -245,7 +250,7 @@ const Attendance = () => {
     {
       field: "approvedBy",
       headerName: "ApprovedBy ",
-      width: 120,
+      width: 150,
       renderCell: (value: any) => (
         <span>{value.row.leaveDetail.leaveUseDetail.approvedBy}</span>
       ),
@@ -253,7 +258,7 @@ const Attendance = () => {
     {
       field: "action",
       headerName: "Action",
-      width: 120,
+      width: 150,
       renderCell: (value: any) => (
         <>
           {value.row.leaveDetail.leaveUseDetail.leaveStatus === "pending" && (
@@ -540,6 +545,12 @@ const Attendance = () => {
               </h6>
             </Box>
             <Box className="mt-2 flex justify-end gap-2">
+              <TextField
+                label="Search"
+                id="outlined-size-small"
+                size="small"
+                onChange={(e) => setSearch(e.target.value)}
+              />
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <DemoContainer
                   components={["DatePicker"]}
@@ -611,12 +622,13 @@ const Attendance = () => {
                 initialState={{
                   pagination: {
                     paginationModel: {
-                      pageSize: ConfigData.pageSize,
+                      pageSize: 10,
+                      page: 1,
                     },
                   },
                 }}
-                getRowId={(row) => row.timeSchedule._id}
                 pageSizeOptions={ConfigData.pageRow}
+                getRowId={(row) => row.timeSchedule._id}
                 localeText={{ noRowsLabel: "No Data Available!!!" }}
                 // checkboxSelection
                 // disableRowSelectionOnClick
@@ -633,12 +645,13 @@ const Attendance = () => {
                 initialState={{
                   pagination: {
                     paginationModel: {
-                      pageSize: ConfigData.pageSize,
+                      pageSize: 10,
+                      page: 1,
                     },
                   },
                 }}
-                getRowId={(row) => row.leaveDetail.leaveUseDetail._id}
                 pageSizeOptions={ConfigData.pageRow}
+                getRowId={(row) => row.leaveDetail.leaveUseDetail._id}
                 localeText={{ noRowsLabel: "No Data Available!!!" }}
                 // checkboxSelection
                 // disableRowSelectionOnClick
