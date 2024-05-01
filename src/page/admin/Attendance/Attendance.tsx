@@ -401,21 +401,21 @@ const Attendance = () => {
     {
       field: "date",
       headerName: "Date",
-      width: 150,
+      width: 160,
       renderCell: (value: any) =>
         moment(value.row.timeSchedule.date).format("Do MMM, YYYY"),
     },
     {
       field: "startTime",
       headerName: "Clock In",
-      width: 150,
+      width: 160,
       renderCell: (value: any) =>
         moment(value.row.timeSchedule.startTime).format("HH:mm:ss"),
     },
     {
       field: "endTime",
       headerName: "Clock Out",
-      width: 200,
+      width: 160,
       renderCell: (value: any) =>
         value.row.timeSchedule.endTime &&
         moment(value.row.timeSchedule.endTime).format("HH:mm:ss"),
@@ -423,7 +423,7 @@ const Attendance = () => {
     {
       field: "totalTime",
       headerName: "Total Time",
-      width: 150,
+      width: 160,
       renderCell: (value: any) => (
         <span>{value.row.timeSchedule.totalTime}</span>
       ),
@@ -431,7 +431,7 @@ const Attendance = () => {
     {
       field: "updatedBy",
       headerName: "Updated By",
-      width: 150,
+      width: 160,
       renderCell: (value: any) => (
         <span>{value.row.timeSchedule?.updatedBy}</span>
       ),
@@ -439,7 +439,7 @@ const Attendance = () => {
     {
       field: "action",
       headerName: "Action",
-      width: 120,
+      width: 160,
       renderCell: (value: any) => (
         <>
           <EditNoteIcon
@@ -463,39 +463,39 @@ const Attendance = () => {
     {
       field: "date",
       headerName: "Date",
-      width: 150,
+      width: 170,
       renderCell: (value: any) =>
         moment(value.row.date, "YYYY-MM").format("MMM, YYYY"),
     },
     {
       field: "username",
       headerName: "Username",
-      width: 150,
+      width: 170,
       renderCell: (value: any) => <span>{value.value}</span>,
     },
 
     {
       field: "totalTime",
       headerName: "Total Time",
-      width: 150,
+      width: 170,
       renderCell: (value: any) => <span>{value.value}</span>,
     },
     {
       field: "totalLeave",
       headerName: "Total Leave",
-      width: 200,
+      width: 170,
       renderCell: (value: any) => <span>{value.value}</span>,
     },
     {
       field: "totalLeaveLeft",
-      headerName: "Leave Left",
-      width: 150,
+      headerName: "Leave Available",
+      width: 170,
       renderCell: (value: any) => <span>{value.row.totalLeaveLeft}</span>,
     },
     {
       field: "timeSchedule",
       headerName: "Average",
-      width: 150,
+      width: 170,
       renderCell: (value: any) => (
         <span>
           {(
@@ -510,7 +510,7 @@ const Attendance = () => {
     {
       field: "action",
       headerName: "Action",
-      width: 120,
+      width: 150,
       renderCell: (value: any) => (
         <>
           <VisibilityIcon
@@ -774,7 +774,7 @@ const Attendance = () => {
                     }}
                   >
                     <Button
-                      onClick={handleClose}
+                      onClick={handleTimeClose}
                       variant="contained"
                       sx={{
                         backgroundColor: "red",
@@ -783,11 +783,7 @@ const Attendance = () => {
                     >
                       Cancel
                     </Button>
-                    <Button
-                      // onClick={handleGenerateKey}
-                      variant="contained"
-                      type="submit"
-                    >
+                    <Button variant="contained" type="submit">
                       Submit
                     </Button>
                   </Grid>
