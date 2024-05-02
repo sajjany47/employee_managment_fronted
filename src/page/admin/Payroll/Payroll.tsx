@@ -227,8 +227,6 @@ const Payroll = () => {
               }}
               pageSizeOptions={ConfigData.pageRow}
               localeText={{ noRowsLabel: "No Data Available!!!" }}
-              // checkboxSelection
-              // disableRowSelectionOnClick
             />
           </Box>
         </Grid>

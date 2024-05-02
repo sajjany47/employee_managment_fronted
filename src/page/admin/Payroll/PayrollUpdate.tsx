@@ -18,6 +18,7 @@ const PayrollUpdate = () => {
   const payrollService = new PayrollService();
   const data = propsData.state.data;
   const [userSalary, setUserSalary] = useState<any>({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -32,7 +33,6 @@ const PayrollUpdate = () => {
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [loading, setLoading] = useState(false);
 
   const onUpdateSalary = (values: any) => {
     setLoading(true);
