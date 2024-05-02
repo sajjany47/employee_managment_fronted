@@ -348,6 +348,12 @@ const LeaveList = () => {
                         />
                       </DemoContainer>
                     </LocalizationProvider>
+                    {getIn(errors, "leaveYear") &&
+                      getIn(touched, "leaveYear") && (
+                        <small className="text-red-600">
+                          Years is required
+                        </small>
+                      )}
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
                     {modalStatus === "add" ? (
