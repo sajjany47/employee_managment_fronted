@@ -211,7 +211,8 @@ function UserPayroll() {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: ConfigData.pageSize,
+                  pageSize: 10,
+                  page: 1,
                 },
               },
             }}

@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  TextField,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState } from "react";
@@ -28,12 +29,15 @@ const LeaveList = () => {
   const leaveService = new LeaveService();
   const userType = useSelector((state: any) => state.auth.auth.user);
   const [open, setOpen] = useState(false);
-  const [id, setId] = useState(moment.utc(new Date()));
+  const [id, setId] = useState(moment(new Date()));
   const [usernameList, setUsernameList] = useState([]);
   const [leaveListData, setLeaveListData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalStatus, setModalStatus] = useState("add");
   const [editData, setEditData] = useState<any>({});
+  const [page, setPage] = useState(1);
+  const [pageRow, setPageRow] = useState(10);
+  const [search, setSearch] = useState("");
 
   const validationSchema = Yup.object().shape({
     leaveYear: Yup.string().required("Year is required"),
@@ -42,19 +46,27 @@ const LeaveList = () => {
   });
 
   useEffect(() => {
-    leaveListApi(id);
+    leaveListApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+  }, [open, pageRow, page, search, id]);
 
   const handleChange = (value: any) => {
-    setId(moment.utc(value));
-    const formatDate = moment(value).format("YYYY");
-    leaveListApi(formatDate);
+    setId(moment(value));
+    leaveListApi();
   };
 
-  const leaveListApi = (value: any) => {
+  const leaveListApi = () => {
+    const reqData: any = {
+      page: page,
+      limit: pageRow,
+      year: moment(id).format("YYYY"),
+    };
+
+    if (search !== "") {
+      reqData.username = search;
+    }
     leaveService
-      .leaveList(moment(value).format("YYYY"))
+      .leaveList(reqData)
       .then((res) => {
         setLeaveListData(res.data);
       })
@@ -90,7 +102,7 @@ const LeaveList = () => {
   const handleClose = () => {
     setOpen(false);
     setUsernameList([]);
-    leaveListApi(new Date());
+    leaveListApi();
   };
 
   const submitLeave = (values: any) => {
@@ -224,6 +236,12 @@ const LeaveList = () => {
               </h6>
             </Box>
             <Box className="mt-2 flex justify-end gap-2">
+              <TextField
+                label="Search"
+                id="outlined-size-small"
+                size="small"
+                onChange={(e) => setSearch(e.target.value)}
+              />
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <DemoContainer
                   components={["DatePicker"]}
@@ -260,10 +278,15 @@ const LeaveList = () => {
             rows={leaveListData}
             columns={columns}
             getRowId={(row) => row._id}
+            onPaginationModelChange={(e) => {
+              setPageRow(Number(e.pageSize));
+              setPage(Number(e.page) + 1);
+            }}
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: ConfigData.pageSize,
+                  pageSize: pageRow,
+                  page: page,
                 },
               },
             }}
@@ -306,7 +329,7 @@ const LeaveList = () => {
                           name="leaveYear"
                           value={
                             values.leaveYear !== null
-                              ? moment.utc(values.leaveYear)
+                              ? moment(values.leaveYear)
                               : ""
                           }
                           slotProps={{
