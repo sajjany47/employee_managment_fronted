@@ -5,13 +5,15 @@ import { Form, Formik } from "formik";
 import { DateField, InputField } from "../../../components/DynamicField";
 import { calculateSalary, sumValues } from "../../../shared/UtlityFunction";
 import UpdateIcon from "@mui/icons-material/Update";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { SalaryServices } from "../Salary/SalaryService";
 import { enqueueSnackbar } from "notistack";
 import { useSelector } from "react-redux";
 import { PayrollService } from "./PayrollService";
+import * as Yup from "yup";
 
 const PayrollUpdate = () => {
+  const navigate = useNavigate();
   const propsData = useLocation();
   const userType = useSelector((state: any) => state.auth.auth.user);
   const salaryService = new SalaryServices();
@@ -19,6 +21,10 @@ const PayrollUpdate = () => {
   const data = propsData.state.data;
   const [userSalary, setUserSalary] = useState<any>({});
   const [loading, setLoading] = useState(false);
+
+  const payrollUpdateValidation = Yup.object().shape({
+    totalEarning: Yup.string().required("Total in hand is required"),
+  });
 
   useEffect(() => {
     setLoading(true);
@@ -105,7 +111,7 @@ const PayrollUpdate = () => {
               currentMonthTotalHoliday: data.currentMonthTotalHoliday,
               totalWeekend: data.totalWeekend,
             }}
-            // validationSchema={activationKeyValidation}
+            validationSchema={payrollUpdateValidation}
             onSubmit={onUpdateSalary}
             enableReinitialize
           >
@@ -483,7 +489,9 @@ const PayrollUpdate = () => {
                     }}
                   >
                     <Button
-                      //   onClick={handleClose}
+                      onClick={() => {
+                        navigate("/admin/payroll");
+                      }}
                       variant="contained"
                       sx={{
                         backgroundColor: "red",
