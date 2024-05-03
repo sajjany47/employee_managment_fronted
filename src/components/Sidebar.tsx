@@ -284,7 +284,6 @@ export default function Sidebar(props: Props) {
               >
                 <ListItem
                   disablePadding
-                  key={index}
                   sx={{
                     display: "block",
                     color: pathname === text.path ? "#F9AE48" : "white",
