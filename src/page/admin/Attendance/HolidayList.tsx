@@ -164,20 +164,23 @@ const HolidayList = () => {
             holidayListData?.map((item: any, index: any) => {
               return (
                 <Fragment key={index}>
-                  <div className="bg-white rounded-xl shadow-md overflow-hidden  m-3">
+                  <div
+                    className=" rounded-xl shadow-md overflow-hidden  m-3 bg-orange-300"
+                    // style={{ backgroundColor: "#EEF690" }}
+                  >
                     <div className="flex justify-between">
                       <div className="p-4 flex items-center">
                         <div
                           className={`pr-4 ${
                             new Date(item.holidayList.holidayDate) > new Date()
                               ? "bg-blue-500"
-                              : "bg-blue-200"
+                              : "bg-white"
                           } p-2 rounded-lg text-center`}
                         >
-                          <p className="text-4xl font-bold text-white">
+                          <p className="text-4xl font-bold text-orange-300">
                             {moment(item.holidayList.holidayDate).format("DD")}
                           </p>
-                          <p className="text-sm text-white">
+                          <p className="text-sm text-orange-300">
                             {" "}
                             {moment(item.holidayList.holidayDate).format(
                               "MMMM, YYYY"

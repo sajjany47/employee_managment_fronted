@@ -152,7 +152,7 @@ export default function Sidebar(props: Props) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed" open={open} sx={{ backgroundColor: "#F9AE48" }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -250,6 +250,7 @@ export default function Sidebar(props: Props) {
           </Box>
         </Toolbar>
       </AppBar>
+
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
