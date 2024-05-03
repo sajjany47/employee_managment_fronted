@@ -32,6 +32,7 @@ import moment from "moment";
 import { TaskService } from "./TaskService";
 import { enqueueSnackbar } from "notistack";
 import { useSelector } from "react-redux";
+import * as Yup from "yup";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -81,6 +82,14 @@ const Task = () => {
   const [employeeListData, setEmployeeListData] = useState([]);
   const [tabType, setTabType] = useState("Sender");
 
+  const taskAssignValidation = Yup.object().shape({
+    taskStatus: Yup.string().required("Task status is required"),
+    taskReceiver: Yup.string().required("Task receiver is required"),
+    taskStartDate: Yup.string().required("Task start date is required"),
+    takDeadline: Yup.string().required("Task deadline is required"),
+    taskDetails: Yup.string().required("Task details is required"),
+    taskProject: Yup.string().required("Project name is required"),
+  });
   useEffect(() => {
     if (tabValue === 0) {
       taskList("receiver", userType.username, year, taskStatus);
@@ -91,8 +100,11 @@ const Task = () => {
     taskService
       .employeeList()
       .then((res) => {
+        const filterUsername = res.data.filter(
+          (item: any) => item.username !== userType.username
+        );
         setEmployeeListData(
-          res.data.map((item: any) => ({
+          filterUsername.map((item: any) => ({
             label: `${item.name}(${item.username})`,
             value: item.username,
           }))
@@ -291,7 +303,7 @@ const Task = () => {
           <Formik
             initialValues={
               actionType === "edit"
-                ? { ...selectTask }
+                ? { ...selectTask, taskStatus: "" }
                 : {
                     taskStatus: "assign",
                     taskReceiver: "",
@@ -301,7 +313,7 @@ const Task = () => {
                     taskProject: "",
                   }
             }
-            //   validationSchema={activationKeyValidation}
+            validationSchema={taskAssignValidation}
             onSubmit={handleTagAssign}
           >
             {({ values }) => (

@@ -165,8 +165,8 @@ const HolidayList = () => {
               return (
                 <Fragment key={index}>
                   <div
-                    className=" rounded-xl shadow-md overflow-hidden  m-3 bg-orange-300"
-                    // style={{ backgroundColor: "#EEF690" }}
+                    className=" rounded-xl shadow-md overflow-hidden  m-3 "
+                    style={{ backgroundColor: "#e5e7eb" }}
                   >
                     <div className="flex justify-between">
                       <div className="p-4 flex items-center">

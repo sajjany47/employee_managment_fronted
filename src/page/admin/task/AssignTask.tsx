@@ -36,7 +36,11 @@ const AssignTask = (props: any) => {
     <>
       {props.data.map((item: any, index: number) => {
         return (
-          <div style={{ border: "dashed" }} key={index} className="mt-2">
+          <div
+            style={{ border: "1px dashed rgba(255, 0, 0, 0.5)" }}
+            key={index}
+            className="mt-2"
+          >
             <div className="w-full">
               <div className="p-2 pb-10">
                 <h1 className="text-2xl font-semibold text-gray-800 mt-4 capitalize">
