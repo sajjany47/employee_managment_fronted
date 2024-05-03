@@ -20,7 +20,7 @@ import Badge from "@mui/material/Badge";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { Avatar, Menu, MenuItem } from "@mui/material";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/reducer/authReducer";
 // import { AttendanceService } from "../page/admin/Attendance/AttendanceService";
@@ -104,7 +104,9 @@ const Drawer = styled(MuiDrawer, {
 
 export default function Sidebar(props: Props) {
   // const attendanceService = new AttendanceService();
+  const location = useLocation();
   const user = useSelector((state: any) => state.auth.auth.user);
+  const pathname = location.pathname;
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -251,7 +253,15 @@ export default function Sidebar(props: Props) {
         </Toolbar>
       </AppBar>
 
-      <Drawer variant="permanent" open={open}>
+      <Drawer
+        variant="permanent"
+        open={open}
+        sx={{
+          "& .MuiDrawer-paper": {
+            backgroundColor: "#F9AE48",
+          },
+        }}
+      >
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
@@ -268,9 +278,20 @@ export default function Sidebar(props: Props) {
               <Link
                 to={text.path}
                 key={index}
-                style={{ textDecoration: "none", color: "black" }}
+                style={{
+                  textDecoration: "none",
+                }}
               >
-                <ListItem disablePadding sx={{ display: "block" }} key={index}>
+                <ListItem
+                  disablePadding
+                  key={index}
+                  sx={{
+                    display: "block",
+                    color: pathname === text.path ? "#F9AE48" : "white",
+                    backgroundColor:
+                      pathname !== text.path ? "#F9AE48" : "white",
+                  }}
+                >
                   <ListItemButton
                     sx={{
                       minHeight: 48,
@@ -283,6 +304,7 @@ export default function Sidebar(props: Props) {
                         minWidth: 0,
                         mr: open ? 3 : "auto",
                         justifyContent: "center",
+                        color: pathname === text.path ? "#F9AE48" : "white",
                       }}
                     >
                       {text.icon}
