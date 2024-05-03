@@ -223,7 +223,7 @@ const Task = () => {
     const filteredTasks = copyTaskListData.filter((task) =>
       containsSearchTerm(task, e.target.value)
     );
-    console.log(filteredTasks);
+
     setTaskListData(filteredTasks);
   };
 
