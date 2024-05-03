@@ -59,3 +59,13 @@ export const removeEmptyValue = (data: object) => {
   );
   return result;
 };
+
+export const containsSearchTerm = (task: any, searchTerm: any) => {
+  const lowerCaseSearchTerm = searchTerm.toLowerCase();
+  return Object.values(task).some((value) => {
+    if (typeof value === "string" || value instanceof Date) {
+      return value.toString().toLowerCase().includes(lowerCaseSearchTerm);
+    }
+    return false;
+  });
+};

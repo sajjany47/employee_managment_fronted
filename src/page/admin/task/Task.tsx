@@ -33,6 +33,7 @@ import { TaskService } from "./TaskService";
 import { enqueueSnackbar } from "notistack";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
+import { containsSearchTerm } from "../../../shared/UtlityFunction";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -79,8 +80,10 @@ const Task = () => {
   const [selectTask, setSelectTask] = useState<any>({});
   const [year, setYear] = useState(moment.utc(new Date()));
   const [taskListData, setTaskListData] = useState([]);
+  const [copyTaskListData, setCopyTaskListData] = useState([]);
   const [employeeListData, setEmployeeListData] = useState([]);
   const [tabType, setTabType] = useState("Sender");
+  const [search, setSearch] = useState("");
 
   const taskAssignValidation = Yup.object().shape({
     taskStatus: Yup.string().required("Task status is required"),
@@ -123,6 +126,7 @@ const Task = () => {
       .taskList(type, username, moment(date).format("YYYY"), status)
       .then((res) => {
         setTaskListData(res.data);
+        setCopyTaskListData(res.data);
       })
       .catch((err: any) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
@@ -213,6 +217,16 @@ const Task = () => {
     setTabType(type);
   };
 
+  const handelSearch = (e: any) => {
+    setSearch(e.target.value);
+
+    const filteredTasks = copyTaskListData.filter((task) =>
+      containsSearchTerm(task, e.target.value)
+    );
+    console.log(filteredTasks);
+    setTaskListData(filteredTasks);
+  };
+
   return (
     <div>
       {loading && <Loader />}
@@ -225,7 +239,13 @@ const Task = () => {
               </h6>
             </Box>
             <Box className="mt-2 flex justify-end gap-2">
-              <TextField label="Search" id="outlined-size-small" size="small" />
+              <TextField
+                label="Search"
+                id="outlined-size-small"
+                size="small"
+                value={search}
+                onChange={handelSearch}
+              />
               <FormControl sx={{ minWidth: 120 }} size="small">
                 <Select value={taskStatus} onChange={handleChange}>
                   {options.map((item: any, index: number) => {
