@@ -44,7 +44,7 @@ const AssignTask = (props: any) => {
             <div className="w-full">
               <div className="p-2 pb-10">
                 <h1 className="text-2xl font-semibold text-gray-800 mt-4 capitalize">
-                  Project {item.taskProject}
+                  Project :- {item.taskProject}
                 </h1>
                 <p className="text-xl text-gray-400 mt-2 leading-relaxed">
                   {item.taskDetails}

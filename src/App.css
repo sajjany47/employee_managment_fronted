@@ -32,8 +32,6 @@
   border: 2px solid black;
   border-collapse: collapse;
   table-layout: fixed;
-
- 
 }
 
 .salary-slip .head {
@@ -56,12 +54,10 @@
   border-right: 1px solid;
 }
 .salary-slip .myBackground {
- 
   /* padding-top: 10px; */
   text-align: left;
   border: 1px solid black;
   height: 40px;
- 
 }
 .salary-slip .myAlign {
   text-align: center;
@@ -70,7 +66,7 @@
 .salary-slip .myTotalBackground {
   padding-top: 10px;
   text-align: left;
-  background-color: #EBF1DE;
+  background-color: #ebf1de;
   border-spacing: 0px;
 }
 .salary-slip .align-4 {
@@ -88,13 +84,11 @@
 .salary-slip .border-center {
   text-align: center;
 }
-.salary-slip .border-center th, .salary-slip .border-center td {
+.salary-slip .border-center th,
+.salary-slip .border-center td {
   border: 1px solid black;
 }
-.salary-slip th, .salary-slip td {
+.salary-slip th,
+.salary-slip td {
   padding-left: 6px;
-}
-
-.MuiDrawer-root .MuiDrawer-docked{
-  background-color: black;
 }

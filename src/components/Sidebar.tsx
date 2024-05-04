@@ -154,7 +154,7 @@ export default function Sidebar(props: Props) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open} sx={{ backgroundColor: "#F9AE48" }}>
+      <AppBar position="fixed" open={open} sx={{ backgroundColor: "#336BE4" }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -258,7 +258,7 @@ export default function Sidebar(props: Props) {
         open={open}
         sx={{
           "& .MuiDrawer-paper": {
-            backgroundColor: "#F9AE48",
+            backgroundColor: "#336BE4",
           },
         }}
       >
@@ -286,9 +286,9 @@ export default function Sidebar(props: Props) {
                   disablePadding
                   sx={{
                     display: "block",
-                    color: pathname === text.path ? "#F9AE48" : "white",
+                    color: pathname === text.path ? "#336BE4" : "white",
                     backgroundColor:
-                      pathname !== text.path ? "#F9AE48" : "white",
+                      pathname !== text.path ? "#336BE4" : "white",
                   }}
                 >
                   <ListItemButton
