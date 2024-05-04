@@ -55,10 +55,10 @@ const EmpDetails = () => {
           </Tabs>
         </Box>
 
-        <CustomTabPanel value={value} index={3}>
+        <CustomTabPanel value={value} index={0}>
           <UserVerified />
         </CustomTabPanel>
-        <CustomTabPanel value={value} index={4}>
+        <CustomTabPanel value={value} index={1}>
           <SalaryDetails />
         </CustomTabPanel>
       </Box>
