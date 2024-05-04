@@ -200,7 +200,7 @@ export default function EmployeeList() {
             color="secondary"
             style={{ cursor: "pointer" }}
             onClick={() => {
-              navigate("/admin/user-verified/", { state: { data: value.row } });
+              navigate(`/admin/user-verified/${value.row._id}`);
             }}
           />
         </>

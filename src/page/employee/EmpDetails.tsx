@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box, Tab, Tabs, Typography } from "@mui/material";
-import UserUpdate from "../admin/EmployeeList/UserUpdate";
 import SalaryDetails from "../admin/Salary/SalaryDetails";
+import UserVerified from "../admin/EmployeeList/UserVerified";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -56,7 +56,7 @@ const EmpDetails = () => {
         </Box>
 
         <CustomTabPanel value={value} index={3}>
-          <UserUpdate />
+          <UserVerified />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={4}>
           <SalaryDetails />

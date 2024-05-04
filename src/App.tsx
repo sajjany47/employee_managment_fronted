@@ -36,7 +36,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route path="/admin/employee-list" element={<EmployeeList />} />
             <Route path="/admin/user-update/:id" element={<UserUpdate />} />
-            <Route path="/admin/user-verified" element={<UserVerified />} />
+            <Route path="/admin/user-verified/:id" element={<UserVerified />} />
             <Route path="/admin/employee" element={<Employee />} />
             <Route path="/admin/attendance" element={<Attendance />} />
             <Route

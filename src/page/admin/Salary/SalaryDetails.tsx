@@ -3,7 +3,7 @@ import { SalaryServices } from "./SalaryService";
 import { useEffect, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
-import { Box, Grid } from "@mui/material";
+import { Box, Chip, Grid } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { ConfigData } from "../../../shared/ConfigData";
 import moment from "moment";
@@ -63,6 +63,18 @@ const SalaryDetails = () => {
       headerName: "Net Monthly",
       width: 200,
       renderCell: (value: any) => <span>{value.value}</span>,
+    },
+    {
+      field: "type",
+      headerName: "Type",
+      width: 200,
+      renderCell: (value: any) => (
+        <Chip
+          color="success"
+          label={value.value}
+          sx={{ textTransform: "capitalize" }}
+        />
+      ),
     },
 
     {
@@ -176,7 +188,8 @@ const SalaryDetails = () => {
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: ConfigData.pageSize,
+                    pageSize: 10,
+                    page: 1,
                   },
                 },
               }}
