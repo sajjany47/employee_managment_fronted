@@ -42,7 +42,7 @@ const LeaveApply = () => {
         return schema.test({
           test: (date: any) => {
             if (!date) return true;
-            return date > startDay;
+            return date >= startDay;
           },
           message: "Start date not greater than  end date",
         });
@@ -127,20 +127,20 @@ const LeaveApply = () => {
     },
     {
       field: "startDay",
-      headerName: "Leave Start Date",
+      headerName: "Start Date",
       width: 150,
       renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
     },
     {
       field: "endDay",
-      headerName: "Leave End Date",
+      headerName: "End Date",
       width: 150,
       renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
     },
     {
       field: "reason",
       headerName: "Reason",
-      width: 200,
+      width: 150,
     },
     {
       field: "totalDays",
@@ -293,12 +293,13 @@ const LeaveApply = () => {
                 initialState={{
                   pagination: {
                     paginationModel: {
-                      pageSize: ConfigData.pageSize,
+                      pageSize: 10,
+                      page: 1,
                     },
                   },
                 }}
-                getRowId={(row) => row._id}
                 pageSizeOptions={ConfigData.pageRow}
+                getRowId={(row) => row._id}
                 localeText={{ noRowsLabel: "No Data Available!!!" }}
                 // checkboxSelection
                 // disableRowSelectionOnClick
