@@ -46,7 +46,7 @@ const SidebarData = {
     },
     {
       path: "/employee/holiday-list",
-      title: "Holiday List",
+      title: "Holiday",
       icon: <FaAngellist />,
     },
     {
@@ -74,12 +74,12 @@ const SidebarData = {
     },
     {
       path: "/admin/salary",
-      title: "Salary Alloted",
+      title: "Salary",
       icon: <GiMoneyStack />,
     },
     {
       path: "/admin/attendance",
-      title: "Attendance List",
+      title: "Attendance",
       icon: <TouchAppIcon />,
     },
 
@@ -90,12 +90,12 @@ const SidebarData = {
     },
     {
       path: "/admin/leave",
-      title: "Leave Alloted",
+      title: "Leave",
       icon: <FcLeave />,
     },
     {
       path: "/employee/holiday-list",
-      title: "Holiday List",
+      title: "Holiday",
       icon: <FaAngellist />,
     },
     {
@@ -133,12 +133,12 @@ const SidebarData = {
     },
     {
       path: "/admin/salary",
-      title: "Salary Alloted",
+      title: "Salary",
       icon: <GiMoneyStack />,
     },
     {
       path: "/admin/attendance",
-      title: "Attendance List",
+      title: "Attendance",
       icon: <TouchAppIcon />,
     },
 
@@ -149,12 +149,12 @@ const SidebarData = {
     },
     {
       path: "/admin/leave",
-      title: "Leave Alloted",
+      title: "Leave",
       icon: <FcLeave />,
     },
     {
       path: "/employee/holiday-list",
-      title: "Holiday List",
+      title: "Holiday",
       icon: <FaAngellist />,
     },
     {
