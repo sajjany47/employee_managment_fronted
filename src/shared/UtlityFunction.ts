@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+
 export function convertStringToNull(obj: any) {
   Object.keys(obj).forEach(function (key) {
     if (obj[key] === "") {
@@ -68,4 +69,20 @@ export const containsSearchTerm = (task: any, searchTerm: any) => {
     }
     return false;
   });
+};
+
+export const percentageColor = (totalValue: number, getTotal: number) => {
+  const percentage: any = (getTotal / totalValue) * 100;
+
+  if (percentage > 0 && percentage < 50) {
+    return { color: "error", value: percentage };
+  } else if (percentage >= 50 && percentage < 75) {
+    return { color: "warning", value: percentage };
+  } else if (percentage >= 75 && percentage < 95) {
+    return { color: "primary", value: percentage };
+  } else if (percentage >= 95) {
+    return { color: "success", value: percentage };
+  } else {
+    return null;
+  }
 };

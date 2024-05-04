@@ -32,6 +32,7 @@ import {
 } from "../../../components/DynamicField";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
+import { percentageColor } from "../../../shared/UtlityFunction";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -492,20 +493,23 @@ const Attendance = () => {
       width: 170,
       renderCell: (value: any) => <span>{value.row.totalLeaveLeft}</span>,
     },
+
     {
       field: "timeSchedule",
       headerName: "Average",
       width: 170,
-      renderCell: (value: any) => (
-        <span>
-          {(
-            (Number(value.row.totalTime) /
-              (value.row.timeSchedule.length * 9 * 60)) *
-            100
-          ).toFixed(2)}{" "}
-          %
-        </span>
-      ),
+      renderCell: (value: any) => {
+        const percentage: any = percentageColor(
+          value.row.timeSchedule.length * 9 * 60,
+          Number(value.row.totalTime)
+        );
+        return (
+          <Chip
+            color={percentage.color}
+            label={`${percentage.value.toFixed(2)} %`}
+          />
+        );
+      },
     },
     {
       field: "action",

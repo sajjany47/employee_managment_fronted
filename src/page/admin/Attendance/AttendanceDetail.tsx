@@ -1,4 +1,4 @@
-import { Box, Chip, Grid } from "@mui/material";
+import { Box, Chip, Divider, Grid } from "@mui/material";
 
 import { useEffect, useState } from "react";
 
@@ -15,16 +15,18 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import WatchLaterIcon from "@mui/icons-material/WatchLater";
 import { useLocation } from "react-router-dom";
+import { percentageColor } from "../../../shared/UtlityFunction";
 
 const AttendanceDetail = () => {
   const attendanceService = new AttendanceService();
   const location = useLocation();
   const user = useSelector((state: any) => state.auth.auth.user);
   const [loading, setLoading] = useState(false);
-  const [month, setMonth] = useState(moment.utc(new Date()));
+  const [month, setMonth] = useState(moment(new Date()));
   const [dateCheckData, setDateCheckData] = useState<any>({});
   const [showTime, setShowTime] = useState<any>(null);
   const [userAttendanceData, setUserAttendanceData] = useState<any>([]);
+  const [averageAttendance, setAverageAttendance] = useState<any>({});
 
   useEffect(() => {
     Promise.all([
@@ -107,9 +109,26 @@ const AttendanceDetail = () => {
     {
       field: "endTime",
       headerName: "Clock Out",
-      width: 200,
+      width: 150,
       renderCell: (value: any) =>
         moment(value.row.timeSchedule.endTime).format("HH:mm:ss"),
+    },
+    {
+      field: "average",
+      headerName: "Average",
+      width: 150,
+      renderCell: (value: any) => {
+        const percentage: any = percentageColor(
+          9 * 60,
+          value.row.timeSchedule.totalTime
+        );
+        return (
+          <Chip
+            color={percentage.color}
+            label={`${percentage.value.toFixed(2)} %`}
+          />
+        );
+      },
     },
     {
       field: "totalTime",
@@ -130,7 +149,7 @@ const AttendanceDetail = () => {
   ];
 
   const handleMonthChange = (value: any) => {
-    const formatDate: any = moment(value).format("MM-YYYY");
+    const formatDate: any = moment(value);
     setMonth(formatDate);
     userAttendance({
       username: location.state === null ? user.username : location.state.data,
@@ -143,6 +162,20 @@ const AttendanceDetail = () => {
       .userAttendanceList(data)
       .then((res) => {
         setUserAttendanceData(res.data);
+        let totalGetTime = 0;
+        res.data.forEach((item: any) => {
+          totalGetTime += item.timeSchedule.totalTime;
+        });
+        const total: any = res.data.length * 9 * 60;
+        const average: any = percentageColor(
+          Number(total),
+          Number(totalGetTime)
+        );
+        if (average === undefined || average === null) {
+          setAverageAttendance({});
+        } else {
+          setAverageAttendance(average);
+        }
       })
       .catch((err: any) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
@@ -249,27 +282,51 @@ const AttendanceDetail = () => {
           md={3}
           sx={{ marginTop: 10, marginBottom: 10 }}
         >
-          <div className="flex items-start justify-center p-4 border-solid">
-            <div className="space-y-2 text-center">
-              <WatchLaterIcon />
-              <h4 className="text-gray-800 font-semibold ">Today Total Time</h4>
-              <p className="text-gray-600 text-sm">{showTime}</p>
+          <div style={{ backgroundColor: "#DBE9F4", height: "100%" }}>
+            <div className="flex items-start justify-center p-4 ">
+              <div className="space-y-2 text-center">
+                <WatchLaterIcon />
+                <h4 className="text-gray-800 font-semibold ">
+                  Today Total Time
+                </h4>
+                <p className="text-gray-600 text-sm">{showTime}</p>
+              </div>
             </div>
-          </div>
 
-          <div className="mt-6 flex flex-wrap gap-4 justify-center">
-            <Chip
-              color="success"
-              label={"Clock In"}
-              disabled={dateCheckData.startDisabled === true ? true : false}
-              onClick={handleStartTime}
-            />
-            <Chip
-              color="warning"
-              label={"Clock Out"}
-              disabled={dateCheckData.endDisabled === true ? true : false}
-              onClick={handleEndTime}
-            />
+            <div>
+              <div className="mt-6 flex flex-wrap gap-4 justify-center">
+                <Chip
+                  color="success"
+                  label={"Clock In"}
+                  disabled={dateCheckData.startDisabled === true ? true : false}
+                  onClick={handleStartTime}
+                />
+                <Chip
+                  color="warning"
+                  label={"Clock Out"}
+                  disabled={dateCheckData.endDisabled === true ? true : false}
+                  onClick={handleEndTime}
+                />
+              </div>
+
+              {Object.keys(averageAttendance).length > 0 && (
+                <>
+                  {" "}
+                  <Divider sx={{ margin: 2 }} />
+                  <div className="flex items-start justify-center p-4 ">
+                    <div className="space-y-2 text-center">
+                      <h4 className="text-gray-800 font-semibold ">
+                        Average Attendance
+                      </h4>
+                      <Chip
+                        color={averageAttendance.color}
+                        label={`${averageAttendance.value.toFixed(2)} %`}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </Grid>
 
@@ -290,13 +347,15 @@ const AttendanceDetail = () => {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: ConfigData.pageSize,
+                  pageSize: 10,
+                  page: 1,
                 },
               },
             }}
-            getRowId={(row) => row.timeSchedule._id}
             pageSizeOptions={ConfigData.pageRow}
             localeText={{ noRowsLabel: "No Data Available!!!" }}
+            getRowId={(row) => row.timeSchedule._id}
+
             // checkboxSelection
             // disableRowSelectionOnClick
           />
