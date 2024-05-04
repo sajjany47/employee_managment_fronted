@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { Box, Button, Chip, Grid } from "@mui/material";
 import { useSelector } from "react-redux";
 import { EmployeeServices } from "./EmployeeServices";
-import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 
 const UserVerified = () => {
@@ -85,7 +84,11 @@ const UserVerified = () => {
                     {data.registrationStatus !== "verified" ? (
                       <div className="mt-6 flex flex-wrap gap-4 justify-center">
                         {user.role === "employee" ? (
-                          <CloseIcon color="error" />
+                          <Chip
+                            color="error"
+                            label={"Not Verified"}
+                            sx={{ textTransform: "capitalize" }}
+                          />
                         ) : (
                           <>
                             <Chip
@@ -109,7 +112,7 @@ const UserVerified = () => {
                                   approvedBy: user.username,
                                   registrationStatus: "rejected",
                                 });
-                                navigate("/admin/activation-key");
+                                navigate("/admin/employee-list");
                               }}
                             />
                           </>
