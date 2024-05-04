@@ -1,4 +1,3 @@
-import TouchAppIcon from "@mui/icons-material/TouchApp";
 import { MdDashboardCustomize } from "react-icons/md";
 import { HiUserGroup } from "react-icons/hi2";
 import { GiTakeMyMoney } from "react-icons/gi";
@@ -9,6 +8,7 @@ import { IoIosChatbubbles } from "react-icons/io";
 import { BiSupport } from "react-icons/bi";
 import { FaUserAlt } from "react-icons/fa";
 import { FaAngellist } from "react-icons/fa6";
+import { IoMdFingerPrint } from "react-icons/io";
 
 const SidebarData = {
   employee: [
@@ -20,7 +20,7 @@ const SidebarData = {
     {
       path: "/employee/attendance",
       title: "Attendance",
-      icon: <TouchAppIcon />,
+      icon: <IoMdFingerPrint />,
     },
     {
       path: "/employee/tasks",
@@ -80,7 +80,7 @@ const SidebarData = {
     {
       path: "/admin/attendance",
       title: "Attendance",
-      icon: <TouchAppIcon />,
+      icon: <IoMdFingerPrint />,
     },
 
     {
@@ -139,7 +139,7 @@ const SidebarData = {
     {
       path: "/admin/attendance",
       title: "Attendance",
-      icon: <TouchAppIcon />,
+      icon: <IoMdFingerPrint />,
     },
 
     {

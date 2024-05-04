@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -16,6 +16,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import { RiLockPasswordFill } from "react-icons/ri";
 import Badge from "@mui/material/Badge";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -25,7 +26,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/reducer/authReducer";
 // import { AttendanceService } from "../page/admin/Attendance/AttendanceService";
 // import { enqueueSnackbar } from "notistack";
-import { FaRegUser } from "react-icons/fa6";
 import { CiLogout } from "react-icons/ci";
 
 type Props = {
@@ -112,6 +112,7 @@ export default function Sidebar(props: Props) {
   const dispatch = useDispatch();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
+  const [passwordModal, setPasswordModal] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   // const [notificationData, setNotificationData] = useState([]);
 
@@ -234,11 +235,14 @@ export default function Sidebar(props: Props) {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem sx={{ width: 150 }}>
+              <MenuItem
+                sx={{ width: 150 }}
+                onClick={() => setPasswordModal(true)}
+              >
                 <ListItemIcon>
-                  <FaRegUser fontSize="small" />
+                  <RiLockPasswordFill fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Profile</ListItemText>
+                <ListItemText>Password</ListItemText>
               </MenuItem>
               <MenuItem sx={{ width: 150 }} onClick={handleLogout}>
                 <ListItemIcon>
