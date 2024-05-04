@@ -36,17 +36,14 @@ const LeaveApply = () => {
 
   const leaveSchema = Yup.object().shape({
     startDay: Yup.string().required("Start Day is required"),
-    endDay: Yup.string()
+    endDay: Yup.date()
       .required("End Day is requird")
-      .when("startDay", (startDay: any, schema) => {
-        return schema.test({
-          test: (date: any) => {
-            if (!date) return true;
-            return date >= startDay;
-          },
-          message: "Start date not greater than  end date",
-        });
-      }),
+      .when(
+        "startDay",
+        (startDate, schema) =>
+          startDate &&
+          schema.min(startDate, "End date is greater than start Date")
+      ),
     reason: Yup.string().required("Reason is required"),
   });
   useEffect(() => {
