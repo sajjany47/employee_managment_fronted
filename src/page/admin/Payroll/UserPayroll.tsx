@@ -19,7 +19,6 @@ function UserPayroll() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = useSelector((state: any) => state.auth.auth.user);
-  console.log(location);
   const payrollService = new PayrollService();
   const [loading, setLoading] = useState(false);
   const [monthYear, setMonthYear] = useState(moment.utc(new Date()));

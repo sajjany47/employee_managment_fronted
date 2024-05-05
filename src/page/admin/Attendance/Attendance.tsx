@@ -284,8 +284,8 @@ const Attendance = () => {
               // fontSize: "30px",
             }}
             onClick={() => {
-              navigate("/admin/attendance/details", {
-                state: { data: value.row },
+              navigate("/user/leave/details", {
+                state: { data: value.row.user_id },
               });
             }}
           />

@@ -24,9 +24,12 @@ import LanguageIcon from "@mui/icons-material/Language";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import NoEncryptionIcon from "@mui/icons-material/NoEncryption";
 import * as Yup from "yup";
+import { useLocation } from "react-router-dom";
 
 const LeaveApply = () => {
   const attendanceService = new AttendanceService();
+  const location = useLocation();
+
   const user = useSelector((state: any) => state.auth.auth.user);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -47,7 +50,10 @@ const LeaveApply = () => {
     reason: Yup.string().required("Reason is required"),
   });
   useEffect(() => {
-    applyLeaveList(user.username, moment(year).format("YYYY"));
+    applyLeaveList(
+      location.state === null ? user.username : location.state.data,
+      moment(year).format("YYYY")
+    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

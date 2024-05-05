@@ -1,7 +1,16 @@
 /* eslint-disable no-useless-escape */
 import * as React from "react";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import { Box, Button, Chip, Grid, Switch } from "@mui/material";
+// import EditNoteIcon from "@mui/icons-material/EditNote";
+import {
+  Box,
+  Button,
+  Chip,
+  Grid,
+  IconButton,
+  Menu,
+  MenuItem,
+  Switch,
+} from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -17,8 +26,8 @@ import * as Yup from "yup";
 import { ConfigData } from "../../../shared/ConfigData";
 import { useNavigate } from "react-router-dom";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
+// import VisibilityIcon from "@mui/icons-material/Visibility";
+// import LockOpenIcon from "@mui/icons-material/LockOpen";
 import {
   DateField,
   InputField,
@@ -29,6 +38,7 @@ import { CiSearch } from "react-icons/ci";
 import { RxCross2 } from "react-icons/rx";
 import Search from "../../../components/Search";
 import ChangePassword from "../../../components/ChangePassword";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 export default function EmployeeList() {
   const navigate = useNavigate();
@@ -43,6 +53,10 @@ export default function EmployeeList() {
   const [page, setPage] = React.useState(1);
   const [pageRow, setPageRow] = React.useState(10);
   const [passwordModal, setPasswordModal] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [rowData, setRowData] = React.useState<any>({});
+
+  const menuOpen = Boolean(anchorEl);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -92,6 +106,13 @@ export default function EmployeeList() {
         enqueueSnackbar(err.response.data.message, { variant: "error" })
       );
   };
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
   const customRegistrationStatus = (value: any) => {
     switch (value) {
       case "waiting":
@@ -133,6 +154,7 @@ export default function EmployeeList() {
         break;
     }
   };
+
   const columns: GridColDef[] = [
     {
       field: "name",
@@ -192,7 +214,96 @@ export default function EmployeeList() {
       width: 200,
       renderCell: (value: any) => (
         <>
-          <EditNoteIcon
+          <div>
+            <IconButton
+              aria-label="more"
+              id="long-button"
+              aria-controls={open ? "long-menu" : undefined}
+              aria-expanded={open ? "true" : undefined}
+              aria-haspopup="true"
+              onClick={(e) => {
+                setRowData(value.row);
+                handleClick(e);
+              }}
+            >
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              id="long-menu"
+              MenuListProps={{
+                "aria-labelledby": "long-button",
+              }}
+              anchorEl={anchorEl}
+              open={menuOpen}
+              onClose={handleMenuClose}
+              PaperProps={{
+                style: {
+                  maxHeight: 48 * 8,
+                  width: "15ch",
+                },
+              }}
+            >
+              <MenuItem
+                onClick={() => {
+                  navigate(`/admin/user-update/${rowData._id}`);
+                  handleMenuClose();
+                }}
+              >
+                Update
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate(`/admin/user-verified/${rowData._id}`);
+                  handleMenuClose();
+                }}
+              >
+                Verified
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/admin/attendance/details", {
+                    state: { data: rowData.username },
+                  });
+                }}
+              >
+                Attendance
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/user/leave/details", {
+                    state: { data: rowData.username },
+                  });
+                }}
+              >
+                Leave
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate(`/admin/user-payroll/view`, {
+                    state: { data: rowData.username },
+                  });
+                }}
+              >
+                Payroll
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate(`/admin/salary/${rowData.username}`);
+                }}
+              >
+                Salary
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setPasswordModal(true);
+                  handleMenuClose();
+                }}
+              >
+                Password
+              </MenuItem>
+            </Menu>
+          </div>
+          {/* <EditNoteIcon
             color="primary"
             style={{ cursor: "pointer" }}
             onClick={() => {
@@ -212,7 +323,7 @@ export default function EmployeeList() {
             onClick={() => {
               setPasswordModal(true);
             }}
-          />
+          /> */}
         </>
       ),
     },
@@ -497,7 +608,7 @@ export default function EmployeeList() {
         <DialogTitle id="alert-dialog-title">{"Change Password"}</DialogTitle>
         <DialogContent>
           <ChangePassword
-            data={{ type: "admin", _id: userType._id }}
+            data={{ type: "admin", _id: rowData._id }}
             closeAction={handelClosePassword}
           />
         </DialogContent>
