@@ -20,13 +20,22 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import Badge from "@mui/material/Badge";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { Avatar, Menu, MenuItem } from "@mui/material";
+import {
+  Avatar,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Menu,
+  MenuItem,
+  useMediaQuery,
+} from "@mui/material";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/reducer/authReducer";
 // import { AttendanceService } from "../page/admin/Attendance/AttendanceService";
 // import { enqueueSnackbar } from "notistack";
 import { CiLogout } from "react-icons/ci";
+import ChangePassword from "./ChangePassword";
 
 type Props = {
   sidebarList: { path: string; title: string; icon: JSX.Element }[] | null;
@@ -104,6 +113,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default function Sidebar(props: Props) {
   // const attendanceService = new AttendanceService();
+
   const location = useLocation();
   const user = useSelector((state: any) => state.auth.auth.user);
   const pathname = location.pathname;
@@ -115,7 +125,7 @@ export default function Sidebar(props: Props) {
   const [passwordModal, setPasswordModal] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   // const [notificationData, setNotificationData] = useState([]);
-
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   useEffect(() => {
     // notifiCall();
   }, []);
@@ -151,6 +161,9 @@ export default function Sidebar(props: Props) {
   const handleLogout = () => {
     navigate("/");
     dispatch(setUser({ token: null, user: null }));
+  };
+  const handelClosePassword = () => {
+    setPasswordModal(false);
   };
   return (
     <Box sx={{ display: "flex" }}>
@@ -340,6 +353,21 @@ export default function Sidebar(props: Props) {
 
         <Outlet />
       </Box>
+
+      <Dialog
+        fullScreen={fullScreen}
+        open={passwordModal}
+        onClose={() => setPasswordModal(false)}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="alert-dialog-title">{"Change Password"}</DialogTitle>
+        <DialogContent>
+          <ChangePassword
+            data={{ type: "user", username: user._id }}
+            closeAction={handelClosePassword}
+          />
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }
