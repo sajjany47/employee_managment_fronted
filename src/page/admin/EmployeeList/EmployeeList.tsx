@@ -18,6 +18,7 @@ import { ConfigData } from "../../../shared/ConfigData";
 import { useNavigate } from "react-router-dom";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 import {
   DateField,
   InputField,
@@ -27,6 +28,7 @@ import { EmployeeServices } from "./EmployeeServices";
 import { CiSearch } from "react-icons/ci";
 import { RxCross2 } from "react-icons/rx";
 import Search from "../../../components/Search";
+import ChangePassword from "../../../components/ChangePassword";
 
 export default function EmployeeList() {
   const navigate = useNavigate();
@@ -40,6 +42,7 @@ export default function EmployeeList() {
   const [searchDetails, setSearchDetails] = React.useState({});
   const [page, setPage] = React.useState(1);
   const [pageRow, setPageRow] = React.useState(10);
+  const [passwordModal, setPasswordModal] = React.useState(false);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -186,7 +189,7 @@ export default function EmployeeList() {
     {
       field: "action",
       headerName: "Action",
-      width: 120,
+      width: 200,
       renderCell: (value: any) => (
         <>
           <EditNoteIcon
@@ -201,6 +204,13 @@ export default function EmployeeList() {
             style={{ cursor: "pointer" }}
             onClick={() => {
               navigate(`/admin/user-verified/${value.row._id}`);
+            }}
+          />
+          <LockOpenIcon
+            color="info"
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              setPasswordModal(true);
             }}
           />
         </>
@@ -273,6 +283,10 @@ export default function EmployeeList() {
   const handelResetSearch = () => {
     activationList();
     setSearchDetails({});
+  };
+
+  const handelClosePassword = () => {
+    setPasswordModal(false);
   };
 
   return (
@@ -471,6 +485,21 @@ export default function EmployeeList() {
               </div>
             </Grid>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        // fullScreen={fullScreen}
+        open={passwordModal}
+        onClose={() => setPasswordModal(false)}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="alert-dialog-title">{"Change Password"}</DialogTitle>
+        <DialogContent>
+          <ChangePassword
+            data={{ type: "admin", _id: userType._id }}
+            closeAction={handelClosePassword}
+          />
         </DialogContent>
       </Dialog>
     </div>

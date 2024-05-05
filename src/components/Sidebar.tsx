@@ -113,7 +113,6 @@ const Drawer = styled(MuiDrawer, {
 
 export default function Sidebar(props: Props) {
   // const attendanceService = new AttendanceService();
-
   const location = useLocation();
   const user = useSelector((state: any) => state.auth.auth.user);
   const pathname = location.pathname;
@@ -363,7 +362,7 @@ export default function Sidebar(props: Props) {
         <DialogTitle id="alert-dialog-title">{"Change Password"}</DialogTitle>
         <DialogContent>
           <ChangePassword
-            data={{ type: "user", username: user._id }}
+            data={{ type: "user", _id: user._id }}
             closeAction={handelClosePassword}
           />
         </DialogContent>
