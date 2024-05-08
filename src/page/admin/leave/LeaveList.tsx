@@ -24,6 +24,8 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { ConfigData } from "../../../shared/ConfigData";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import SimCardDownloadIcon from "@mui/icons-material/SimCardDownload";
 
 const LeaveList = () => {
   const leaveService = new LeaveService();
@@ -241,6 +243,7 @@ const LeaveList = () => {
                 id="outlined-size-small"
                 size="small"
                 onChange={(e) => setSearch(e.target.value)}
+                sx={{ width: "150px" }}
               />
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <DemoContainer
@@ -248,7 +251,7 @@ const LeaveList = () => {
                   sx={{ marginTop: -1 }}
                 >
                   <DatePicker
-                    // sx={{ width: "50% " }}
+                    sx={{ width: "40px" }}
                     label="Select Year"
                     value={id}
                     slotProps={{
@@ -260,11 +263,28 @@ const LeaveList = () => {
                 </DemoContainer>
               </LocalizationProvider>
               <Button
+                sx={{ width: "100px" }}
                 variant="contained"
-                startIcon={<AddIcon />}
+                endIcon={<AddIcon />}
                 onClick={handleClickOpen}
               >
-                Leave Alloted
+                Leave
+              </Button>
+              <Button
+                sx={{ width: "110px" }}
+                variant="contained"
+                endIcon={<UploadFileIcon />}
+                onClick={handleClickOpen}
+              >
+                Upload
+              </Button>
+              <Button
+                sx={{ width: "130px" }}
+                variant="contained"
+                endIcon={<SimCardDownloadIcon />}
+                onClick={handleClickOpen}
+              >
+                Download
               </Button>
             </Box>
           </Box>
