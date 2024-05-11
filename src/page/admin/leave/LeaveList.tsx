@@ -26,9 +26,11 @@ import { useSelector } from "react-redux";
 import * as Yup from "yup";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import SimCardDownloadIcon from "@mui/icons-material/SimCardDownload";
+import UploadLeave from "./UploadLeave";
 
 const LeaveList = () => {
   const leaveService = new LeaveService();
+
   const userType = useSelector((state: any) => state.auth.auth.user);
   const [open, setOpen] = useState(false);
   const [id, setId] = useState(moment(new Date()));
@@ -40,6 +42,7 @@ const LeaveList = () => {
   const [page, setPage] = useState(1);
   const [pageRow, setPageRow] = useState(10);
   const [search, setSearch] = useState("");
+  const [uploadLeaveDialoge, setUploadLeaveDialoge] = useState(false);
 
   const validationSchema = Yup.object().shape({
     leaveYear: Yup.string().required("Year is required"),
@@ -274,7 +277,7 @@ const LeaveList = () => {
                 sx={{ width: "110px" }}
                 variant="contained"
                 endIcon={<UploadFileIcon />}
-                onClick={handleClickOpen}
+                onClick={() => setUploadLeaveDialoge(true)}
               >
                 Upload
               </Button>
@@ -419,6 +422,21 @@ const LeaveList = () => {
               </Form>
             )}
           </Formik>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        fullWidth
+        maxWidth="md"
+        open={uploadLeaveDialoge}
+        onClose={() => setUploadLeaveDialoge(false)}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {<strong>Upload Leave Excel</strong>}
+        </DialogTitle>
+        <DialogContent>
+          <UploadLeave />
         </DialogContent>
       </Dialog>
     </>
