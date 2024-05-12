@@ -26,7 +26,9 @@ import { useSelector } from "react-redux";
 import * as Yup from "yup";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import SimCardDownloadIcon from "@mui/icons-material/SimCardDownload";
-import UploadLeave from "./UploadLeave";
+import UploadLeave from "./upload/UploadLeave";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 const LeaveList = () => {
   const leaveService = new LeaveService();
@@ -35,7 +37,7 @@ const LeaveList = () => {
   const [open, setOpen] = useState(false);
   const [id, setId] = useState(moment(new Date()));
   const [usernameList, setUsernameList] = useState([]);
-  const [leaveListData, setLeaveListData] = useState([]);
+  const [leaveListData, setLeaveListData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [modalStatus, setModalStatus] = useState("add");
   const [editData, setEditData] = useState<any>({});
@@ -229,6 +231,24 @@ const LeaveList = () => {
       ? { user_id: "", leaveYear: "", leaveAlloted: "" }
       : { ...editData };
 
+  const handleDownload = () => {
+    const data = leaveListData.map((item: any) => ({
+      Year: item.leaveDetail.leaveYear,
+      Username: item.user_id,
+      Leave: item.leaveDetail.totalLeave,
+    }));
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(data);
+
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+    });
+
+    saveAs(blob, "Leave_Details.xlsx");
+  };
   return (
     <>
       {loading && <Loader />}
@@ -285,7 +305,7 @@ const LeaveList = () => {
                 sx={{ width: "130px" }}
                 variant="contained"
                 endIcon={<SimCardDownloadIcon />}
-                onClick={handleClickOpen}
+                onClick={handleDownload}
               >
                 Download
               </Button>
