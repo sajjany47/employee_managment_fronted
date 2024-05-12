@@ -15,22 +15,11 @@ import {
   GridRowModel,
   GridRowEditStopReasons,
 } from "@mui/x-data-grid";
+import { Button } from "@mui/material";
+import { ConfigData } from "../../../../shared/ConfigData";
 
-export default function Review() {
-  const [rows, setRows] = React.useState<any>([
-    { username: "sajjany47", year: "2024", leave: 24 },
-    { username: "sajjany", year: "2024", leave: 16 },
-    { username: "sajjany4", year: "2024", leave: 18 },
-    { username: "sajjany7", year: "2024", leave: 22 },
-    { username: "sajjan", year: "2024", leave: 20 },
-    { username: "sajjany74", year: "2024", leave: 14 },
-    { username: "ajjany47", year: "2024", leave: 24 },
-    { username: "sjjany", year: "2024", leave: 16 },
-    { username: "sajany4", year: "2024", leave: 18 },
-    { username: "saany7", year: "2024", leave: 22 },
-    { username: "sajjn", year: "2024", leave: 20 },
-    { username: "sny74", year: "2024", leave: 14 },
-  ]);
+export default function Review(props: any) {
+  const [rows, setRows] = React.useState<any>(props.data);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {}
   );
@@ -150,32 +139,63 @@ export default function Review() {
   ];
 
   return (
-    <Box
-      sx={{
-        height: 500,
-        marginTop: 5,
-        width: "100%",
-        "& .actions": {
-          color: "text.secondary",
-        },
-        "& .textPrimary": {
-          color: "text.primary",
-        },
-      }}
-    >
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStop={handleRowEditStop}
-        getRowId={(row) => row.username}
-        processRowUpdate={processRowUpdate}
-        slotProps={{
-          toolbar: { setRows, setRowModesModel },
+    <>
+      <Box
+        sx={{
+          height: 500,
+          marginTop: 5,
+          width: "100%",
+          "& .actions": {
+            color: "text.secondary",
+          },
+          "& .textPrimary": {
+            color: "text.primary",
+          },
         }}
-      />
-    </Box>
+      >
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          editMode="row"
+          rowModesModel={rowModesModel}
+          onRowModesModelChange={handleRowModesModelChange}
+          onRowEditStop={handleRowEditStop}
+          getRowId={(row) => row.username}
+          processRowUpdate={processRowUpdate}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 100,
+                page: 1,
+              },
+            },
+          }}
+          pageSizeOptions={ConfigData.pageRow}
+          localeText={{ noRowsLabel: "No Data Available!!!" }}
+          slotProps={{
+            toolbar: { setRows, setRowModesModel },
+          }}
+        />
+      </Box>
+      <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+        <Button
+          color="inherit"
+          sx={{ mr: 1 }}
+          onClick={() => props.handleBack()}
+        >
+          Back
+        </Button>
+        <Box sx={{ flex: "1 1 auto" }} />
+
+        <Button
+          onClick={() => {
+            props.setData(rows);
+            props.handleNext();
+          }}
+        >
+          {"Next"}
+        </Button>
+      </Box>
+    </>
   );
 }

@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
-import Button from "@mui/material/Button";
 import Upload from "./Upload";
 import Review from "./Review";
 import FinalSubmit from "./FinalSubmit";
@@ -31,11 +30,20 @@ export default function UploadLeave() {
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
-        return <Upload data={data} setData={getData} />;
+        return <Upload data={data} setData={getData} handleNext={handleNext} />;
       case 1:
-        return <Review data={data} setData={getData} />;
+        return (
+          <Review
+            data={data}
+            setData={getData}
+            handleBack={handleBack}
+            handleNext={handleNext}
+          />
+        );
       case 2:
-        return <FinalSubmit data={data} setData={getData} />;
+        return (
+          <FinalSubmit data={data} setData={getData} handleBack={handleBack} />
+        );
 
       default:
         return "Unknown step";
@@ -59,24 +67,7 @@ export default function UploadLeave() {
         })}
       </Stepper>
 
-      <React.Fragment>
-        {getStepContent(activeStep)}
-        <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-          <Button
-            color="inherit"
-            disabled={activeStep === 0}
-            onClick={handleBack}
-            sx={{ mr: 1 }}
-          >
-            Back
-          </Button>
-          <Box sx={{ flex: "1 1 auto" }} />
-
-          <Button onClick={handleNext}>
-            {activeStep === steps.length - 1 ? "Finish" : "Next"}
-          </Button>
-        </Box>
-      </React.Fragment>
+      <React.Fragment>{getStepContent(activeStep)}</React.Fragment>
     </Box>
   );
 }
