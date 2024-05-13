@@ -72,4 +72,20 @@ export class LeaveService {
       throw err;
     }
   };
+
+  excelLeaveAlloted = async (payload: any) => {
+    try {
+      const response = await axios.post(
+        `${apiPath}/excel/leave-alloted`,
+        payload,
+        {
+          headers: this.headers,
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
 }
