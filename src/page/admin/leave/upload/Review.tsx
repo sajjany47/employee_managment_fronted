@@ -142,7 +142,7 @@ export default function Review(props: any) {
     <>
       <Box
         sx={{
-          height: 500,
+          height: 450,
           marginTop: 5,
           width: "100%",
           "& .actions": {
