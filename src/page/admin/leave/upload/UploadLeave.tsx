@@ -13,10 +13,6 @@ export default function UploadLeave() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [data, setData] = React.useState<any>([]);
 
-  React.useEffect(() => {
-    console.log("first");
-  }, [data]);
-
   const handleNext = () => {
     if (activeStep !== 2) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);

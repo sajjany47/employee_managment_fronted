@@ -33,8 +33,8 @@ const Upload = (props: any) => {
       const json = XLSX.utils.sheet_to_json(worksheet);
       const modifyData = json.map((item: any) => ({
         username: item.Username,
-        leave: item.Leave,
-        year: item.Year,
+        leave: `${item.Leave}`,
+        year: `${item.Year}`,
       }));
 
       props.setData(modifyData);

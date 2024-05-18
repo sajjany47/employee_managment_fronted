@@ -60,7 +60,15 @@ export default function Review(props: any) {
   const processRowUpdate = (newRow: GridRowModel) => {
     const updatedRow = { ...newRow, isNew: false };
     setRows(
-      rows.map((row: any) => (row.username === newRow.id ? updatedRow : row))
+      rows.map((row: any) =>
+        row.username === newRow.username
+          ? {
+              username: newRow.username,
+              leave: `${newRow.leave}`,
+              year: `${newRow.year}`,
+            }
+          : row
+      )
     );
     return updatedRow;
   };
