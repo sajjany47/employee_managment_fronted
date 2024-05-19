@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { LeaveService } from "../LeaveService";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../../../components/Loader";
@@ -7,6 +7,7 @@ const FinalSubmit = (props: any) => {
   const leaveService = new LeaveService();
   const [submitStatus, setSubmitStatus] = useState<any>(null);
   const [errorData, setErrorData] = useState([]);
+  const [errorCode, setErrorCode] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -19,6 +20,7 @@ const FinalSubmit = (props: any) => {
       })
       .catch((err: any) => {
         setLoading(false);
+        setErrorCode(err.response.status);
         setErrorData(err.response.data.data);
         enqueueSnackbar(err.response.data.message, { variant: "error" });
         setSubmitStatus(false);
@@ -42,11 +44,19 @@ const FinalSubmit = (props: any) => {
             <ul className="space-y-2 text-gray-500 list-disc list-inside dark:text-gray-400">
               {errorData.map((item: any, index) => {
                 return (
-                  <li key={index}>
-                    The user <strong>{item.username}</strong> has already been
-                    allotted the maximum leave for the year{" "}
-                    <strong>{item.year}</strong>.
-                  </li>
+                  <Fragment key={index}>
+                    {errorCode === 404 ? (
+                      <li>
+                        The user <strong>{item.username}</strong> has not found!
+                      </li>
+                    ) : (
+                      <li>
+                        The user <strong>{item.username}</strong> has already
+                        been allotted the maximum leave for the year{" "}
+                        <strong>{item.year}</strong>.
+                      </li>
+                    )}
+                  </Fragment>
                 );
               })}
             </ul>

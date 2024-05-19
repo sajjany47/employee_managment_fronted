@@ -78,7 +78,7 @@ export default function Review(props: any) {
   };
 
   const columns: GridColDef[] = [
-    { field: "username", headerName: "Username", width: 180, editable: true },
+    { field: "username", headerName: "Username", width: 180 },
     {
       field: "year",
       headerName: "year",
