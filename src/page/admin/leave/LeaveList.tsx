@@ -139,7 +139,7 @@ const LeaveList = () => {
       if (editData?.leaveYear !== moment(values?.leaveYear).format("YYYY")) {
         requestBody = { ...requestBody, leaveYear: values?.leaveYear };
       }
-      console.log(requestBody);
+
       leaveService
         .singleEditLeaveAlloted(requestBody)
         .then((res) => {

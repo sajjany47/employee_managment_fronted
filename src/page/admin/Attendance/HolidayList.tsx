@@ -27,15 +27,19 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from "moment";
 import * as Yup from "yup";
 import DeleteIcon from "@mui/icons-material/Delete";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import SimCardDownloadIcon from "@mui/icons-material/SimCardDownload";
+import { saveAs } from "file-saver";
 
 const HolidayList = () => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const attendanceService = new AttendanceService();
-  const [id, setId] = useState(moment.utc(new Date()));
+  const [id, setId] = useState(moment(new Date()));
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [holidayListData, setHolidayListData] = useState([]);
+  const [uploadLeaveDialoge, setUploadLeaveDialoge] = useState(false);
 
   const userType = useSelector((state: any) => state.auth.auth.user);
 
@@ -46,7 +50,7 @@ const HolidayList = () => {
   }, []);
 
   const handleChange = (value: any) => {
-    setId(moment.utc(value));
+    setId(moment(value));
     const formatDate = moment(value).format("YYYY");
     holidayList(formatDate);
   };
@@ -115,6 +119,17 @@ const HolidayList = () => {
       .finally(() => holidayList(moment(id).format("YYYY")));
   };
 
+  const handleDownload = () => {
+    attendanceService
+      .downloadHolidayList({ year: moment(id).format("YYYY") })
+      .then((res) => {
+        res.blob().then((blob: any) => {
+          const blobs = new Blob(blob, { type: "text/plain;charset=utf-8" });
+          saveAs(blobs);
+        });
+      });
+  };
+
   return (
     <>
       {loading && <Loader />}
@@ -134,27 +149,44 @@ const HolidayList = () => {
                   sx={{ marginTop: -1 }}
                 >
                   <DatePicker
-                    // sx={{ width: "50% " }}
+                    sx={{ width: "40px" }}
                     label="Select Year"
                     value={id}
                     slotProps={{
                       textField: { size: "small", fullWidth: false },
                     }}
                     views={["year"]}
-                    // onChange={(newValue) => setId(moment.utc(newValue))}
                     onChange={handleChange}
                   />
                 </DemoContainer>
               </LocalizationProvider>
               {userType.role !== "employee" && (
-                <Button
-                  variant="contained"
-                  startIcon={<AddIcon />}
-                  sx={{ minWidth: 140 }}
-                  onClick={handleClickOpen}
-                >
-                  Add
-                </Button>
+                <>
+                  <Button
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                    sx={{ width: "100px" }}
+                    onClick={handleClickOpen}
+                  >
+                    Add
+                  </Button>
+                  <Button
+                    sx={{ width: "110px" }}
+                    variant="contained"
+                    endIcon={<UploadFileIcon />}
+                    onClick={() => setUploadLeaveDialoge(true)}
+                  >
+                    Upload
+                  </Button>
+                  <Button
+                    sx={{ width: "130px" }}
+                    variant="contained"
+                    endIcon={<SimCardDownloadIcon />}
+                    onClick={handleDownload}
+                  >
+                    Download
+                  </Button>
+                </>
               )}
             </Box>
           </Box>
@@ -290,6 +322,19 @@ const HolidayList = () => {
             )}
           </Formik>
         </DialogContent>
+      </Dialog>
+
+      <Dialog
+        fullWidth
+        maxWidth="md"
+        open={uploadLeaveDialoge}
+        onClose={() => setUploadLeaveDialoge(false)}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {<strong>Upload Holiday Excel</strong>}
+        </DialogTitle>
+        <DialogContent>SAJJAN</DialogContent>
       </Dialog>
     </>
   );

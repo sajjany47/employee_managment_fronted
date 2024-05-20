@@ -186,6 +186,22 @@ export class AttendanceService {
     }
   };
 
+  downloadHolidayList = async (payload: any) => {
+    try {
+      const response = await axios.post(
+        `${apiPath}/excel-holiday/download`,
+        payload,
+        {
+          headers: this.headers,
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
+
   notificationList = async () => {
     try {
       const response = await axios.get(
