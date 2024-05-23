@@ -123,10 +123,10 @@ const HolidayList = () => {
     attendanceService
       .downloadHolidayList({ year: moment(id).format("YYYY") })
       .then((res) => {
-        res.blob().then((blob: any) => {
-          const blobs = new Blob(blob, { type: "text/plain;charset=utf-8" });
-          saveAs(blobs);
+        const blob = new Blob([res], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
+        saveAs(blob, `Holiday_List_${moment(id).format("YYYY")}.xlsx`);
       });
   };
 

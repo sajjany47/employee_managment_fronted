@@ -193,6 +193,7 @@ export class AttendanceService {
         payload,
         {
           headers: this.headers,
+          responseType: "arraybuffer",
         }
       );
       return response.data;
