@@ -77,7 +77,7 @@ const HolidayReview = (props: any) => {
   };
 
   const columns: GridColDef[] = [
-    { field: "holidayDate", headerName: "Date", width: 250, type: "date" },
+    { field: "holidayDate", headerName: "Date", width: 250, type: "string" },
     {
       field: "reason",
       headerName: "Reason",

@@ -30,6 +30,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import SimCardDownloadIcon from "@mui/icons-material/SimCardDownload";
 import { saveAs } from "file-saver";
+import HolidayUp from "./HolidayUpload/HolidayUp";
 
 const HolidayList = () => {
   const theme = useTheme();
@@ -334,7 +335,9 @@ const HolidayList = () => {
         <DialogTitle id="alert-dialog-title">
           {<strong>Upload Holiday Excel</strong>}
         </DialogTitle>
-        <DialogContent>SAJJAN</DialogContent>
+        <DialogContent>
+          <HolidayUp />
+        </DialogContent>
       </Dialog>
     </>
   );

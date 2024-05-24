@@ -32,7 +32,7 @@ const HolidayUpload = (props: any) => {
     attendanceService
       .readHolidayList(formData)
       .then((res) => {
-        props.getData(res.data);
+        props.setData(res.data);
         setLoading(false);
       })
       .catch((error) => {
