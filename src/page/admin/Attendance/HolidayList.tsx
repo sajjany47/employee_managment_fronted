@@ -111,7 +111,7 @@ const HolidayList = () => {
       .deleteHolidayList(requestData)
       .then((res) => {
         enqueueSnackbar(res.message, { variant: "success" });
-        holidayList(id);
+        holidayList(moment(id).format("YYYY"));
       })
       .catch((error) => {
         enqueueSnackbar(error.response.data.message, { variant: "error" });
