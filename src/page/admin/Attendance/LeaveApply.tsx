@@ -24,9 +24,12 @@ import LanguageIcon from "@mui/icons-material/Language";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import NoEncryptionIcon from "@mui/icons-material/NoEncryption";
 import * as Yup from "yup";
+import { useLocation } from "react-router-dom";
 
 const LeaveApply = () => {
   const attendanceService = new AttendanceService();
+  const location = useLocation();
+
   const user = useSelector((state: any) => state.auth.auth.user);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -36,21 +39,21 @@ const LeaveApply = () => {
 
   const leaveSchema = Yup.object().shape({
     startDay: Yup.string().required("Start Day is required"),
-    endDay: Yup.string()
+    endDay: Yup.date()
       .required("End Day is requird")
-      .when("startDay", (startDay: any, schema) => {
-        return schema.test({
-          test: (date: any) => {
-            if (!date) return true;
-            return date > startDay;
-          },
-          message: "Start date not greater than  end date",
-        });
-      }),
+      .when(
+        "startDay",
+        (startDate, schema) =>
+          startDate &&
+          schema.min(startDate, "End date is greater than start Date")
+      ),
     reason: Yup.string().required("Reason is required"),
   });
   useEffect(() => {
-    applyLeaveList(user.username, moment(year).format("YYYY"));
+    applyLeaveList(
+      location.state === null ? user.username : location.state.data,
+      moment(year).format("YYYY")
+    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -127,20 +130,20 @@ const LeaveApply = () => {
     },
     {
       field: "startDay",
-      headerName: "Leave Start Date",
+      headerName: "Start Date",
       width: 150,
       renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
     },
     {
       field: "endDay",
-      headerName: "Leave End Date",
+      headerName: "End Date",
       width: 150,
       renderCell: (value: any) => moment(value.value).format("Do MMM, YYYY"),
     },
     {
       field: "reason",
       headerName: "Reason",
-      width: 200,
+      width: 150,
     },
     {
       field: "totalDays",
@@ -293,12 +296,13 @@ const LeaveApply = () => {
                 initialState={{
                   pagination: {
                     paginationModel: {
-                      pageSize: ConfigData.pageSize,
+                      pageSize: 10,
+                      page: 1,
                     },
                   },
                 }}
-                getRowId={(row) => row._id}
                 pageSizeOptions={ConfigData.pageRow}
+                getRowId={(row) => row._id}
                 localeText={{ noRowsLabel: "No Data Available!!!" }}
                 // checkboxSelection
                 // disableRowSelectionOnClick

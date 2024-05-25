@@ -1,14 +1,14 @@
-import TouchAppIcon from "@mui/icons-material/TouchApp";
 import { MdDashboardCustomize } from "react-icons/md";
 import { HiUserGroup } from "react-icons/hi2";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { GiMoneyStack } from "react-icons/gi";
-import { FcLeave } from "react-icons/fc";
 import { BiTask } from "react-icons/bi";
 import { IoIosChatbubbles } from "react-icons/io";
 import { BiSupport } from "react-icons/bi";
 import { FaUserAlt } from "react-icons/fa";
 import { FaAngellist } from "react-icons/fa6";
+import { IoMdFingerPrint } from "react-icons/io";
+import { FaRegCalendarDays } from "react-icons/fa6";
 
 const SidebarData = {
   employee: [
@@ -20,7 +20,7 @@ const SidebarData = {
     {
       path: "/employee/attendance",
       title: "Attendance",
-      icon: <TouchAppIcon />,
+      icon: <IoMdFingerPrint />,
     },
     {
       path: "/employee/tasks",
@@ -30,7 +30,7 @@ const SidebarData = {
     {
       path: "/employee/leave",
       title: "Leave",
-      icon: <FcLeave />,
+      icon: <FaRegCalendarDays />,
     },
 
     {
@@ -46,7 +46,7 @@ const SidebarData = {
     },
     {
       path: "/employee/holiday-list",
-      title: "Holiday List",
+      title: "Holiday",
       icon: <FaAngellist />,
     },
     {
@@ -74,13 +74,13 @@ const SidebarData = {
     },
     {
       path: "/admin/salary",
-      title: "Salary Alloted",
+      title: "Salary",
       icon: <GiMoneyStack />,
     },
     {
       path: "/admin/attendance",
-      title: "Attendance List",
-      icon: <TouchAppIcon />,
+      title: "Attendance",
+      icon: <IoMdFingerPrint />,
     },
 
     {
@@ -90,12 +90,12 @@ const SidebarData = {
     },
     {
       path: "/admin/leave",
-      title: "Leave Alloted",
-      icon: <FcLeave />,
+      title: "Leave",
+      icon: <FaRegCalendarDays />,
     },
     {
       path: "/employee/holiday-list",
-      title: "Holiday List",
+      title: "Holiday",
       icon: <FaAngellist />,
     },
     {
@@ -133,13 +133,13 @@ const SidebarData = {
     },
     {
       path: "/admin/salary",
-      title: "Salary Alloted",
+      title: "Salary",
       icon: <GiMoneyStack />,
     },
     {
       path: "/admin/attendance",
-      title: "Attendance List",
-      icon: <TouchAppIcon />,
+      title: "Attendance",
+      icon: <IoMdFingerPrint />,
     },
 
     {
@@ -149,12 +149,12 @@ const SidebarData = {
     },
     {
       path: "/admin/leave",
-      title: "Leave Alloted",
-      icon: <FcLeave />,
+      title: "Leave",
+      icon: <FaRegCalendarDays />,
     },
     {
       path: "/employee/holiday-list",
-      title: "Holiday List",
+      title: "Holiday",
       icon: <FaAngellist />,
     },
     {

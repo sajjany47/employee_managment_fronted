@@ -18,22 +18,38 @@ const Payroll = () => {
   const navigate = useNavigate();
   const payrollService = new PayrollService();
   const [monthYear, setMonthYear] = useState(
-    moment.utc(new Date()).subtract(1, "months")
+    moment(new Date()).subtract(1, "months")
   );
   const [payrollList, setPayrollList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageRow, setPageRow] = useState(10);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    payrollListApi(monthYear);
+    payrollListApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [pageRow, page, search, monthYear]);
 
-  const payrollListApi = (value: any) => {
+  const payrollListApi = () => {
     setLoading(true);
+    const reqData: any = {
+      page: page,
+      limit: pageRow,
+      date: moment(monthYear).format("YYYY-MM"),
+    };
+    if (search !== "") {
+      reqData.username = search;
+    }
+
     payrollService
-      .payrollMonthList({ date: moment(value).format("YYYY-MM") })
+      .payrollMonthList(reqData)
       .then((res) => {
-        setPayrollList(res.data.userPayroll);
+        if (Object.keys(res.data).length > 0) {
+          setPayrollList(res.data.userPayroll);
+        } else {
+          setPayrollList([]);
+        }
       })
       .catch((err) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
@@ -124,9 +140,9 @@ const Payroll = () => {
     },
   ];
   const handleChange = (value: any) => {
-    setMonthYear(moment.utc(value));
-    const formatDate = moment(value).format("YYYY-MM");
-    payrollListApi(formatDate);
+    setMonthYear(moment(value));
+    // const formatDate = moment(value).format("YYYY-MM");
+    // payrollListApi(formatDate);
     setPayrollList([]);
   };
 
@@ -135,7 +151,7 @@ const Payroll = () => {
     payrollService
       .payrollGenerate({ date: moment(monthYear).format("YYYY-MM") })
       .then(() => {
-        payrollListApi(monthYear);
+        payrollListApi();
       })
       .catch((err) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
@@ -154,7 +170,12 @@ const Payroll = () => {
               </h6>
             </Box>
             <Box className="mt-2 flex justify-end gap-2">
-              <TextField label="Search" id="outlined-size-small" size="small" />
+              <TextField
+                label="Search"
+                id="outlined-size-small"
+                size="small"
+                onChange={(e) => setSearch(e.target.value)}
+              />
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <DemoContainer
                   components={["DatePicker"]}
@@ -192,17 +213,20 @@ const Payroll = () => {
               rows={payrollList}
               columns={columns}
               getRowId={(row) => row._id}
+              onPaginationModelChange={(e) => {
+                setPageRow(Number(e.pageSize));
+                setPage(Number(e.page) + 1);
+              }}
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: ConfigData.pageSize,
+                    pageSize: pageRow,
+                    page: page,
                   },
                 },
               }}
               pageSizeOptions={ConfigData.pageRow}
               localeText={{ noRowsLabel: "No Data Available!!!" }}
-              // checkboxSelection
-              // disableRowSelectionOnClick
             />
           </Box>
         </Grid>

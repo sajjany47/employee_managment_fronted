@@ -25,9 +25,9 @@ export class EmployeeServices {
     }
   };
 
-  activationKeyList = async (id: any) => {
+  activationKeyList = async (payload: any) => {
     try {
-      const response = await axios.get(`${apiPath}/activation-key-list/${id}`, {
+      const response = await axios.post(`${apiPath}/user-datatable`, payload, {
         headers: this.headers,
       });
       return response.data;

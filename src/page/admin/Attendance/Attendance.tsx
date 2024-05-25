@@ -8,6 +8,7 @@ import {
   Grid,
   Tab,
   Tabs,
+  TextField,
   Typography,
 } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -31,6 +32,7 @@ import {
 } from "../../../components/DynamicField";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
+import { percentageColor } from "../../../shared/UtlityFunction";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -79,6 +81,9 @@ const Attendance = () => {
   const [invalidAttendanceData, setInvalidAttendanceData] = useState([]);
   const [attendanceData, setAttendanceData] = useState([]);
   const [tabValue, setTabValue] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageRow, setPageRow] = useState(10);
+  const [search, setSearch] = useState("");
 
   const statusChangeSchems = Yup.object().shape({
     statusChange: Yup.string().required("Status is required"),
@@ -103,14 +108,23 @@ const Attendance = () => {
   useEffect(() => {
     allUserLeave(year);
     invalidAttendance();
-    attendanceList(year);
+    attendanceList();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [year, page, pageRow, search]);
 
-  const attendanceList = (date: any) => {
+  const attendanceList = () => {
+    const reqData: any = {
+      page: page,
+      limit: pageRow,
+      date: year,
+    };
+
+    if (search !== "") {
+      reqData.username = search;
+    }
     attendanceService
-      .AttendanceAllList({ date: date })
+      .AttendanceAllList(reqData)
       .then((res) => {
         setAttendanceData(res.data);
       })
@@ -179,21 +193,21 @@ const Attendance = () => {
   const columns: GridColDef[] = [
     {
       field: "user_id",
-      headerName: "UserName",
-      width: 110,
+      headerName: "Username",
+      width: 150,
       renderCell: (value: any) => <span>{value.row.user_id}</span>,
     },
     {
       field: "totalLeaveLeft",
-      headerName: "Leave Left",
-      width: 100,
+      headerName: "Leave Available",
+      width: 150,
       renderCell: (value: any) => (
         <span>{value.row.leaveDetail.totalLeaveLeft}</span>
       ),
     },
     {
       field: "startDay",
-      headerName: "Leave Start Date",
+      headerName: "Start Date",
       width: 150,
       renderCell: (value: any) =>
         moment(value.row.leaveDetail.leaveUseDetail.startDay).format(
@@ -202,7 +216,7 @@ const Attendance = () => {
     },
     {
       field: "endDay",
-      headerName: "Leave Start Date",
+      headerName: "End Date",
       width: 150,
       renderCell: (value: any) =>
         moment(value.row.leaveDetail.leaveUseDetail.endDay).format(
@@ -220,15 +234,15 @@ const Attendance = () => {
     {
       field: "totalDays",
       headerName: "Total Days",
-      width: 100,
+      width: 150,
       renderCell: (value: any) => (
         <span>{value.row.leaveDetail.leaveUseDetail.totalDays}</span>
       ),
     },
     {
       field: "leaveStatus",
-      headerName: "Leave Status",
-      width: 120,
+      headerName: "Status",
+      width: 150,
       renderCell: (value: any) =>
         customRegistrationStatus(
           value.row.leaveDetail.leaveUseDetail.leaveStatus
@@ -237,7 +251,7 @@ const Attendance = () => {
     {
       field: "approvedBy",
       headerName: "ApprovedBy ",
-      width: 120,
+      width: 150,
       renderCell: (value: any) => (
         <span>{value.row.leaveDetail.leaveUseDetail.approvedBy}</span>
       ),
@@ -245,7 +259,7 @@ const Attendance = () => {
     {
       field: "action",
       headerName: "Action",
-      width: 120,
+      width: 150,
       renderCell: (value: any) => (
         <>
           {value.row.leaveDetail.leaveUseDetail.leaveStatus === "pending" && (
@@ -270,8 +284,8 @@ const Attendance = () => {
               // fontSize: "30px",
             }}
             onClick={() => {
-              navigate("/admin/attendance/details", {
-                state: { data: value.row },
+              navigate("/user/leave/details", {
+                state: { data: value.row.user_id },
               });
             }}
           />
@@ -294,7 +308,7 @@ const Attendance = () => {
   const handleChange = (value: any) => {
     setAllUserLeaveList([]);
     setYear(moment(value));
-    attendanceList(value);
+    // attendanceList();
 
     allUserLeave(value);
   };
@@ -388,21 +402,21 @@ const Attendance = () => {
     {
       field: "date",
       headerName: "Date",
-      width: 150,
+      width: 160,
       renderCell: (value: any) =>
         moment(value.row.timeSchedule.date).format("Do MMM, YYYY"),
     },
     {
       field: "startTime",
       headerName: "Clock In",
-      width: 150,
+      width: 160,
       renderCell: (value: any) =>
         moment(value.row.timeSchedule.startTime).format("HH:mm:ss"),
     },
     {
       field: "endTime",
       headerName: "Clock Out",
-      width: 200,
+      width: 160,
       renderCell: (value: any) =>
         value.row.timeSchedule.endTime &&
         moment(value.row.timeSchedule.endTime).format("HH:mm:ss"),
@@ -410,7 +424,7 @@ const Attendance = () => {
     {
       field: "totalTime",
       headerName: "Total Time",
-      width: 150,
+      width: 160,
       renderCell: (value: any) => (
         <span>{value.row.timeSchedule.totalTime}</span>
       ),
@@ -418,7 +432,7 @@ const Attendance = () => {
     {
       field: "updatedBy",
       headerName: "Updated By",
-      width: 150,
+      width: 160,
       renderCell: (value: any) => (
         <span>{value.row.timeSchedule?.updatedBy}</span>
       ),
@@ -426,7 +440,7 @@ const Attendance = () => {
     {
       field: "action",
       headerName: "Action",
-      width: 120,
+      width: 160,
       renderCell: (value: any) => (
         <>
           <EditNoteIcon
@@ -448,53 +462,59 @@ const Attendance = () => {
 
   const AttendanceColumns: GridColDef[] = [
     {
-      field: "username",
-      headerName: "Username",
-      width: 150,
-      renderCell: (value: any) => <span>{value.value}</span>,
-    },
-    {
       field: "date",
       headerName: "Date",
-      width: 150,
+      width: 170,
       renderCell: (value: any) =>
-        moment(value.row.timeSchedule.date).format("Do MMM, YYYY"),
+        moment(value.row.date, "YYYY-MM").format("MMM, YYYY"),
     },
     {
-      field: "startTime",
-      headerName: "Clock In",
-      width: 150,
-      renderCell: (value: any) =>
-        moment(value.row.timeSchedule.startTime).format("HH:mm:ss"),
+      field: "username",
+      headerName: "Username",
+      width: 170,
+      renderCell: (value: any) => <span>{value.value}</span>,
     },
-    {
-      field: "endTime",
-      headerName: "Clock Out",
-      width: 200,
-      renderCell: (value: any) =>
-        value.row.timeSchedule.endTime &&
-        moment(value.row.timeSchedule.endTime).format("HH:mm:ss"),
-    },
+
     {
       field: "totalTime",
       headerName: "Total Time",
-      width: 150,
-      renderCell: (value: any) => (
-        <span>{value.row.timeSchedule.totalTime}</span>
-      ),
+      width: 170,
+      renderCell: (value: any) => <span>{value.value}</span>,
     },
     {
-      field: "updatedBy",
-      headerName: "Updated By",
-      width: 150,
-      renderCell: (value: any) => (
-        <span>{value.row.timeSchedule?.updatedBy}</span>
-      ),
+      field: "totalLeave",
+      headerName: "Total Leave",
+      width: 170,
+      renderCell: (value: any) => <span>{value.value}</span>,
+    },
+    {
+      field: "totalLeaveLeft",
+      headerName: "Leave Available",
+      width: 170,
+      renderCell: (value: any) => <span>{value.row.totalLeaveLeft}</span>,
+    },
+
+    {
+      field: "timeSchedule",
+      headerName: "Average",
+      width: 170,
+      renderCell: (value: any) => {
+        const percentage: any = percentageColor(
+          value.row.timeSchedule.length * 9 * 60,
+          Number(value.row.totalTime)
+        );
+        return (
+          <Chip
+            color={percentage.color}
+            label={`${percentage.value.toFixed(2)} %`}
+          />
+        );
+      },
     },
     {
       field: "action",
       headerName: "Action",
-      width: 120,
+      width: 150,
       renderCell: (value: any) => (
         <>
           <VisibilityIcon
@@ -529,6 +549,12 @@ const Attendance = () => {
               </h6>
             </Box>
             <Box className="mt-2 flex justify-end gap-2">
+              <TextField
+                label="Search"
+                id="outlined-size-small"
+                size="small"
+                onChange={(e) => setSearch(e.target.value)}
+              />
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <DemoContainer
                   components={["DatePicker"]}
@@ -570,14 +596,19 @@ const Attendance = () => {
                 }}
                 rows={attendanceData}
                 columns={AttendanceColumns}
+                getRowId={(row) => row._id}
+                onPaginationModelChange={(e) => {
+                  setPageRow(Number(e.pageSize));
+                  setPage(Number(e.page) + 1);
+                }}
                 initialState={{
                   pagination: {
                     paginationModel: {
-                      pageSize: ConfigData.pageSize,
+                      pageSize: pageRow,
+                      page: page,
                     },
                   },
                 }}
-                getRowId={(row) => row.timeSchedule._id}
                 pageSizeOptions={ConfigData.pageRow}
                 localeText={{ noRowsLabel: "No Data Available!!!" }}
                 // checkboxSelection
@@ -595,12 +626,13 @@ const Attendance = () => {
                 initialState={{
                   pagination: {
                     paginationModel: {
-                      pageSize: ConfigData.pageSize,
+                      pageSize: 10,
+                      page: 1,
                     },
                   },
                 }}
-                getRowId={(row) => row.timeSchedule._id}
                 pageSizeOptions={ConfigData.pageRow}
+                getRowId={(row) => row.timeSchedule._id}
                 localeText={{ noRowsLabel: "No Data Available!!!" }}
                 // checkboxSelection
                 // disableRowSelectionOnClick
@@ -617,12 +649,13 @@ const Attendance = () => {
                 initialState={{
                   pagination: {
                     paginationModel: {
-                      pageSize: ConfigData.pageSize,
+                      pageSize: 10,
+                      page: 1,
                     },
                   },
                 }}
-                getRowId={(row) => row.leaveDetail.leaveUseDetail._id}
                 pageSizeOptions={ConfigData.pageRow}
+                getRowId={(row) => row.leaveDetail.leaveUseDetail._id}
                 localeText={{ noRowsLabel: "No Data Available!!!" }}
                 // checkboxSelection
                 // disableRowSelectionOnClick
@@ -745,7 +778,7 @@ const Attendance = () => {
                     }}
                   >
                     <Button
-                      onClick={handleClose}
+                      onClick={handleTimeClose}
                       variant="contained"
                       sx={{
                         backgroundColor: "red",
@@ -754,11 +787,7 @@ const Attendance = () => {
                     >
                       Cancel
                     </Button>
-                    <Button
-                      // onClick={handleGenerateKey}
-                      variant="contained"
-                      type="submit"
-                    >
+                    <Button variant="contained" type="submit">
                       Submit
                     </Button>
                   </Grid>

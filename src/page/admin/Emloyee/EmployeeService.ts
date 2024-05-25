@@ -48,4 +48,35 @@ export class EmployeeService {
       throw err;
     }
   };
+
+  adminPasswordChange = async (payload: any) => {
+    try {
+      const response = await axios.post(
+        `${apiPath}/admin-change-password`,
+        payload,
+        {
+          headers: this.headers,
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
+  userPasswordChange = async (payload: any) => {
+    try {
+      const response = await axios.post(
+        `${apiPath}/user-change-password`,
+        payload,
+        {
+          headers: this.headers,
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
 }

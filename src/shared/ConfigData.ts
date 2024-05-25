@@ -1,5 +1,5 @@
 export const ConfigData = {
-  pageRow: [5, 10, 20, 50, 100],
+  pageRow: [10, 20, 50, 100],
   pageSize: 5,
   adminType: [
     { value: "admin", label: "Admin" },
@@ -16,6 +16,16 @@ export const ConfigData = {
     { value: "pending", label: "Pending" },
     { value: "approved", label: "Approved" },
     { value: "rejected", label: "Rejected" },
+  ],
+
+  registrationStatus: [
+    { value: "waiting", label: "Waiting" },
+    { value: "pending", label: "Pending" },
+    { value: "verified", label: "Verified" },
+  ],
+  activeStatus: [
+    { value: true, label: "Active" },
+    { value: false, label: "Inactive" },
   ],
   taskStatus: [
     { value: "assign", label: "Assign" },

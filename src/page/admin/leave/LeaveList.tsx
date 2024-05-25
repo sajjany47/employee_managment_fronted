@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  TextField,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState } from "react";
@@ -23,17 +24,27 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { ConfigData } from "../../../shared/ConfigData";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import SimCardDownloadIcon from "@mui/icons-material/SimCardDownload";
+import UploadLeave from "./upload/UploadLeave";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 const LeaveList = () => {
   const leaveService = new LeaveService();
+
   const userType = useSelector((state: any) => state.auth.auth.user);
   const [open, setOpen] = useState(false);
-  const [id, setId] = useState(moment.utc(new Date()));
+  const [id, setId] = useState(moment(new Date()));
   const [usernameList, setUsernameList] = useState([]);
-  const [leaveListData, setLeaveListData] = useState([]);
+  const [leaveListData, setLeaveListData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [modalStatus, setModalStatus] = useState("add");
   const [editData, setEditData] = useState<any>({});
+  const [page, setPage] = useState(1);
+  const [pageRow, setPageRow] = useState(10);
+  const [search, setSearch] = useState("");
+  const [uploadLeaveDialoge, setUploadLeaveDialoge] = useState(false);
 
   const validationSchema = Yup.object().shape({
     leaveYear: Yup.string().required("Year is required"),
@@ -42,19 +53,27 @@ const LeaveList = () => {
   });
 
   useEffect(() => {
-    leaveListApi(id);
+    leaveListApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+  }, [open, pageRow, page, search, id]);
 
   const handleChange = (value: any) => {
-    setId(moment.utc(value));
-    const formatDate = moment(value).format("YYYY");
-    leaveListApi(formatDate);
+    setId(moment(value));
+    leaveListApi();
   };
 
-  const leaveListApi = (value: any) => {
+  const leaveListApi = () => {
+    const reqData: any = {
+      page: page,
+      limit: pageRow,
+      year: moment(id).format("YYYY"),
+    };
+
+    if (search !== "") {
+      reqData.username = search;
+    }
     leaveService
-      .leaveList(moment(value).format("YYYY"))
+      .leaveList(reqData)
       .then((res) => {
         setLeaveListData(res.data);
       })
@@ -90,7 +109,7 @@ const LeaveList = () => {
   const handleClose = () => {
     setOpen(false);
     setUsernameList([]);
-    leaveListApi(new Date());
+    leaveListApi();
   };
 
   const submitLeave = (values: any) => {
@@ -120,7 +139,7 @@ const LeaveList = () => {
       if (editData?.leaveYear !== moment(values?.leaveYear).format("YYYY")) {
         requestBody = { ...requestBody, leaveYear: values?.leaveYear };
       }
-      console.log(requestBody);
+
       leaveService
         .singleEditLeaveAlloted(requestBody)
         .then((res) => {
@@ -212,6 +231,24 @@ const LeaveList = () => {
       ? { user_id: "", leaveYear: "", leaveAlloted: "" }
       : { ...editData };
 
+  const handleDownload = () => {
+    const data = leaveListData.map((item: any) => ({
+      Year: item.leaveDetail.leaveYear,
+      Username: item.user_id,
+      Leave: item.leaveDetail.totalLeave,
+    }));
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(data);
+
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+    });
+
+    saveAs(blob, "Leave_Details.xlsx");
+  };
   return (
     <>
       {loading && <Loader />}
@@ -224,13 +261,20 @@ const LeaveList = () => {
               </h6>
             </Box>
             <Box className="mt-2 flex justify-end gap-2">
+              <TextField
+                label="Search"
+                id="outlined-size-small"
+                size="small"
+                onChange={(e) => setSearch(e.target.value)}
+                sx={{ width: "150px" }}
+              />
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <DemoContainer
                   components={["DatePicker"]}
                   sx={{ marginTop: -1 }}
                 >
                   <DatePicker
-                    // sx={{ width: "50% " }}
+                    sx={{ width: "40px" }}
                     label="Select Year"
                     value={id}
                     slotProps={{
@@ -242,11 +286,28 @@ const LeaveList = () => {
                 </DemoContainer>
               </LocalizationProvider>
               <Button
+                sx={{ width: "100px" }}
                 variant="contained"
-                startIcon={<AddIcon />}
+                endIcon={<AddIcon />}
                 onClick={handleClickOpen}
               >
-                Leave Alloted
+                Leave
+              </Button>
+              <Button
+                sx={{ width: "110px" }}
+                variant="contained"
+                endIcon={<UploadFileIcon />}
+                onClick={() => setUploadLeaveDialoge(true)}
+              >
+                Upload
+              </Button>
+              <Button
+                sx={{ width: "130px" }}
+                variant="contained"
+                endIcon={<SimCardDownloadIcon />}
+                onClick={handleDownload}
+              >
+                Download
               </Button>
             </Box>
           </Box>
@@ -260,10 +321,15 @@ const LeaveList = () => {
             rows={leaveListData}
             columns={columns}
             getRowId={(row) => row._id}
+            onPaginationModelChange={(e) => {
+              setPageRow(Number(e.pageSize));
+              setPage(Number(e.page) + 1);
+            }}
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: ConfigData.pageSize,
+                  pageSize: pageRow,
+                  page: page,
                 },
               },
             }}
@@ -306,7 +372,7 @@ const LeaveList = () => {
                           name="leaveYear"
                           value={
                             values.leaveYear !== null
-                              ? moment.utc(values.leaveYear)
+                              ? moment(values.leaveYear)
                               : ""
                           }
                           slotProps={{
@@ -325,6 +391,12 @@ const LeaveList = () => {
                         />
                       </DemoContainer>
                     </LocalizationProvider>
+                    {getIn(errors, "leaveYear") &&
+                      getIn(touched, "leaveYear") && (
+                        <small className="text-red-600">
+                          Years is required
+                        </small>
+                      )}
                   </Grid>
                   <Grid item xs={2} sm={4} md={6}>
                     {modalStatus === "add" ? (
@@ -370,6 +442,21 @@ const LeaveList = () => {
               </Form>
             )}
           </Formik>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        fullWidth
+        maxWidth="md"
+        open={uploadLeaveDialoge}
+        onClose={() => setUploadLeaveDialoge(false)}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {<strong>Upload Leave Excel</strong>}
+        </DialogTitle>
+        <DialogContent>
+          <UploadLeave />
         </DialogContent>
       </Dialog>
     </>

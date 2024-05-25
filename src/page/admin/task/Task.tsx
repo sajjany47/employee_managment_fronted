@@ -32,6 +32,8 @@ import moment from "moment";
 import { TaskService } from "./TaskService";
 import { enqueueSnackbar } from "notistack";
 import { useSelector } from "react-redux";
+import * as Yup from "yup";
+import { containsSearchTerm } from "../../../shared/UtlityFunction";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -78,9 +80,19 @@ const Task = () => {
   const [selectTask, setSelectTask] = useState<any>({});
   const [year, setYear] = useState(moment.utc(new Date()));
   const [taskListData, setTaskListData] = useState([]);
+  const [copyTaskListData, setCopyTaskListData] = useState([]);
   const [employeeListData, setEmployeeListData] = useState([]);
   const [tabType, setTabType] = useState("Sender");
+  const [search, setSearch] = useState("");
 
+  const taskAssignValidation = Yup.object().shape({
+    taskStatus: Yup.string().required("Task status is required"),
+    taskReceiver: Yup.string().required("Task receiver is required"),
+    taskStartDate: Yup.string().required("Task start date is required"),
+    takDeadline: Yup.string().required("Task deadline is required"),
+    taskDetails: Yup.string().required("Task details is required"),
+    taskProject: Yup.string().required("Project name is required"),
+  });
   useEffect(() => {
     if (tabValue === 0) {
       taskList("receiver", userType.username, year, taskStatus);
@@ -91,8 +103,11 @@ const Task = () => {
     taskService
       .employeeList()
       .then((res) => {
+        const filterUsername = res.data.filter(
+          (item: any) => item.username !== userType.username
+        );
         setEmployeeListData(
-          res.data.map((item: any) => ({
+          filterUsername.map((item: any) => ({
             label: `${item.name}(${item.username})`,
             value: item.username,
           }))
@@ -111,6 +126,7 @@ const Task = () => {
       .taskList(type, username, moment(date).format("YYYY"), status)
       .then((res) => {
         setTaskListData(res.data);
+        setCopyTaskListData(res.data);
       })
       .catch((err: any) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
@@ -201,6 +217,16 @@ const Task = () => {
     setTabType(type);
   };
 
+  const handelSearch = (e: any) => {
+    setSearch(e.target.value);
+
+    const filteredTasks = copyTaskListData.filter((task) =>
+      containsSearchTerm(task, e.target.value)
+    );
+
+    setTaskListData(filteredTasks);
+  };
+
   return (
     <div>
       {loading && <Loader />}
@@ -213,7 +239,13 @@ const Task = () => {
               </h6>
             </Box>
             <Box className="mt-2 flex justify-end gap-2">
-              <TextField label="Search" id="outlined-size-small" size="small" />
+              <TextField
+                label="Search"
+                id="outlined-size-small"
+                size="small"
+                value={search}
+                onChange={handelSearch}
+              />
               <FormControl sx={{ minWidth: 120 }} size="small">
                 <Select value={taskStatus} onChange={handleChange}>
                   {options.map((item: any, index: number) => {
@@ -291,7 +323,7 @@ const Task = () => {
           <Formik
             initialValues={
               actionType === "edit"
-                ? { ...selectTask }
+                ? { ...selectTask, taskStatus: "" }
                 : {
                     taskStatus: "assign",
                     taskReceiver: "",
@@ -301,7 +333,7 @@ const Task = () => {
                     taskProject: "",
                   }
             }
-            //   validationSchema={activationKeyValidation}
+            validationSchema={taskAssignValidation}
             onSubmit={handleTagAssign}
           >
             {({ values }) => (

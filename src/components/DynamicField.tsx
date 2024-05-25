@@ -5,7 +5,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { getIn, useField, useFormikContext } from "formik";
+import { useField, useFormikContext } from "formik";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -23,17 +23,16 @@ export const InputField = (props: any) => {
         size="medium"
         {...field}
         {...props}
-        // value={field.value !== undefined ? field.value : ""}
+        value={field.value !== undefined ? field.value : ""}
         id={field.name}
         variant="outlined"
         className="w-full"
         // helperText={meta.touched ? meta.error : ""}
         error={meta.touched && Boolean(meta.error)}
       />
-
-      {/* {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null} */}
+      {meta.touched && meta.error && (
+        <small className="text-red-600">{meta.error}</small>
+      )}
     </>
   );
 };
@@ -44,14 +43,14 @@ export const SelectField = (props: any) => {
   return (
     <>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label" sx={{ marginTop: 1 }}>
+        <InputLabel id={field.name} sx={{ marginTop: 1 }}>
           {props.label}
         </InputLabel>
         <Select
-          // id={field.name}
+          id={field.name}
           sx={{ marginTop: 1 }}
           size="medium"
-          labelId="demo-simple-select-label"
+          labelId={field.name}
           {...field}
           {...props}
           value={field?.value !== undefined ? field.value : ""}
@@ -68,9 +67,9 @@ export const SelectField = (props: any) => {
           })}
         </Select>
       </FormControl>
-      {/* {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null} */}
+      {meta.touched && meta.error && (
+        <small className="text-red-600">{meta.error}</small>
+      )}
     </>
   );
 };
@@ -87,23 +86,24 @@ export const DateField = (props: any) => {
             // views={["year", "month", "day"]}
             {...field}
             {...props}
-            value={field.value !== undefined ? moment.utc(field.value) : ""}
+            value={field.value !== undefined ? moment(field.value) : ""}
             views={props.views}
             onChange={(e: any) => setFieldValue(field.name, moment(e))}
             sx={{ width: "100%" }}
             slotProps={{
               textField: {
+                variant: "outlined",
                 size: "medium",
-                error:
-                  getIn(meta.error, field.name) &&
-                  getIn(meta.touched, field.name)
-                    ? true
-                    : false,
+                error: meta.touched && Boolean(meta.error),
+                // helperText: meta.touched && Boolean(meta.error),
               },
             }}
           />
         </DemoContainer>
       </LocalizationProvider>
+      {meta.touched && meta.error && (
+        <small className="text-red-600">{meta.error}</small>
+      )}
     </>
   );
 };
@@ -124,17 +124,17 @@ export const TimeField = (props: any) => {
             onChange={(e: any) => setFieldValue(field.name, moment(e))}
             slotProps={{
               textField: {
+                variant: "outlined",
                 size: "medium",
-                error:
-                  getIn(meta.error, field.name) &&
-                  getIn(meta.touched, field.name)
-                    ? true
-                    : false,
+                error: meta.touched && Boolean(meta.error),
               },
             }}
           />
         </DemoContainer>
       </LocalizationProvider>
+      {meta.touched && meta.error && (
+        <small className="text-red-600">{meta.error}</small>
+      )}
     </>
   );
 };

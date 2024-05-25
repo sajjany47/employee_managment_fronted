@@ -27,15 +27,20 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from "moment";
 import * as Yup from "yup";
 import DeleteIcon from "@mui/icons-material/Delete";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import SimCardDownloadIcon from "@mui/icons-material/SimCardDownload";
+import { saveAs } from "file-saver";
+import HolidayUp from "./HolidayUpload/HolidayUp";
 
 const HolidayList = () => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const attendanceService = new AttendanceService();
-  const [id, setId] = useState(moment.utc(new Date()));
+  const [id, setId] = useState(moment(new Date()));
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [holidayListData, setHolidayListData] = useState([]);
+  const [uploadLeaveDialoge, setUploadLeaveDialoge] = useState(false);
 
   const userType = useSelector((state: any) => state.auth.auth.user);
 
@@ -46,7 +51,7 @@ const HolidayList = () => {
   }, []);
 
   const handleChange = (value: any) => {
-    setId(moment.utc(value));
+    setId(moment(value));
     const formatDate = moment(value).format("YYYY");
     holidayList(formatDate);
   };
@@ -106,13 +111,24 @@ const HolidayList = () => {
       .deleteHolidayList(requestData)
       .then((res) => {
         enqueueSnackbar(res.message, { variant: "success" });
-        holidayList(id);
+        holidayList(moment(id).format("YYYY"));
       })
       .catch((error) => {
         enqueueSnackbar(error.response.data.message, { variant: "error" });
         setLoading(false);
       })
       .finally(() => holidayList(moment(id).format("YYYY")));
+  };
+
+  const handleDownload = () => {
+    attendanceService
+      .downloadHolidayList({ year: moment(id).format("YYYY") })
+      .then((res) => {
+        const blob = new Blob([res], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        saveAs(blob, `Holiday_List_${moment(id).format("YYYY")}.xlsx`);
+      });
   };
 
   return (
@@ -134,27 +150,44 @@ const HolidayList = () => {
                   sx={{ marginTop: -1 }}
                 >
                   <DatePicker
-                    // sx={{ width: "50% " }}
+                    sx={{ width: "40px" }}
                     label="Select Year"
                     value={id}
                     slotProps={{
                       textField: { size: "small", fullWidth: false },
                     }}
                     views={["year"]}
-                    // onChange={(newValue) => setId(moment.utc(newValue))}
                     onChange={handleChange}
                   />
                 </DemoContainer>
               </LocalizationProvider>
               {userType.role !== "employee" && (
-                <Button
-                  variant="contained"
-                  startIcon={<AddIcon />}
-                  sx={{ minWidth: 140 }}
-                  onClick={handleClickOpen}
-                >
-                  Add
-                </Button>
+                <>
+                  <Button
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                    sx={{ width: "100px" }}
+                    onClick={handleClickOpen}
+                  >
+                    Add
+                  </Button>
+                  <Button
+                    sx={{ width: "110px" }}
+                    variant="contained"
+                    endIcon={<UploadFileIcon />}
+                    onClick={() => setUploadLeaveDialoge(true)}
+                  >
+                    Upload
+                  </Button>
+                  <Button
+                    sx={{ width: "130px" }}
+                    variant="contained"
+                    endIcon={<SimCardDownloadIcon />}
+                    onClick={handleDownload}
+                  >
+                    Download
+                  </Button>
+                </>
               )}
             </Box>
           </Box>
@@ -164,20 +197,23 @@ const HolidayList = () => {
             holidayListData?.map((item: any, index: any) => {
               return (
                 <Fragment key={index}>
-                  <div className="bg-white rounded-xl shadow-md overflow-hidden  m-3">
+                  <div
+                    className=" rounded-xl shadow-md overflow-hidden  m-3 "
+                    style={{ backgroundColor: "#e5e7eb" }}
+                  >
                     <div className="flex justify-between">
                       <div className="p-4 flex items-center">
                         <div
                           className={`pr-4 ${
                             new Date(item.holidayList.holidayDate) > new Date()
                               ? "bg-blue-500"
-                              : "bg-blue-200"
+                              : "bg-white"
                           } p-2 rounded-lg text-center`}
                         >
-                          <p className="text-4xl font-bold text-white">
+                          <p className="text-4xl font-bold text-orange-300">
                             {moment(item.holidayList.holidayDate).format("DD")}
                           </p>
-                          <p className="text-sm text-white">
+                          <p className="text-sm text-orange-300">
                             {" "}
                             {moment(item.holidayList.holidayDate).format(
                               "MMMM, YYYY"
@@ -286,6 +322,21 @@ const HolidayList = () => {
               </Form>
             )}
           </Formik>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        fullWidth
+        maxWidth="md"
+        open={uploadLeaveDialoge}
+        onClose={() => setUploadLeaveDialoge(false)}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {<strong>Upload Holiday Excel</strong>}
+        </DialogTitle>
+        <DialogContent>
+          <HolidayUp />
         </DialogContent>
       </Dialog>
     </>

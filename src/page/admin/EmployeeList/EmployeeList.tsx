@@ -1,16 +1,22 @@
 /* eslint-disable no-useless-escape */
 import * as React from "react";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import { Box, Button, Chip, Grid, Switch, TextField } from "@mui/material";
+// import EditNoteIcon from "@mui/icons-material/EditNote";
+import {
+  Box,
+  Button,
+  Chip,
+  Grid,
+  IconButton,
+  Menu,
+  MenuItem,
+  Switch,
+} from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Formik, Form } from "formik";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import Loader from "../../../components/Loader";
@@ -20,13 +26,19 @@ import * as Yup from "yup";
 import { ConfigData } from "../../../shared/ConfigData";
 import { useNavigate } from "react-router-dom";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+// import VisibilityIcon from "@mui/icons-material/Visibility";
+// import LockOpenIcon from "@mui/icons-material/LockOpen";
 import {
   DateField,
   InputField,
   SelectField,
 } from "../../../components/DynamicField";
 import { EmployeeServices } from "./EmployeeServices";
+import { CiSearch } from "react-icons/ci";
+import { RxCross2 } from "react-icons/rx";
+import Search from "../../../components/Search";
+import ChangePassword from "../../../components/ChangePassword";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 export default function EmployeeList() {
   const navigate = useNavigate();
@@ -34,9 +46,18 @@ export default function EmployeeList() {
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [id, setId] = React.useState("all");
   const [activationKey, setActivationKey] = React.useState("");
   const [activationKeyData, setActivationKeyData] = React.useState([]);
+  const [searchStatus, setSearchStatus] = React.useState(false);
+  const [searchDetails, setSearchDetails] = React.useState({});
+  const [page, setPage] = React.useState(1);
+  const [pageRow, setPageRow] = React.useState(10);
+  const [passwordModal, setPasswordModal] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [rowData, setRowData] = React.useState<any>({});
+
+  const menuOpen = Boolean(anchorEl);
+
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const userType = useSelector((state: any) => state.auth.auth.user);
@@ -61,13 +82,21 @@ export default function EmployeeList() {
     password: Yup.string().required("Password is required"),
   });
   React.useEffect(() => {
-    activationList(id);
+    activationList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [searchDetails, page, pageRow]);
 
-  const activationList = (id: any) => {
+  const activationList = () => {
+    let reqData: object = {
+      page: page,
+      limit: pageRow,
+    };
+
+    if (Object.keys(searchDetails).length > 0) {
+      reqData = { ...reqData, ...searchDetails };
+    }
     employeeServices
-      .activationKeyList(id)
+      .activationKeyList(reqData)
       .then((res: any) => {
         setActivationKeyData(
           res.data.map((item: any, index: any) => ({ ...item, id: index }))
@@ -76,6 +105,13 @@ export default function EmployeeList() {
       .catch((err) =>
         enqueueSnackbar(err.response.data.message, { variant: "error" })
       );
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
   const customRegistrationStatus = (value: any) => {
     switch (value) {
@@ -118,6 +154,7 @@ export default function EmployeeList() {
         break;
     }
   };
+
   const columns: GridColDef[] = [
     {
       field: "name",
@@ -126,6 +163,12 @@ export default function EmployeeList() {
       renderCell: (value: any) => (
         <span style={{ textTransform: "capitalize" }}>{value.value}</span>
       ),
+    },
+    {
+      field: "username",
+      headerName: "Username",
+      width: 150,
+      renderCell: (value: any) => <span>{value.value}</span>,
     },
     { field: "mobile", headerName: "Number", width: 120 },
     {
@@ -145,7 +188,7 @@ export default function EmployeeList() {
     },
     {
       field: "activeStatus",
-      headerName: "IsActive",
+      headerName: "Active",
       width: 120,
       renderCell: (value: any) => (
         <Switch
@@ -154,7 +197,7 @@ export default function EmployeeList() {
         />
       ),
     },
-    { field: "createdBy", headerName: "CreatedBy ", width: 120 },
+    // { field: "createdBy", headerName: "CreatedBy ", width: 120 },
     { field: "updatedBy", headerName: "UpdatedBy ", width: 120 },
     { field: "approvedBy", headerName: "ApprovedBy ", width: 120 },
     {
@@ -168,10 +211,99 @@ export default function EmployeeList() {
     {
       field: "action",
       headerName: "Action",
-      width: 120,
+      width: 200,
       renderCell: (value: any) => (
         <>
-          <EditNoteIcon
+          <div>
+            <IconButton
+              aria-label="more"
+              id="long-button"
+              aria-controls={open ? "long-menu" : undefined}
+              aria-expanded={open ? "true" : undefined}
+              aria-haspopup="true"
+              onClick={(e) => {
+                setRowData(value.row);
+                handleClick(e);
+              }}
+            >
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              id="long-menu"
+              MenuListProps={{
+                "aria-labelledby": "long-button",
+              }}
+              anchorEl={anchorEl}
+              open={menuOpen}
+              onClose={handleMenuClose}
+              PaperProps={{
+                style: {
+                  maxHeight: 48 * 8,
+                  width: "15ch",
+                },
+              }}
+            >
+              <MenuItem
+                onClick={() => {
+                  navigate(`/admin/user-update/${rowData._id}`);
+                  handleMenuClose();
+                }}
+              >
+                Update
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate(`/admin/user-verified/${rowData._id}`);
+                  handleMenuClose();
+                }}
+              >
+                Verified
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/admin/attendance/details", {
+                    state: { data: rowData.username },
+                  });
+                }}
+              >
+                Attendance
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/user/leave/details", {
+                    state: { data: rowData.username },
+                  });
+                }}
+              >
+                Leave
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate(`/admin/user-payroll/view`, {
+                    state: { data: rowData.username },
+                  });
+                }}
+              >
+                Payroll
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate(`/admin/salary/${rowData.username}`);
+                }}
+              >
+                Salary
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setPasswordModal(true);
+                  handleMenuClose();
+                }}
+              >
+                Password
+              </MenuItem>
+            </Menu>
+          </div>
+          {/* <EditNoteIcon
             color="primary"
             style={{ cursor: "pointer" }}
             onClick={() => {
@@ -182,9 +314,16 @@ export default function EmployeeList() {
             color="secondary"
             style={{ cursor: "pointer" }}
             onClick={() => {
-              navigate("/admin/user-verified/", { state: { data: value.row } });
+              navigate(`/admin/user-verified/${value.row._id}`);
             }}
           />
+          <LockOpenIcon
+            color="info"
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              setPasswordModal(true);
+            }}
+          /> */}
         </>
       ),
     },
@@ -207,7 +346,7 @@ export default function EmployeeList() {
         enqueueSnackbar(err.response.data.message, { variant: "error" })
       )
       .finally(() => {
-        activationList(id);
+        activationList();
         setLoading(false);
       });
   };
@@ -219,11 +358,7 @@ export default function EmployeeList() {
   const handleClose = () => {
     setOpen(false);
     setActivationKey("");
-    activationList(id);
-  };
-
-  const handleChange = (event: any) => {
-    setId(event.target.value);
+    activationList();
   };
 
   const handleGenerateKey = (value: any) => {
@@ -249,6 +384,22 @@ export default function EmployeeList() {
       });
   };
 
+  const handelSearch = (values: any) => {
+    console.log(values);
+    if (Object.keys(values).length > 0) {
+      setSearchDetails(values);
+    }
+  };
+
+  const handelResetSearch = () => {
+    activationList();
+    setSearchDetails({});
+  };
+
+  const handelClosePassword = () => {
+    setPasswordModal(false);
+  };
+
   return (
     <div>
       {loading && <Loader />}
@@ -261,15 +412,15 @@ export default function EmployeeList() {
               </h6>
             </Box>
             <Box className="mt-2 flex justify-end gap-2">
-              <TextField label="Search" id="outlined-size-small" size="small" />
-              <FormControl sx={{ minWidth: 120 }} size="small">
-                <Select value={id} onChange={handleChange}>
-                  <MenuItem value={"all"}>All</MenuItem>
-                  <MenuItem value={"waiting"}>Waiting</MenuItem>
-                  <MenuItem value={"pending"}>Pending</MenuItem>
-                  <MenuItem value={"verified"}>Verified</MenuItem>
-                </Select>
-              </FormControl>
+              <Button
+                variant="outlined"
+                color={searchStatus === true ? "error" : "primary"}
+                startIcon={searchStatus === true ? <RxCross2 /> : <CiSearch />}
+                onClick={() => setSearchStatus(!searchStatus)}
+              >
+                {searchStatus === true ? "Cancel" : "Search"}
+              </Button>
+
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
@@ -280,6 +431,29 @@ export default function EmployeeList() {
             </Box>
           </Box>
         </Grid>
+        {searchStatus && (
+          <Grid item xs={12} className="mt-1">
+            <Search
+              value={{
+                name: "",
+                username: "",
+                activationCode: "",
+                email: "",
+                mobile: "",
+                position: "",
+                role: "",
+                country: "",
+                state: "",
+                pincode: "",
+                activeStatus: "",
+                registrationStatus: "",
+              }}
+              handelSearch={handelSearch}
+              handelResetSearch={handelResetSearch}
+            />
+          </Grid>
+        )}
+
         <Grid item xs={12} className="mt-1">
           <Box>
             <DataGrid
@@ -289,10 +463,15 @@ export default function EmployeeList() {
               }}
               rows={activationKeyData}
               columns={columns}
+              onPaginationModelChange={(e) => {
+                setPageRow(Number(e.pageSize));
+                setPage(Number(e.page) + 1);
+              }}
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: ConfigData.pageSize,
+                    pageSize: pageRow,
+                    page: page,
                   },
                 },
               }}
@@ -417,6 +596,21 @@ export default function EmployeeList() {
               </div>
             </Grid>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        // fullScreen={fullScreen}
+        open={passwordModal}
+        onClose={() => setPasswordModal(false)}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="alert-dialog-title">{"Change Password"}</DialogTitle>
+        <DialogContent>
+          <ChangePassword
+            data={{ type: "admin", _id: rowData._id }}
+            closeAction={handelClosePassword}
+          />
         </DialogContent>
       </Dialog>
     </div>

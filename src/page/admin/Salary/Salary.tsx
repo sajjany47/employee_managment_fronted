@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { ConfigData } from "../../../shared/ConfigData";
 import moment from "moment";
 import { SalaryServices } from "./SalaryService";
 import { useSnackbar } from "notistack";
@@ -28,6 +27,8 @@ import {
 import { percentage, sumValues } from "../../../shared/UtlityFunction";
 import UpdateIcon from "@mui/icons-material/Update";
 import { useSelector } from "react-redux";
+import { ConfigData } from "../../../shared/ConfigData";
+import * as Yup from "yup";
 
 const Salary = () => {
   const salaryService = new SalaryServices();
@@ -40,7 +41,44 @@ const Salary = () => {
   const [open, setOpen] = useState(false);
   const [actionType, setActionType] = useState("add");
   const [selectUser, setSelectUser] = useState<any>({});
+  const [search, setSearch] = useState("");
   const [getId, setGetId] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageRow, setPageRow] = useState(10);
+
+  const salaryValidation = Yup.object().shape({
+    date: Yup.string().required("Date is required"),
+    username: Yup.string().required("Username is required"),
+    basicSalary: Yup.string().required("Basic salary is required"),
+    MedicalAllowance: Yup.string().required("Medical allowance is required"),
+    travelAllowance: Yup.string().required("Travel allowance is required"),
+    hra: Yup.string().required("HRA is required"),
+    SpecialAllowance: Yup.string().required("Special allowance is required"),
+    providentFund: Yup.string().required("Provident fund is required"),
+    professionalTax: Yup.string().required("Professional tax is required"),
+    incomeTax: Yup.string().required("Income tax is required"),
+    ctc: Yup.number().required("CTC is required").moreThan(0, "More than 0"),
+    totalEarning: Yup.number()
+      .required("Net salary is required")
+      .moreThan(0, "More than 0"),
+    healthInsurance: Yup.string().required("Health insurance is required"),
+    incrementType: Yup.string().when("type", {
+      is: (val: any) => val === "appraisal",
+      then: () => Yup.string().required("Increment type is required"),
+      otherwise: () => Yup.string().notRequired(),
+    }),
+    incrementValue: Yup.string().when("incrementType", {
+      is: (val: any) => val === "percentage",
+      then: () => Yup.string().required("Increment value is required"),
+      otherwise: () => Yup.string().notRequired(),
+    }),
+    type: Yup.string().when("actionType", {
+      is: (val: any) => val === "edit",
+      then: () => Yup.string().required("Type is required when editing"),
+      // .oneOf(["changes", "appraisal"], "Invalid type value"),
+      otherwise: () => Yup.string().notRequired(),
+    }),
+  });
 
   useEffect(() => {
     Promise.all([salaryList(), userList()]);
@@ -64,12 +102,19 @@ const Salary = () => {
       setGetId(selectId._id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [page, pageRow, search]);
 
   const salaryList = () => {
     setLoading(true);
+    const reqData: any = {
+      page: page,
+      limit: pageRow,
+    };
+    if (search !== "") {
+      reqData.username = search;
+    }
     salaryService
-      .salaryList()
+      .salaryList(reqData)
       .then((res) => {
         setSalaryDetailList(res.data);
       })
@@ -171,13 +216,17 @@ const Salary = () => {
         ? {
             ...values,
             updatedBy: userType.username,
+            totalEarning: Number(values.totalEarning),
+            ctc: Number(values.ctc),
           }
         : {
             ...values,
             id: getId,
             updatedBy: userType.username,
+            totalEarning: Number(values.totalEarning),
+            ctc: Number(values.ctc),
           };
-    console.log(requestData);
+
     salaryService
       .createSalaryStructure(requestData)
       .then((res) => {
@@ -203,7 +252,12 @@ const Salary = () => {
               </h6>
             </Box>
             <Box className="mt-2 flex justify-end gap-2">
-              <TextField label="Search" id="outlined-size-small" size="small" />
+              <TextField
+                label="Search"
+                id="outlined-size-small"
+                size="small"
+                onChange={(e) => setSearch(e.target.value)}
+              />
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
@@ -227,17 +281,20 @@ const Salary = () => {
               rows={salaryDetailList}
               columns={columns}
               getRowId={(row) => row._id}
+              onPaginationModelChange={(e) => {
+                setPageRow(Number(e.pageSize));
+                setPage(Number(e.page) + 1);
+              }}
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: ConfigData.pageSize,
+                    pageSize: pageRow,
+                    page: page,
                   },
                 },
               }}
               pageSizeOptions={ConfigData.pageRow}
               localeText={{ noRowsLabel: "No Data Available!!!" }}
-              // checkboxSelection
-              // disableRowSelectionOnClick
             />
           </Box>
         </Grid>
@@ -256,6 +313,7 @@ const Salary = () => {
             initialValues={
               actionType === "add"
                 ? {
+                    actionType: "add",
                     date: "",
                     username: "",
                     basicSalary: "",
@@ -274,10 +332,14 @@ const Salary = () => {
                 : {
                     ...selectUser.currentSalary,
                     username: selectUser.username,
-                    date: moment.utc(selectUser.currentSalary.date),
+                    date: moment(selectUser.currentSalary.date),
+                    actionType: "edit",
+                    type: "",
+                    incrementValue: "",
+                    incrementType: "",
                   }
             }
-            // validationSchema={activationKeyValidation}
+            validationSchema={salaryValidation}
             onSubmit={generateSalary}
             enableReinitialize
           >
@@ -496,6 +558,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("basicSalary", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
@@ -507,6 +575,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("hra", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
@@ -518,6 +592,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("travelAllowance", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
 
@@ -530,6 +610,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("MedicalAllowance", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
@@ -541,6 +627,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("LeaveTravelAllowance", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
@@ -552,6 +644,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("SpecialAllowance", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
@@ -563,6 +661,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("healthInsurance", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
@@ -574,6 +678,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("providentFund", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
@@ -585,6 +695,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("incomeTax", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
                   <Grid item xs={2} sm={4} md={4}>
@@ -596,6 +712,12 @@ const Salary = () => {
                         setFieldValue("ctc", "");
                         setFieldValue("professionalTax", e.target.value);
                       }}
+                      disabled={
+                        values.type === "appraisal" &&
+                        values.incrementType === "percentage"
+                          ? true
+                          : false
+                      }
                     />
                   </Grid>
 

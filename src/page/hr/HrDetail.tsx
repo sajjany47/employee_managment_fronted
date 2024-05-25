@@ -3,8 +3,8 @@ import { Box, Tab, Tabs, Typography } from "@mui/material";
 import EmpAttendance from "../employee/EmpAttendance";
 import EmpLeave from "../employee/EmpLeave";
 import EmpPayroll from "../employee/EmpPayroll";
-import UserUpdate from "../admin/EmployeeList/UserUpdate";
 import SalaryDetails from "../admin/Salary/SalaryDetails";
+import UserVerified from "../admin/EmployeeList/UserVerified";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -73,7 +73,7 @@ const HrDetail = () => {
         </CustomTabPanel>
 
         <CustomTabPanel value={value} index={3}>
-          <UserUpdate />
+          <UserVerified />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={4}>
           <SalaryDetails />

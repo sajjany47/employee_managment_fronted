@@ -186,6 +186,75 @@ export class AttendanceService {
     }
   };
 
+  downloadHolidayList = async (payload: any) => {
+    try {
+      const response = await axios.post(
+        `${apiPath}/excel-holiday/download`,
+        payload,
+        {
+          headers: this.headers,
+          responseType: "arraybuffer",
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
+
+  blankHolidayList = async () => {
+    try {
+      const response = await axios.get(
+        `${apiPath}/excel-holiday/download-blank`,
+
+        {
+          headers: this.headers,
+          responseType: "arraybuffer",
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
+
+  readHolidayList = async (payload: any) => {
+    try {
+      const response = await axios.post(
+        `${apiPath}/excel-holiday/read`,
+        payload,
+        {
+          headers: {
+            "Content-type": "multipart/form-data",
+            Authorization: `Bearer ${this.token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
+
+  insertHolidayList = async (payload: any) => {
+    try {
+      const response = await axios.post(
+        `${apiPath}/excel-holiday/insert`,
+        payload,
+        {
+          headers: this.headers,
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError;
+      throw err;
+    }
+  };
+
   notificationList = async () => {
     try {
       const response = await axios.get(

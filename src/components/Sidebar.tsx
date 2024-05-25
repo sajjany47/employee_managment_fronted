@@ -16,17 +16,26 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import { RiLockPasswordFill } from "react-icons/ri";
 import Badge from "@mui/material/Badge";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { Avatar, Menu, MenuItem } from "@mui/material";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import {
+  Avatar,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Menu,
+  MenuItem,
+  useMediaQuery,
+} from "@mui/material";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/reducer/authReducer";
-import { AttendanceService } from "../page/admin/Attendance/AttendanceService";
-import { enqueueSnackbar } from "notistack";
-import { FaRegUser } from "react-icons/fa6";
+// import { AttendanceService } from "../page/admin/Attendance/AttendanceService";
+// import { enqueueSnackbar } from "notistack";
 import { CiLogout } from "react-icons/ci";
+import ChangePassword from "./ChangePassword";
 
 type Props = {
   sidebarList: { path: string; title: string; icon: JSX.Element }[] | null;
@@ -103,32 +112,35 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function Sidebar(props: Props) {
-  const attendanceService = new AttendanceService();
+  // const attendanceService = new AttendanceService();
+  const location = useLocation();
   const user = useSelector((state: any) => state.auth.auth.user);
+  const pathname = location.pathname;
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
+  const [passwordModal, setPasswordModal] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [notificationData, setNotificationData] = useState([]);
-
+  // const [notificationData, setNotificationData] = useState([]);
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   useEffect(() => {
-    notifiCall();
+    // notifiCall();
   }, []);
 
-  const notifiCall = () => {
-    // setInterval(() => {
-    attendanceService
-      .notificationList()
-      .then((res) => {
-        setNotificationData(res.data);
-      })
-      .catch((err: any) =>
-        enqueueSnackbar(err.response.data.message, { variant: "error" })
-      );
-    // }, 1000);
-  };
+  // const notifiCall = () => {
+  //   // setInterval(() => {
+  //   attendanceService
+  //     .notificationList()
+  //     .then((res) => {
+  //       setNotificationData(res.data);
+  //     })
+  //     .catch((err: any) =>
+  //       enqueueSnackbar(err.response.data.message, { variant: "error" })
+  //     );
+  //   // }, 1000);
+  // };
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -149,10 +161,13 @@ export default function Sidebar(props: Props) {
     navigate("/");
     dispatch(setUser({ token: null, user: null }));
   };
+  const handelClosePassword = () => {
+    setPasswordModal(false);
+  };
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed" open={open} sx={{ backgroundColor: "#336BE4" }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -184,7 +199,7 @@ export default function Sidebar(props: Props) {
               aria-label="show 17 new notifications"
               color="inherit"
             >
-              <Badge badgeContent={notificationData.length} color="error">
+              <Badge badgeContent={5} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
@@ -232,11 +247,14 @@ export default function Sidebar(props: Props) {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem sx={{ width: 150 }}>
+              <MenuItem
+                sx={{ width: 150 }}
+                onClick={() => setPasswordModal(true)}
+              >
                 <ListItemIcon>
-                  <FaRegUser fontSize="small" />
+                  <RiLockPasswordFill fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Profile</ListItemText>
+                <ListItemText>Password</ListItemText>
               </MenuItem>
               <MenuItem sx={{ width: 150 }} onClick={handleLogout}>
                 <ListItemIcon>
@@ -250,7 +268,16 @@ export default function Sidebar(props: Props) {
           </Box>
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={open}>
+
+      <Drawer
+        variant="permanent"
+        open={open}
+        sx={{
+          "& .MuiDrawer-paper": {
+            backgroundColor: "#336BE4",
+          },
+        }}
+      >
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
@@ -267,9 +294,19 @@ export default function Sidebar(props: Props) {
               <Link
                 to={text.path}
                 key={index}
-                style={{ textDecoration: "none", color: "black" }}
+                style={{
+                  textDecoration: "none",
+                }}
               >
-                <ListItem disablePadding sx={{ display: "block" }} key={index}>
+                <ListItem
+                  disablePadding
+                  sx={{
+                    display: "block",
+                    color: pathname === text.path ? "#336BE4" : "white",
+                    backgroundColor:
+                      pathname !== text.path ? "#336BE4" : "white",
+                  }}
+                >
                   <ListItemButton
                     sx={{
                       minHeight: 48,
@@ -282,6 +319,7 @@ export default function Sidebar(props: Props) {
                         minWidth: 0,
                         mr: open ? 3 : "auto",
                         justifyContent: "center",
+                        color: pathname === text.path ? "#F9AE48" : "white",
                       }}
                     >
                       {text.icon}
@@ -314,6 +352,21 @@ export default function Sidebar(props: Props) {
 
         <Outlet />
       </Box>
+
+      <Dialog
+        fullScreen={fullScreen}
+        open={passwordModal}
+        onClose={() => setPasswordModal(false)}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="alert-dialog-title">{"Change Password"}</DialogTitle>
+        <DialogContent>
+          <ChangePassword
+            data={{ type: "user", _id: user._id }}
+            closeAction={handelClosePassword}
+          />
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }
