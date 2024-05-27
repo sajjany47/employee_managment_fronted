@@ -33,6 +33,8 @@ import {
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
 import { percentageColor } from "../../../shared/UtlityFunction";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -667,11 +669,20 @@ const Attendance = () => {
 
       <Dialog
         open={open}
-        onClose={handleClose}
+        // onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
-          <strong>Leave Status Change</strong>
+          <Box display="flex" alignItems="center">
+            <Box flexGrow={1}>
+              <strong>Leave Status Change</strong>
+            </Box>
+            <Box>
+              <IconButton onClick={handleClose}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </Box>
         </DialogTitle>
         <DialogContent>
           <Formik
