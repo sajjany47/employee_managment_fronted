@@ -39,6 +39,7 @@ import { RxCross2 } from "react-icons/rx";
 import Search from "../../../components/Search";
 import ChangePassword from "../../../components/ChangePassword";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function EmployeeList() {
   const navigate = useNavigate();
@@ -489,11 +490,21 @@ export default function EmployeeList() {
       <Dialog
         fullScreen={fullScreen}
         open={open}
-        onClose={handleClose}
+        // onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="alert-dialog-title">
           {/* {"Generate Activation Key"} */}
+          <Box display="flex" alignItems="center">
+            <Box flexGrow={1}>
+              <strong>Generate Activation Key</strong>
+            </Box>
+            <Box>
+              <IconButton onClick={handleClose}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </Box>
         </DialogTitle>
         <DialogContent>
           {activationKey === "" ? (

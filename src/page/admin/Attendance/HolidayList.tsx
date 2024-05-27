@@ -31,6 +31,7 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import SimCardDownloadIcon from "@mui/icons-material/SimCardDownload";
 import { saveAs } from "file-saver";
 import HolidayUp from "./HolidayUpload/HolidayUp";
+import CloseIcon from "@mui/icons-material/Close";
 
 const HolidayList = () => {
   const theme = useTheme();
@@ -267,11 +268,20 @@ const HolidayList = () => {
       <Dialog
         fullScreen={fullScreen}
         open={open}
-        onClose={handleClose}
+        // onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
-          <strong>Add Holiday</strong>
+          <Box display="flex" alignItems="center">
+            <Box flexGrow={1}>
+              <strong>Add Holiday</strong>
+            </Box>
+            <Box>
+              <IconButton onClick={handleClose}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </Box>
         </DialogTitle>
         <DialogContent>
           <Formik
@@ -329,11 +339,20 @@ const HolidayList = () => {
         fullWidth
         maxWidth="md"
         open={uploadLeaveDialoge}
-        onClose={() => setUploadLeaveDialoge(false)}
+        // onClose={() => setUploadLeaveDialoge(false)}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="alert-dialog-title">
-          {<strong>Upload Holiday Excel</strong>}
+          <Box display="flex" alignItems="center">
+            <Box flexGrow={1}>
+              <strong>Upload Holiday Excel</strong>
+            </Box>
+            <Box>
+              <IconButton onClick={() => setUploadLeaveDialoge(false)}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </Box>
         </DialogTitle>
         <DialogContent>
           <HolidayUp />

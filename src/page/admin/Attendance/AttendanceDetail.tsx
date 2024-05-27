@@ -122,10 +122,11 @@ const AttendanceDetail = () => {
           9 * 60,
           value.row.timeSchedule.totalTime
         );
+
         return (
           <Chip
-            color={percentage.color}
-            label={`${percentage.value.toFixed(2)} %`}
+            color={percentage?.color}
+            label={percentage ? `${percentage?.value.toFixed(2)} %` : `${null}`}
           />
         );
       },

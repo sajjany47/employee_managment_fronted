@@ -25,6 +25,8 @@ import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import NoEncryptionIcon from "@mui/icons-material/NoEncryption";
 import * as Yup from "yup";
 import { useLocation } from "react-router-dom";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 const LeaveApply = () => {
   const attendanceService = new AttendanceService();
@@ -39,11 +41,11 @@ const LeaveApply = () => {
 
   const leaveSchema = Yup.object().shape({
     startDay: Yup.string().required("Start Day is required"),
-    endDay: Yup.date()
+    endDay: Yup.string()
       .required("End Day is requird")
       .when(
         "startDay",
-        (startDate, schema) =>
+        (startDate: any, schema) =>
           startDate &&
           schema.min(startDate, "End date is greater than start Date")
       ),
@@ -314,11 +316,20 @@ const LeaveApply = () => {
 
       <Dialog
         open={open}
-        onClose={handleClose}
+        // onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
-          <strong>Apply Leave</strong>
+          <Box display="flex" alignItems="center">
+            <Box flexGrow={1}>
+              <strong>Apply Leave</strong>
+            </Box>
+            <Box>
+              <IconButton onClick={handleClose}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </Box>
         </DialogTitle>
         <DialogContent>
           <Formik

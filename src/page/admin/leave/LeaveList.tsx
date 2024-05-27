@@ -29,6 +29,8 @@ import SimCardDownloadIcon from "@mui/icons-material/SimCardDownload";
 import UploadLeave from "./upload/UploadLeave";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 const LeaveList = () => {
   const leaveService = new LeaveService();
@@ -341,15 +343,24 @@ const LeaveList = () => {
 
       <Dialog
         open={open}
-        onClose={handleClose}
+        // onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
-          <strong>
-            {modalStatus === "add"
-              ? "Add Leave Allotment"
-              : "Edit Leave Allotment"}
-          </strong>
+          <Box display="flex" alignItems="center">
+            <Box flexGrow={1}>
+              <strong>
+                {modalStatus === "add"
+                  ? "Add Leave Allotment"
+                  : "Edit Leave Allotment"}
+              </strong>
+            </Box>
+            <Box>
+              <IconButton onClick={handleClose}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </Box>
         </DialogTitle>
         <DialogContent>
           <Formik
@@ -449,11 +460,20 @@ const LeaveList = () => {
         fullWidth
         maxWidth="md"
         open={uploadLeaveDialoge}
-        onClose={() => setUploadLeaveDialoge(false)}
+        // onClose={() => setUploadLeaveDialoge(false)}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="alert-dialog-title">
-          {<strong>Upload Leave Excel</strong>}
+          <Box display="flex" alignItems="center">
+            <Box flexGrow={1}>
+              <strong>Upload Leave Excel</strong>
+            </Box>
+            <Box>
+              <IconButton onClick={() => setUploadLeaveDialoge(false)}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </Box>
         </DialogTitle>
         <DialogContent>
           <UploadLeave />

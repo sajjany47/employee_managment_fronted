@@ -29,6 +29,8 @@ import UpdateIcon from "@mui/icons-material/Update";
 import { useSelector } from "react-redux";
 import { ConfigData } from "../../../shared/ConfigData";
 import * as Yup from "yup";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Salary = () => {
   const salaryService = new SalaryServices();
@@ -302,12 +304,23 @@ const Salary = () => {
 
       <Dialog
         open={open}
-        onClose={handleClose}
+        // onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle id="alert-dialog-title">Add Salary Structure</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          <Box display="flex" alignItems="center">
+            <Box flexGrow={1}>
+              <strong> Add Salary Structure</strong>
+            </Box>
+            <Box>
+              <IconButton onClick={handleClose}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </Box>
+        </DialogTitle>
         <DialogContent>
           <Formik
             initialValues={

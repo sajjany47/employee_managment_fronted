@@ -34,6 +34,8 @@ import { enqueueSnackbar } from "notistack";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
 import { containsSearchTerm } from "../../../shared/UtlityFunction";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -315,10 +317,21 @@ const Task = () => {
       </Grid>
       <Dialog
         open={open}
-        onClose={handleClose}
+        // onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >
-        <DialogTitle id="alert-dialog-title">{"Task Assign"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          <Box display="flex" alignItems="center">
+            <Box flexGrow={1}>
+              <strong>Task Assign</strong>
+            </Box>
+            <Box>
+              <IconButton onClick={handleClose}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </Box>
+        </DialogTitle>
         <DialogContent>
           <Formik
             initialValues={
