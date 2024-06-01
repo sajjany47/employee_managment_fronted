@@ -36,6 +36,7 @@ import { setUser } from "../store/reducer/authReducer";
 // import { enqueueSnackbar } from "notistack";
 import { CiLogout } from "react-icons/ci";
 import ChangePassword from "./ChangePassword";
+import socketIOClient from "socket.io-client";
 
 type Props = {
   sidebarList: { path: string; title: string; icon: JSX.Element }[] | null;
@@ -111,6 +112,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
+const ENDPOINT = "http://localhost:8081";
 export default function Sidebar(props: Props) {
   // const attendanceService = new AttendanceService();
   const location = useLocation();
@@ -124,9 +126,20 @@ export default function Sidebar(props: Props) {
   const [passwordModal, setPasswordModal] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   // const [notificationData, setNotificationData] = useState([]);
+
+  const [notifications, setNotifications] = useState<any[]>([]);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   useEffect(() => {
     // notifiCall();
+    const newSocket: any = socketIOClient(ENDPOINT);
+
+    newSocket.emit("register", user.username);
+
+    newSocket.on("notification", (message: any) => {
+      setNotifications((prev) => [...prev, message]);
+    });
+
+    return () => newSocket.close();
   }, []);
 
   // const notifiCall = () => {
@@ -199,7 +212,7 @@ export default function Sidebar(props: Props) {
               aria-label="show 17 new notifications"
               color="inherit"
             >
-              <Badge badgeContent={5} color="error">
+              <Badge badgeContent={notifications.length} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>

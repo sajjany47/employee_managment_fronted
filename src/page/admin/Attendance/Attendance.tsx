@@ -35,6 +35,7 @@ import * as Yup from "yup";
 import { percentageColor } from "../../../shared/UtlityFunction";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import socketIOClient from "socket.io-client";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -348,6 +349,11 @@ const Attendance = () => {
     attendanceService
       .applyLeaveApproved(requestBody)
       .then((res) => {
+        const newSocket: any = socketIOClient("http://localhost:8081");
+        newSocket.emit("sendNotification", {
+          recipientId: selectLeave.user_id, // Replace with target user ID
+          message: "This is a test notification",
+        });
         enqueueSnackbar(res.message, { variant: "success" });
         handleClose();
       })
