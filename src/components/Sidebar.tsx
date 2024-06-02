@@ -37,6 +37,7 @@ import { enqueueSnackbar } from "notistack";
 import { CiLogout } from "react-icons/ci";
 import ChangePassword from "./ChangePassword";
 import socketIOClient from "socket.io-client";
+import { socket_path } from "../shared/constant";
 
 type Props = {
   sidebarList: { path: string; title: string; icon: JSX.Element }[] | null;
@@ -112,7 +113,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-const ENDPOINT = "http://localhost:8081";
+const ENDPOINT = socket_path;
 export default function Sidebar(props: Props) {
   const attendanceService = new AttendanceService();
   const location = useLocation();

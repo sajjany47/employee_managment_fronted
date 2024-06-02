@@ -32,10 +32,12 @@ import {
 } from "../../../components/DynamicField";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
-import { percentageColor } from "../../../shared/UtlityFunction";
+import {
+  percentageColor,
+  sendNotification,
+} from "../../../shared/UtlityFunction";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import socketIOClient from "socket.io-client";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -349,11 +351,8 @@ const Attendance = () => {
     attendanceService
       .applyLeaveApproved(requestBody)
       .then((res) => {
-        const newSocket: any = socketIOClient("http://localhost:8081");
-        newSocket.emit("sendNotification", {
-          recipientId: selectLeave.user_id, // Replace with target user ID
-          message: "Leave status changes",
-        });
+        sendNotification(selectLeave.user_id, "Leave status changes");
+
         enqueueSnackbar(res.message, { variant: "success" });
         handleClose();
       })

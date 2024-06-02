@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import socketIOClient from "socket.io-client";
+import { socket_path } from "./constant";
 
 export function convertStringToNull(obj: any) {
   Object.keys(obj).forEach(function (key) {
@@ -85,4 +87,12 @@ export const percentageColor = (totalValue: number, getTotal: number) => {
   } else {
     return null;
   }
+};
+
+export const sendNotification = (username: any, message: any) => {
+  const newSocket: any = socketIOClient(socket_path);
+  newSocket.emit("sendNotification", {
+    recipientId: username, // Replace with target user ID
+    message: message,
+  });
 };

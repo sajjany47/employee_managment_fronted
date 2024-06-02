@@ -40,8 +40,10 @@ const LeaveApply = () => {
   const [leaveListData, setLeaveListData] = useState<any>({});
 
   const leaveSchema = Yup.object().shape({
-    startDay: Yup.string().required("Start Day is required"),
-    endDay: Yup.string()
+    startDay: Yup.date()
+      .required("Start Day is required")
+      .min(new Date(), "Start date cannot be in the past"),
+    endDay: Yup.date()
       .required("End Day is requird")
       .when(
         "startDay",
