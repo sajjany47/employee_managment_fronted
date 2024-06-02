@@ -38,6 +38,7 @@ import { CiLogout } from "react-icons/ci";
 import ChangePassword from "./ChangePassword";
 import socketIOClient from "socket.io-client";
 import { socket_path } from "../shared/constant";
+import NotificatioList from "./NotificatioList";
 
 type Props = {
   sidebarList: { path: string; title: string; icon: JSX.Element }[] | null;
@@ -126,6 +127,7 @@ export default function Sidebar(props: Props) {
   const [open, setOpen] = React.useState(true);
   const [passwordModal, setPasswordModal] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorE2, setAnchorE2] = React.useState<null | HTMLElement>(null);
   // const [notificationData, setNotificationData] = useState([]);
 
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -210,6 +212,9 @@ export default function Sidebar(props: Props) {
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
+              aria-controls="menu-appbar2"
+              aria-haspopup="true"
+              onClick={(event) => setAnchorE2(event.currentTarget)}
             >
               <Badge badgeContent={notifications.length} color="error">
                 <NotificationsIcon />
@@ -276,6 +281,24 @@ export default function Sidebar(props: Props) {
               </MenuItem>
 
               {/* <MenuItem className="w-full h-full m-6">Change Password</MenuItem> */}
+            </Menu>
+
+            <Menu
+              id="menu-appbar2"
+              anchorEl={anchorE2}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              open={Boolean(anchorE2)}
+              onClose={() => setAnchorE2(null)}
+            >
+              <NotificatioList data={notifications} />
             </Menu>
           </Box>
         </Toolbar>
