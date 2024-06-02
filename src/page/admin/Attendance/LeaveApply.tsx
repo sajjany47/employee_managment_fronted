@@ -27,9 +27,12 @@ import * as Yup from "yup";
 import { useLocation } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import { EmployeeService } from "../Emloyee/EmployeeService";
+import { sendNotification } from "../../../shared/UtlityFunction";
 
 const LeaveApply = () => {
   const attendanceService = new AttendanceService();
+  const employeeService = new EmployeeService();
   const location = useLocation();
 
   const user = useSelector((state: any) => state.auth.auth.user);
@@ -38,6 +41,7 @@ const LeaveApply = () => {
   const [year, setYear] = useState(moment.utc(new Date()));
   const [leaveUseListData, setLeaveUseListData] = useState<any>([]);
   const [leaveListData, setLeaveListData] = useState<any>({});
+  const [userList, setUserList] = useState<any[]>([]);
 
   const leaveSchema = Yup.object().shape({
     startDay: Yup.date()
@@ -58,7 +62,15 @@ const LeaveApply = () => {
       location.state === null ? user.username : location.state.data,
       moment(year).format("YYYY")
     );
+    employeeService.employeeList().then((res) => {
+      const data = res.data.filter(
+        (item: any) =>
+          (item.role === "admin" || item.role === "hr") &&
+          item.username !== user.username
+      );
 
+      setUserList(data.map((item: any) => item.username));
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const applyLeaveList = (id: any, leaveYear: any) => {
@@ -167,15 +179,18 @@ const LeaveApply = () => {
 
   const submitLeave = (values: any) => {
     setLoading(true);
+
     const requestData = {
       startDay: values.startDay,
       endDay: values.endDay,
       reason: values.reason,
       user_id: user.username,
+      socketUser: userList,
     };
     attendanceService
       .leaveApply(requestData)
       .then((res) => {
+        sendNotification(userList, `${user.username} apply leave`);
         enqueueSnackbar(res.message, { variant: "success" });
         handleClose();
       })
