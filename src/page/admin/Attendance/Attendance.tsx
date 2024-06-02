@@ -352,7 +352,7 @@ const Attendance = () => {
         const newSocket: any = socketIOClient("http://localhost:8081");
         newSocket.emit("sendNotification", {
           recipientId: selectLeave.user_id, // Replace with target user ID
-          message: "This is a test notification",
+          message: "Leave status changes",
         });
         enqueueSnackbar(res.message, { variant: "success" });
         handleClose();

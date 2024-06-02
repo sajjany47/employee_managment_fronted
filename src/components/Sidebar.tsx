@@ -32,8 +32,8 @@ import {
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/reducer/authReducer";
-// import { AttendanceService } from "../page/admin/Attendance/AttendanceService";
-// import { enqueueSnackbar } from "notistack";
+import { AttendanceService } from "../page/admin/Attendance/AttendanceService";
+import { enqueueSnackbar } from "notistack";
 import { CiLogout } from "react-icons/ci";
 import ChangePassword from "./ChangePassword";
 import socketIOClient from "socket.io-client";
@@ -114,7 +114,7 @@ const Drawer = styled(MuiDrawer, {
 
 const ENDPOINT = "http://localhost:8081";
 export default function Sidebar(props: Props) {
-  // const attendanceService = new AttendanceService();
+  const attendanceService = new AttendanceService();
   const location = useLocation();
   const user = useSelector((state: any) => state.auth.auth.user);
   const pathname = location.pathname;
@@ -130,7 +130,7 @@ export default function Sidebar(props: Props) {
   const [notifications, setNotifications] = useState<any[]>([]);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   useEffect(() => {
-    // notifiCall();
+    notifiCall();
     const newSocket: any = socketIOClient(ENDPOINT);
 
     newSocket.emit("register", user.username);
@@ -142,18 +142,16 @@ export default function Sidebar(props: Props) {
     return () => newSocket.close();
   }, []);
 
-  // const notifiCall = () => {
-  //   // setInterval(() => {
-  //   attendanceService
-  //     .notificationList()
-  //     .then((res) => {
-  //       setNotificationData(res.data);
-  //     })
-  //     .catch((err: any) =>
-  //       enqueueSnackbar(err.response.data.message, { variant: "error" })
-  //     );
-  //   // }, 1000);
-  // };
+  const notifiCall = () => {
+    attendanceService
+      .notificationList()
+      .then((res) => {
+        setNotifications(res.data);
+      })
+      .catch((err: any) =>
+        enqueueSnackbar(err.response.data.message, { variant: "error" })
+      );
+  };
   const handleDrawerOpen = () => {
     setOpen(true);
   };
